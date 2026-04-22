@@ -92,18 +92,31 @@ The relationship layer should let the user add:
 This layer should be writable even when imported contact facts remain read-only.
 It should stay local by default and should not need to see the internet.
 
-## 6. Avoid Social Network Overload
+## 6. Filter And Discover Contacts Quickly
 
 Many contact databases grow opportunistically. They contain hundreds or thousands
 of people accepted through Google Contacts, LinkedIn, social networks, work
-directories, or event lists. When the user is tired or distressed, searching
-through those lists can consume all the energy they had for reaching out.
+directories, or event lists. The practical task is to quickly discover the
+people who are relevant to a situation without manually paging through a noisy
+address book.
 
-The toolkit should help the user get from "I need to talk to someone about this"
-to a small, meaningful set of people quickly.
+The toolkit should support deterministic filtering first:
 
-This is especially important for sensitive or emotionally difficult topics where
-the cost of failed search is high.
+- text search across contact facts, overlays, tags, and non-private notes
+- simple filters such as `has_email:true`
+- tag filters such as `#work` or `#pickleball`
+- combinations that can be saved, shared, or represented as a small search DSL
+
+That deterministic layer is the foundation for augmented natural-language
+filtering later. An LLM should be able to help turn a user request like "people
+from work who play pickleball and have an email address" into an inspectable
+filter expression, then let the deterministic engine run it. The LLM helps with
+discovery and curation, but the result set should still be explainable and
+repeatable.
+
+This is especially important for sensitive or emotionally difficult topics. When
+the user needs the right people quickly, failed search is not just annoying; it
+can consume the energy they had for reaching out.
 
 ## 7. Build Toward Peer-To-Peer Community Tools
 

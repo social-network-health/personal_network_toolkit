@@ -5,24 +5,30 @@ share stable data contracts instead of one large runtime. Each tool should be
 usable from a CLI, callable as a small Python library, and able to exchange data
 through documented SQLite and JSON formats.
 
+The toolkit is meant to be application-building infrastructure as much as an
+end-user app. A developer should be able to use the importer, DB, viewer, search,
+or exporter together, or replace any one of them with their own script. See
+[Application Patterns](APPLICATION_PATTERNS.md) for concrete compositions such
+as a `fellows_local_db` style group directory.
+
 ## Design Principles
 
 - **Local first**: the user's directory, notes, tags, exports, and generated
-  directories live on their machine by default.
+directories live on their machine by default.
 - **Imported facts are read-only**: contacts imported from Google Contacts,
-  Google Takeout, old directories, spreadsheets, or other systems are not edited
-  in place. The source system remains canonical.
+Google Takeout, old directories, spreadsheets, or other systems are not edited
+in place. The source system remains canonical.
 - **Private relationship data is first class**: tags and notes are stored in a
-  separate writable layer anchored to stable contact IDs.
+separate writable layer anchored to stable contact IDs.
 - **Small tools over one big app**: import, view, search, export, visualize, and
-  notify should remain separable.
+notify should remain separable.
 - **Offline capable by default**: the primary viewer should work as a PWA and
-  continue to be useful without network access.
+continue to be useful without network access.
 - **Plain contracts**: SQLite, JSON, static files, and documented CLI commands
-  are preferred over hidden framework coupling.
+are preferred over hidden framework coupling.
 - **LLM optional**: natural-language search and assistants are valuable future
-  layers, but basic search, filtering, export, and directory generation must work
-  without them.
+layers, but basic search, filtering, export, and directory generation must work
+without them.
 
 ## v1 Proof-Of-Principle Component Map
 
@@ -112,7 +118,7 @@ The database should distinguish:
 
 - **Contact facts**: imported, read-only, rebuildable.
 - **Contact aliases**: source and external ID mappings used to preserve stable
-  identity across imports.
+identity across imports.
 - **Relationship metadata**: private tags and notes written by this toolkit.
 
 The first schema should stay close to the compact `fellows_local_db` model:
@@ -176,7 +182,7 @@ Generates visual outputs from exported directory bundles:
 - Static interactive HTML directory.
 - Phone/laptop friendly PDF.
 - Later, multiple layouts such as face grid, graph, family tree, event roster,
-  or organization chart.
+or organization chart.
 
 These outputs should be viewable in ordinary browsers or PDF readers. The HTML
 can include contact-detail panels, individual `mailto:` links, and possibly a
@@ -209,7 +215,7 @@ Future community tools may include:
 - Encrypted community message stores.
 - Rule-based access to sensitive relationship or community-health signals.
 - Nudger processes that can detect unmet needs without exposing private
-  communication to everyone.
+communication to everyone.
 - Community statistics and introductions governed by community-defined rules.
 
 The current toolkit should only preserve clean data and notifier seams so those
@@ -224,6 +230,8 @@ Three contracts should be treated as central:
 3. **Directory export bundle**: visual directory and notifier input.
 
 Keeping these stable lets each component evolve independently.
+
+The first draft of these contracts lives in [M0 Data Contracts](CONTRACTS.md).
 
 ## Suggested CLI Shape
 
@@ -249,3 +257,16 @@ Exact command names can change, but this captures the desired composition.
 7. Add relationship tags/notes.
 8. Add mail links in generated HTML where useful.
 9. Add a real email notifier later if mail links are not enough.
+
+## First Components
+
+The first implementation track is the directory flow:
+
+```text
+importers -> directory database -> text directory viewer/search
+          -> filtered directory export -> visual directory/PDF/notifier
+```
+
+The first viewer should follow the `fellows_local_db` model: a small Python
+server, SQLite with FTS5, vanilla JavaScript, local-first PWA behavior, and no
+heavy frontend build system.
