@@ -7,6 +7,7 @@ Personal Network Toolkit is a local-first set of small tools for managing person
 - Use a super fast local viewer to view, filter, discover and **organize them into personal networks**.
 - **Export networks** as web apps, pdfs, emails and lists for use elsewhere.
 - **Plug into communications** channels and use them in the viewer - email, p2p chat, AT protocol, etc.
+- **Build** your own personal network tools, or tools for relationship or directory management on top.
 
 ## Status
 
