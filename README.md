@@ -44,7 +44,7 @@ committed yet.
 
 ## History
 
-This was developed from [PRT](https://github.com/richbodo/prt) which was used to develop [Fellows_Local_Db](https://github.com/richbodo/fellows_local_db), and borrows from both codebases.
+This was developed from [PRT](https://github.com/richbodo/prt) which was used to develop [Fellows_Local_Db](https://github.com/richbodo/fellows_local_db), and borrows from both codebases.  The social network health guidance is coming from [the social network health project](https://toolkit.socialnetwork.health/wiki/Main_Page)
 
 ## License
 
