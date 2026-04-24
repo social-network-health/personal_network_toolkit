@@ -8,9 +8,14 @@ Personal Network Toolkit is a local-first set of small tools for managing person
 - **Export networks** as web apps, pdfs, emails and lists for use elsewhere.
 - **Plug into communications** channels and use them in the viewer - email, p2p chat, AT protocol, etc.
 
+## Status
+
+PNT is in the design stages. No code exists yet.
+
 ## Goals
 
-- Keep imported contact data read-only and rebuildable from source exports.
+- Build tools in the tradition of UNIX software tools, and killer apps on top - follow a compositional, privilege-separated architecture in the qmail tradition. 
+- Don't be the contact manager - be the relationship documentor and discoverer - keep imported contact data read-only and rebuildable from source exports.
 - Store private relationship data, such as tags and notes, in a separate
 writable layer.
 - Make search fast enough for large personal networks and simple enough to work
