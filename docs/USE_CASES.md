@@ -4,101 +4,74 @@ This document captures the human workflows the toolkit is meant to support. It
 is intentionally broader than the first implementation so design decisions can
 keep future uses in view without overbuilding them now.
 
-## 1. Preserve And Distribute A Group Directory
+## Take control of your relationship data
 
-An organization, fellowship, club, school, or community may already have rich
-directory data in an old system. The toolkit should make it easy to massage that
-data into a local-first offline-capable directory.
+Export your contacts and add relationship data to a local db - your relationship database.
 
-This is the `fellows_local_db` pattern:
+Stop telling centralized apps things they should not know.
 
-- Import old directory data and images.
-- Build a compact SQLite database.
-- Serve a fast installable PWA.
-- Let members browse, search, and use the directory offline.
-- Preserve richer profile data that does not fit well in a spreadsheet.
+Centralized contact systems are not even good at storing basic contact facts, 
+because they run on the profit motive alone, with the goal of collecting data 
+and creating system lockin, which leads to the largest amount of low-quality
+data and an unusable system overall.
 
-This is useful when a group closes down, changes platforms, or wants a durable
-member-owned copy of its directory.
-
-## 2. Turn A Large Directory Into A Smaller Useful View
-
-Users often need a small subset of a much larger network:
-
-- People from work.
-- People in a city.
-- Family members for an upcoming visit.
-- People connected to a topic, skill, community, or event.
-- People tagged privately as relevant to a situation.
-
-The text directory viewer should make narrowing the set fast. Search and filters
-are both part of that workflow. A simple filter such as "has email address" can
-be extremely useful when a directory contains many people who are not actually
-reachable or active.
-
-Over time, search should help with curation: hiding low-value records by
-default, combining multiple criteria, using private tags, and eventually using
-natural language to help turn a messy intent into a precise filtered set. The
-filtered view can then be exported as a smaller directory bundle.
-
-## 3. Make A Face-Friendly Directory
-
-After filtering, users may want a visual artifact rather than a text-first app:
-
-- A PDF on a phone before a family visit.
-- A printable face/name sheet for an event.
-- A static website directory for a group.
-- A visual graph or grid that helps associate faces, names, and context.
-
-The visual directory maker should consume the exported bundle and generate these
-outputs without needing the original database.
-
-## 4. Quickly Notify A Selected Group
-
-Sometimes the user finds the right subset of people and wants to contact them:
-
-- "I want to talk about pickleball. Here are some possible times."
-- "I want to ask work friends about a project idea."
-- "I want to check in with people tagged as close friends."
-- "I want to reach people who care about mental health."
-
-The key is speed. Most directories are noisy, and the value of this toolkit is
-that a curated, targeted set can be created quickly and acted on immediately.
-
-The first version may not need a full notifier. Generated HTML can start with
-individual `mailto:` links and possibly a group email link. A later notifier can
-send email to selected contacts, with responses coming back to the user. It does
-not need to coordinate schedules or manage replies in the first version.
-
-Later, the same notifier model should support additional channels through
-plugins.
-
-## 5. Manage Private Relationship Context
-
-Centralized contact systems are good at storing basic contact facts, but not
-always good at storing the private context that helps a person decide who to
-reach out to. They are also the wrong place for sensitive relationship context:
+They are also the wrong place for sensitive relationship context:
 not everyone wants large platforms, their administrators, or governments that can
 compel those platforms to know who they might contact about mental health,
-politics, immigration, family issues, or other private topics.
+politics, immigration, family issues, or other private topics. They also shut down
+apps, get cracked, and lose data from time to time.
 
-The relationship layer should let the user add:
+Just having a :
 
 - Tags such as `close friend`, `pickleball`, `mental health`, `family`,
   `former coworker`, or `Auckland`.
 - Notes about context, history, interests, boundaries, and follow-up ideas.
 - Searchable private metadata that stays local.
 
-This layer should be writable even when imported contact facts remain read-only.
-It should stay local by default and should not need to see the internet.
+This data will never see the internet.  It is local-only, for the user only, 
+and free forever.
 
-## 6. Filter And Discover Contacts Quickly
+## Build a distributable directory for your community or org
 
-Many contact databases grow opportunistically. They contain hundreds or thousands
-of people accepted through Google Contacts, LinkedIn, social networks, work
-directories, or event lists. The practical task is to quickly discover the
-people who are relevant to a situation without manually paging through a noisy
-address book.
+Distribute a directory in an organized way that is fast and easy for members.
+You don't need SaaS to own your groups data - and every member should be able
+to add private notes and relationship data that are useful only to them.
+
+This is particularly useful for porting out legacy directories from orgs that 
+are closing down their SaaS.
+
+The toolkit should make it easy to massage that data into a local-first 
+offline-first directory that is installable on any device and supports rich data that would 
+be horrible to work with in a shittier alternative to porting out, like a spreadsheet.
+
+## Filter, discover and analyze your own contact data for high quality, rapid retrieval
+
+A lot of folks will want to keep track of personal relationships they have with others, wihtout
+giving all their personal relationship data to facebook, salesforce, or any other 
+corporation.  
+
+One problem with large directories that try to steal as much information from users as possible,
+is that they are impossible to browse and discover data you need with.  In addition to stealing 
+your personal data and selling it, contact managers and CRMs are a mess of 
+centralized SaaS and do not serve this function well in any way.
+
+KEY USE CASE: When the author of this toolkit wants to find someone to talk about mental health
+with, browsing a SaaS directory like linkedin or google contacts turns into a very depressing
+boondoggle very quickly, exacerbating the problem rather than solving it.  About 100 contacts 
+into the A's in the alphabetical list, you wonder who these people are and why you don't 
+know any of them, and give up.
+
+When you take control, you have the local tools, and can build more, with this toolkit,
+to analyze and discover data, and prepare personal networks and directories for the
+future.
+
+You can search and filter to create small, **Visual** subset of a much larger set of 
+contacts in a portable or distributable way.  I can build a small visual directory with PNT
+that I can access instantly when I want to find someone to talk to about mental health issues.
+
+Exporting modalities include things like, a PDF on a phone before a family visit or party,
+or a community directory for publishing on a website, or a json file for consumption by 
+another app.
 
 The toolkit should support deterministic filtering first:
 
@@ -114,11 +87,31 @@ filter expression, then let the deterministic engine run it. The LLM helps with
 discovery and curation, but the result set should still be explainable and
 repeatable.
 
-This is especially important for sensitive or emotionally difficult topics. When
-the user needs the right people quickly, failed search is not just annoying; it
-can consume the energy they had for reaching out.
+## 4. Quickly Notify A Selected Group
 
-## 7. Build Toward Peer-To-Peer Community Tools
+Sometimes the user finds the right subset of people and wants to contact them all:
+
+- "I want to talk about pickleball. Here are some possible times."
+- "I want to ask work friends about a project idea."
+- "I want to check in with people tagged as close friends."
+- "I want to reach people who care about mental health."
+
+When the user needs the right people quickly, failed search is not just annoying; it
+can consume the energy they had for reaching out.  So the key is speed. Most directories 
+are noisy, and the value of this toolkit is that a curated, targeted set can be created 
+quickly and acted on immediately.
+
+The first version may not need a full notifier. Generated HTML can start with
+individual `mailto:` links and possibly a group email link. A later notifier can
+send email to selected contacts, with responses coming back to the user. It does
+not need to coordinate schedules or manage replies in the first version.
+
+Later, the same notifier model should support additional channels through
+plugins.  If every person in a list responds differently on a different channel, 
+then the appropriate default channel can be used for each, as long as the plugin
+exists.
+
+## Build Toward Peer-To-Peer Community Tools
 
 The personal toolkit should leave room for future community tools without making
 them part of the first product.
@@ -155,5 +148,5 @@ Near-term work should focus on:
 - Making visual directories and PDFs.
 - Sending simple notifications.
 
-Peer-to-peer communication, encrypted community sync, community rules, and
+Peer-to-peer and other communication channels, encrypted community sync (ZKPs), community rules, and
 automated nudgers belong to a later layer.
