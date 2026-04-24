@@ -27,6 +27,7 @@ images.
 email.
 - Leave clean seams for future community and peer-to-peer tools without making
 those systems part of the first build.
+- Understand what data is needed to support personal network health and social network health in communities.  Build tools that will support the analysis of that data, while keeping private data private.
 
 ## Documentation
 
