@@ -4,7 +4,9 @@ This document captures the human workflows the toolkit is meant to support. It
 is intentionally broader than the first implementation so design decisions can
 keep future uses in view without overbuilding them now.
 
-## Take control of your relationship data
+## Use Cases
+
+### Take control of your relationship data
 
 Problem: Your SaaS contact dbs are a mess and you don't trust the vendors.
 
@@ -23,17 +25,17 @@ compel those platforms to know who they might contact about mental health,
 politics, immigration, family issues, or other private topics. They also shut down
 apps, get cracked, and lose data from time to time.
 
-Just having a :
+Actual relationship data is more important and more sensitive than contact data:
 
-- Tags such as `close friend`, `pickleball`, `mental health`, `family`,
-  `former coworker`, or `Auckland`.
 - Notes about context, history, interests, boundaries, and follow-up ideas.
-- Searchable private metadata that stays local.
+- Tags such as `close friend`, `pickleball`, `mental health discussion`, `family`,
+  `work friend`, `sensitive about x`
+- And other searchable private metadata that stays local, and helps the user find things quickly.
 
 This data will never see the internet.  It is local-only, for the user only, 
 and free forever.
 
-## Build a distributable directory for your community or org
+### Build a distributable directory for your community or org
 
 Problem: Your org wants to get away from some expensive SaaS directory for 
 whatever reason.
@@ -49,7 +51,7 @@ The toolkit should make it easy to massage that data into a local-first
 offline-first directory that is installable on any device and supports rich data that would 
 be horrible to work with in a shittier alternative to porting out, like a spreadsheet.
 
-## Filter, discover and analyze your own contact data for high quality, rapid retrieval
+### Filter, discover and analyze your own contact data for high quality, rapid retrieval
 
 Problem: You need a really fast way to find critical subsets of contacts based on 
 your private tags, notes, and contact data.
@@ -95,7 +97,7 @@ filter expression, then let the deterministic engine run it. The LLM helps with
 discovery and curation, but the result set should still be explainable and
 repeatable.
 
-## 4. Quickly Notify A Selected Group
+### Quickly Notify A Selected Group
 
 Problem: You need a fast way to send out a notification to a group that 
 may not have a unified chat group or mailing list.
@@ -122,7 +124,7 @@ plugins.  If every person in a list responds differently on a different channel,
 then the appropriate default channel can be used for each, as long as the plugin
 exists.
 
-## Build Toward Peer-To-Peer Community Tools
+### Build Toward Peer-To-Peer Community Tools
 
 Problem: You want to understand your personal network, or
 Your whole community wants to understand how their community health is holding up -
