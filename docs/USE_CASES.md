@@ -6,6 +6,8 @@ keep future uses in view without overbuilding them now.
 
 ## Take control of your relationship data
 
+Problem: Your SaaS contact dbs are a mess and you don't trust the vendors.
+
 Export your contacts and add relationship data to a local db - your relationship database.
 
 Stop telling centralized apps things they should not know.
@@ -33,6 +35,9 @@ and free forever.
 
 ## Build a distributable directory for your community or org
 
+Problem: Your org wants to get away from some expensive SaaS directory for 
+whatever reason.
+
 Distribute a directory in an organized way that is fast and easy for members.
 You don't need SaaS to own your groups data - and every member should be able
 to add private notes and relationship data that are useful only to them.
@@ -45,6 +50,9 @@ offline-first directory that is installable on any device and supports rich data
 be horrible to work with in a shittier alternative to porting out, like a spreadsheet.
 
 ## Filter, discover and analyze your own contact data for high quality, rapid retrieval
+
+Problem: You need a really fast way to find critical subsets of contacts based on 
+your private tags, notes, and contact data.
 
 A lot of folks will want to keep track of personal relationships they have with others, wihtout
 giving all their personal relationship data to facebook, salesforce, or any other 
@@ -89,6 +97,9 @@ repeatable.
 
 ## 4. Quickly Notify A Selected Group
 
+Problem: You need a fast way to send out a notification to a group that 
+may not have a unified chat group or mailing list.
+
 Sometimes the user finds the right subset of people and wants to contact them all:
 
 - "I want to talk about pickleball. Here are some possible times."
@@ -112,6 +123,10 @@ then the appropriate default channel can be used for each, as long as the plugin
 exists.
 
 ## Build Toward Peer-To-Peer Community Tools
+
+Problem: You want to understand your personal network, or
+Your whole community wants to understand how their community health is holding up -
+this requires data be analyzed - and that data can reveal important insights.
 
 The personal toolkit should leave room for future community tools without making
 them part of the first product.
