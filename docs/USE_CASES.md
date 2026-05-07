@@ -85,7 +85,7 @@ politics, immigration, family issues, or other private topics.
 The relationship layer should let the user add:
 
 - Tags such as `close friend`, `pickleball`, `mental health`, `family`,
-  `former coworker`, or `Auckland`.
+`former coworker`, or `Auckland`.
 - Notes about context, history, interests, boundaries, and follow-up ideas.
 - Searchable private metadata that stays local.
 
