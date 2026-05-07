@@ -18,7 +18,7 @@ PNT is in the design stages. No code exists yet.
 ## Goals
 
 - Build tools in the tradition of UNIX software tools, and killer apps on top - follow a compositional, privilege-separated architecture in the qmail tradition. 
-- Don't be the contact manager - be the relationship documentor and discoverer - keep imported contact data read-only and rebuildable from source exports.
+- Don't be the contact manager - be the relationship documentor and discoverer - the launching pad for actions that begin with personal relationshiop data -keep imported contact data read-only and rebuildable from source exports from contact managers.
 - Store private relationship data, such as tags and notes, in a separate
 writable layer.
 - Make search fast enough for large personal networks and simple enough to work
@@ -31,6 +31,7 @@ email.
 - Leave clean seams for future community and peer-to-peer tools without making
 those systems part of the first build.
 - Understand what data is needed to support personal network health and social network health in communities.  Build tools that will support the analysis of that data, while keeping private data private.
+- Interface well with other tools that are adjacent - contact managers - directories - communications tools.
 
 ## Documentation
 
