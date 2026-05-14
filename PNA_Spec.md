@@ -6,13 +6,51 @@
 
 ---
 
+## Preamble
+
+Two shifts are arriving at the same time that make [PNAs](#vocab-pna) necessary.  First, personal data is withdrawing from centralized systems: users are increasingly unwilling to trust SaaS vendors (Facebook, Google, Apple, etc.) with knowing who they talk to about politics or mental health. At the same time, edge compute and AI agents capable of running serious work locally are arriving fast. The first shift creates demand for tools that keep user data sovereign; the second makes such tools practical to build, run, and recompose at the user's own pace.
+
+A personal network application is a tool for users to manage and use contact and relationship data that makes up their personal networks. A PNA handles a user's contact data and personal-relationship data with strong, declared contracts about how that data is treated. The PNA separates the concerns of editing data that is shared with other systems from data that is created and held locally and privately.
+
+v0.1 PNAs all operate downstream of SaaS systems of record — they do not modify contact data, although a contact manager might well exist as a [plugin](#vocab-plugin) to a PNA, or vice-versa. What distinguishes the niche is the architectural promise: [shared data](#vocab-shared-data) is local-first and replaceable; [private data](#vocab-private-data) is sovereign and protected; the user can reclassify a record's privacy at any time, and the PNA honors it durably; communication transports are user-chosen to meet the user's privacy and other requirements; the user can reason about where their data lives without trusting a vendor.
+
+Without PNAs, we have no credible exit from SaaS systems to user-owned software - PNAs create that exit.
+
+Without PANs, we go to a list of contacts in linkedin or facebook and are overwhelmed by the number of non-relationships in the contact list, manipulation through feeds, abuse and sale of our information, and are kept on those sites as long as possible by the SaaS vendors, often never solving any relational need, even if it is extremely urgent and sensitive.  The lack of privacy in for our personal relationship data is making it much harder for many to improve individual and community health.
+
+---
+
+## Building a PNA
+
+When an AI is asked to build a PNA, it is required to follow the contracts of the PNA on the user's behalf, and those contracts are written so the AI can pick them up and check its own work. The user's confidence comes from the spec being clear enough that both they and the AI can read it.  As long as the contracts hold, an AI can rewrite a PNA from scratch while the user is still talking to it without changing the user's sovereignty, durability, or privacy posture. The goals below are user-facing needs; the [architectural commitments](#vocab-universal-ac) after them are the choices that make those needs achievable.
+
+---
+
+## Vision
+
+One longer-arc target is an ecosystem of cooperating PNAs on a single user's device — a [Personal Relationship Manager](#vocab-use-case) (PRM - where private relationship data lives) running alongside one or more Directory Archives, a Contact Manager, and a Calendar app, each in its own bundle and sharing data as per their contracts.
+
+The PRM acts as the [meta-workspace](#vocab-workspace): relationship data layered on top of a deduplicated read-only meta-view composed from the other apps' shared stores (Bob's cell from Google + work history from a fellowship directory + email from a Facebook export, resolved into one coherent contact view; the PRM's private overlay attached through stable IDs). The user can also work in clean per-app workspaces when they want a single context. Composing the meta-view requires per-source connectors, dedup with conflict resolution, and disciplined provenance — work for later spec versions. The eventual *ecosystem [reference design](#vocab-reference-design)* is the goal; v0.1 ships one PNA (fellows_local_db) and the spec it conforms to, along with [MCP servers](#vocab-mcp-server), with the architectural seams sized to let the ecosystem grow into place.
+
+PNAs that participate in such an ecosystem need to be reachable not just to humans but to AI agents acting on the user's behalf. The spec therefore defines MCP server interfaces at five canonical connection points, split along the Shared / Private privacy boundary so an AI client can be wired to one without the other:
+
+- A **Shared Data Ops server** — read access over the [Shared DB](#vocab-shared-db-private-db) (mirrored contact data).
+- A **Private Data Ops server** — read access over the [Private DB](#vocab-shared-db-private-db) (user-owned relationship data); AC-MCP-A applies.
+- An **Ingestion server** — drives imports, dedup, orphan preview.
+- A **Communications server** — stages outreach for workspace-mediated user confirmation per AC-19 (the workspace launches the transport, not the MCP server — AC-MCP-B).
+- A **Diagnostics server** — read-only access to the Debug contract.
+
+An AI client (Claude Desktop, Cursor, a local-Ollama-backed agent, or any MCP-capable runtime) can drive a PNA through these servers without modifying its core; canonical implementations will ship with the personal_network_toolkit. Cloud AI clients (anything that sends Private DB rows off-device) require explicit per-call consent — see AC-MCP-A in [§ Universal architectural commitments](#universal-architectural-commitments). v1 surfaces are read-only on both data-ops servers; tool-side write contracts (Private DB CRUD, message-send confirmation on Comms) land in a later spec version.
+
+---
+
 ## Vocabulary
 
-The spec uses a small, deliberate set of terms. Worked examples below cite `fellows_local_db` as the first reference design — its concrete choices live in [`fellows_local_db/docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md).
+Worked examples below cite `fellows_local_db` as the first reference design — its concrete choices live in [`fellows_local_db/docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md).
 
-- **Personal network application (PNA).** A PNA is an application that helps a user view contact data and work on relationship data over it as a firewalled data layer with higher security needs than the contact data. The PNA runs local-only, never as SaaS - servers are only used for distribution and app updates, and only where appropriate. The PNA bridges SaaS data (which should never contain private relationship data) into a much more functional, customizable user-owned work environment suitable for viewing personal networks, updating private data about them, and interacting with them.
+- <a id="vocab-pna"></a>**Personal network application (PNA).** A PNA is an application that helps a user view contact data and work on relationship data over it as a firewalled data layer with higher security needs than the contact data. The PNA runs local-only, never as SaaS - servers are only used for distribution and app updates, and only where appropriate. The PNA bridges SaaS data (which should never contain private relationship data) into a much more functional, customizable user-owned work environment suitable for viewing personal networks, updating private data about them, and interacting with them.
 
-fellows_local_db is one PNA reference design — making a directory archive useful and fast - providing a credible exit from a SaaS directory system. Another PNA reference design would be a PRM - an app that aggregates personal contact data ingested from the big SaaS providers and lets the user operate privately on that data, adding privacy-sensitive notes, searching, and launching tasks from the app. PNAs bridge the old world of SaaS and offer private, custom tools to operate on contact data.
+[fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md) is one PNA reference design — making a directory archive useful and fast - providing a credible exit from a SaaS directory system. Another PNA reference design would be a PRM - an app that aggregates personal contact data ingested from the big SaaS providers and lets the user operate privately on that data, adding privacy-sensitive notes, searching, and launching tasks from the app. PNAs bridge the old world of SaaS and offer private, custom tools to operate on contact data.
 
 - **Slot.** A slot is a part of a PNA — a code module that handles a specific job within the system. v0.1 names five slots:
 
@@ -26,25 +64,25 @@ fellows_local_db is one PNA reference design — making a directory archive usef
 
 - **Interface.** A contract that spans multiple slots. Where a slot is filled by *one* code module, an interface is a shared constraint — either a data shape that multiple slots produce and consume (the Shared and Private DB schemas), or a capability requirement every slot must implement (the Debug contract). v0.1 names three interfaces: **Shared schema**, **Private schema**, **Debug contract**. Catalogued in [§ Slot map](#slot-map) alongside the slots they bind.
 
-- **Workspace.** One of the slots in a PNA: the viewer + editor. The thing the user looks at and clicks. fellows_local_db's workspace is a vanilla-JS SPA in the browser; another PNA's might be a native shell, a Tauri app, a TUI, or a separately-distributed mini-app sharing the same data layer.
+- <a id="vocab-workspace"></a>**Workspace.** One of the slots in a PNA: the viewer + editor. The thing the user looks at and clicks. fellows_local_db's workspace is a vanilla-JS SPA in the browser; another PNA's might be a native shell, a Tauri app, a TUI, or a separately-distributed mini-app sharing the same data layer.
 
-- **Shared data.** In the context of a PNA, shared data is data that exists in more than one place — typically, a copy held by an external system the user uses (Google Contacts, Apple Contacts, Facebook friends, a fellowship's directory, a school's roster). The user is OK with that external system continuing to hold it, and often has no say in the matter. *Examples:* name, email, photo, organizational membership. The PNA mirrors this data locally so the user can browse and search it without depending on the external system being reachable.
+- <a id="vocab-shared-data"></a>**Shared data.** In the context of a PNA, shared data is data that exists in more than one place — typically, a copy held by an external system the user uses (Google Contacts, Apple Contacts, Facebook friends, a fellowship's directory, a school's roster). The user is OK with that external system continuing to hold it, and often has no say in the matter. *Examples:* name, email, photo, organizational membership. The PNA mirrors this data locally so the user can browse and search it without depending on the external system being reachable.
 
   > "Shared" is the key word — not "public" in the everyday sense. Shared data can be data that the user publicly shared, or shared with Apple Contacts and exported, and is typically maintained outside the user's systems. The contact data in your Google account isn't *publicly visible*; it just isn't *exclusively yours* — it is shared with Google and any controlling governments or Google partners it is sold to. In all cases, some external system has a copy, or once did.
 
-- **Private data.** Data that exists only on the user's device(s). The user is *not* OK with any external system holding a copy. *Examples:* notes the user keeps about a contact, tags they apply, groups they assemble, communication history. The PNA's central architectural job is to keep this layer protected, durable, and exclusively local. This data must never be sent across insecure channels, and must only be explicitly sent by the user's command in any form.
+- <a id="vocab-private-data"></a>**Private data.** Data that exists only on the user's device(s). The user is *not* OK with any external system holding a copy. *Examples:* notes the user keeps about a contact, tags they apply, groups they assemble, communication history. The PNA's central architectural job is to keep this layer protected, durable, and exclusively local. This data must never be sent across insecure channels, and must only be explicitly sent by the user's command in any form.
 
-- **Shared DB / Private DB.** The two databases that a PNA stores. The Shared DB holds shared data (read-only inside the PNA — written only by the Ingestion component). The Private DB holds private data (read-write from the workspace). Further decomposition and isolation of data according to privacy constraints is reasonable but unnecessary for the first PNAs envisioned.
+- <a id="vocab-shared-db-private-db"></a>**Shared DB / Private DB.** The two databases that a PNA stores. The Shared DB holds shared data (read-only inside the PNA — written only by the Ingestion component). The Private DB holds private data (read-write from the workspace). Further decomposition and isolation of data according to privacy constraints is reasonable but unnecessary for the first PNAs envisioned.
 
   In fellows_local_db, the shared DB is `fellows.db` and the private DB is `relationships.db`. The spec uses the generic names; specializations may rename for ergonomics, or change database engines for practical reasons, as long as the data stays local.
 
 - **Mirroring.** The act of producing a fresh shared DB from an external source of shared data. A snapshot is created by the Ingestion component. Re-mirrors are atomic from the workspace's view (stage, validate, swap) and never silently orphan private references.
 
-- **Plugin / extension.** Anything that adds a capability to a composed PNA without modifying its core. A memory-assistant view, a calendar overlay, a federated portrait pull, a community-statistics survey tool — all plugins. PNAs themselves will expose MCP server interfaces as well.
+- <a id="vocab-plugin"></a>**Plugin / extension.** Anything that adds a capability to a composed PNA without modifying its core. A memory-assistant view, a calendar overlay, a federated portrait pull, a community-statistics survey tool — all plugins. PNAs themselves will expose MCP server interfaces as well.
 
-- **Reference design / thematic example.** A working, deployed PNA that demonstrates one valid combination of slot-fills against the spec. fellows_local_db is the first reference design — its load-bearing adjectives are *magic-link distributed PWA* (Distribution choice) + *static network DB archive* (Ingestion choice — the directory is mirrored once with opt-in updates, not linked to a live contact manager) + *single shared directory* (Source choice). New reference designs accumulate adjectives as their slot-fills land. AIs adapting a thematic example start from one of these and ask the user which slot-fills to keep, swap, or extend.
+- <a id="vocab-reference-design"></a>**Reference design / thematic example.** A working, deployed PNA that demonstrates one valid combination of slot-fills against the spec. fellows_local_db is the first reference design — its load-bearing adjectives are *magic-link distributed PWA* (Distribution choice) + *static network DB archive* (Ingestion choice — the directory is mirrored once with opt-in updates, not linked to a live contact manager) + *single shared directory* (Source choice). New reference designs accumulate adjectives as their slot-fills land. AIs adapting a thematic example start from one of these and ask the user which slot-fills to keep, swap, or extend.
 
-- **Use case.** A user-facing class of PNA — "Directory Archive," "Personal Relationship Manager." A use case names what kind of app this is *from the user's perspective*. v0.1 attests two; future versions will add more. Use case is *not* one of the Axes (defined next); it's the parent category that a flavor instantiates. A use case typically suggests default axis picks (Directory Archives gravitate toward web-bundle distribution; PRMs toward never-distributed-single-user) but the axes remain independent — a hypothetical Directory Archive shipped as a Tauri shell + native SQLite is conceivable. Full catalog in [`use_cases.md`](use_cases.md).
+- <a id="vocab-use-case"></a>**Use case.** A user-facing class of PNA — "Directory Archive," "Personal Relationship Manager." A use case names what kind of app this is *from the user's perspective*. v0.1 attests two; future versions will add more. Use case is *not* one of the Axes (defined next); it's the parent category that a flavor instantiates. A use case typically suggests default axis picks (Directory Archives gravitate toward web-bundle distribution; PRMs toward never-distributed-single-user) but the axes remain independent — a hypothetical Directory Archive shipped as a Tauri shell + native SQLite is conceivable. Full catalog in [`use_cases.md`](use_cases.md).
 
 - **Axes.** Axes are areas of functionality that need to be defined when building a PNA. Each Axis offers a pre-defined, limited number of choices to the builder — internally we call these the builder's "Axis picks", and they are the first set of decisions that need to be made before building.
 
@@ -56,7 +94,7 @@ fellows_local_db is one PNA reference design — making a directory archive usef
 
 - **Flavor.** The full constellation of axis picks for a specific PNA. fellows_local_db's flavor: `distribution:web-bundle-with-magic-link + storage:opfs-sqlite-wasm + ingestion:single-source-static-mirror + workspace-shell:vanilla-js-spa + comms:mailto-only + mcp-exposure:shared+private+comms`. Two PNAs of the same use case can have different flavors (a TUI PRM vs. a Tauri-wrapped GUI PRM share the use case but differ on workspace shell and storage). A flavor + a use case together fully identify a PNA's shape.
 
-- **MCP server.** A process exposing PNA capabilities as MCP tools (Anthropic's Model Context Protocol — JSON-RPC over stdio or socket). The spec defines five canonical MCP servers per PNA, structured around the Shared / Private privacy boundary so an AI client can be wired to one without the other:
+- <a id="vocab-mcp-server"></a>**MCP server.** A process exposing PNA capabilities as MCP tools (Anthropic's Model Context Protocol — JSON-RPC over stdio or socket). The spec defines five canonical MCP servers per PNA, structured around the Shared / Private privacy boundary so an AI client can be wired to one without the other:
 
   - **Shared Data Ops** — read access over the Shared DB (mirrored contact data; AC-MCP-A is not triggered, because no Private DB rows flow through this surface).
   - **Private Data Ops** — read access over the Private DB (user-owned relationship data; AC-MCP-A applies — cloud clients require per-call consent).
@@ -66,44 +104,11 @@ fellows_local_db is one PNA reference design — making a directory archive usef
 
   Splitting Data ops along the Shared / Private boundary mirrors the storage split (AC-1) at the MCP surface: the privacy posture of each tool call is determined by which server it lands on, not by an in-server gate. An AI client (Claude Desktop, Cursor, a local-Ollama-backed agent, etc.) consumes these servers to drive the PNA. v1 reference implementations expose read-only surfaces only; future spec versions may add write-side tools (Private DB CRUD, Comms message-send confirmation) as separate contracts. MCP servers are how multiple PNAs cooperate at runtime: a PNA exposing MCP becomes externally reachable so an AI client can wire multiple PNAs together on the user's device even though each is its own bundle.
 
-- **Universal AC vs flavor-derived AC.** Universal ACs derive from goals alone and apply to every PNA. Flavor-derived ACs are triggered by specific axis picks (e.g., `[storage:opfs-sqlite-wasm]`) and apply only when the flavor matches. [§ Universal architectural commitments](#universal-architectural-commitments) lists the universal set; flavor-derived ACs live in [`axes.md`](axes.md), grouped under the axis-pick that triggers them.
+- <a id="vocab-universal-ac"></a>**Universal AC vs flavor-derived AC.** Universal ACs derive from goals alone and apply to every PNA. Flavor-derived ACs are triggered by specific axis picks (e.g., `[storage:opfs-sqlite-wasm]`) and apply only when the flavor matches. [§ Universal architectural commitments](#universal-architectural-commitments) lists the universal set; flavor-derived ACs live in [`axes.md`](axes.md), grouped under the axis-pick that triggers them.
 
 ---
 
 ## Goals
-
-### Preamble
-
-Two shifts are arriving at the same time that make PNAs necessary.  First, personal data is withdrawing from centralized systems: users are increasingly unwilling to trust SaaS vendors (Facebook, Google, Apple, etc.) with knowing who they talk to about politics or mental health. At the same time, edge compute and AI agents capable of running serious work locally are arriving fast. The first shift creates demand for tools that keep user data sovereign; the second makes such tools practical to build, run, and recompose at the user's own pace.
-
-A personal network application is a tool for users to manage and use contact and relationship data that makes up their personal networks. A PNA handles a user's contact data and personal-relationship data with strong, declared contracts about how that data is treated. The PNA separates the concerns of editing data that is shared with other systems from data that is created and held locally and privately.
-
-v0.1 PNAs all operate downstream of SaaS systems of record — they do not modify contact data, although a contact manager might well exist as a plugin to a PNA, or vice-versa. What distinguishes the niche is the architectural promise: shared data is local-first and replaceable; private data is sovereign and protected; the user can reclassify a record's privacy at any time, and the PNA honors it durably; communication transports are user-chosen to meet the user's privacy and other requirements; the user can reason about where their data lives without trusting a vendor.
-
-Without PNAs, we have no credible exit from SaaS systems to user-owned software - PNAs create that exit.
-
-Without PANs, we go to a list of contacts in linkedin or facebook and are overwhelmed by the number of non-relationships in the contact list, manipulation through feeds, abuse and sale of our information, and are kept on those sites as long as possible by the SaaS vendors, often never solving any relational need, even if it is extremely urgent and sensitive.  The lack of privacy in for our personal relationship data is making it much harder for many to improve individual and community health.
-
-### Building a PNA
-
-When an AI is asked to build a PNA, it is required to follow the contracts of the PNA on the user's behalf, and those contracts are written so the AI can pick them up and check its own work. The user's confidence comes from the spec being clear enough that both they and the AI can read it.  As long as the contracts hold, an AI can rewrite a PNA from scratch while the user is still talking to it without changing the user's sovereignty, durability, or privacy posture. The goals below are user-facing needs; the architectural commitments after them are the choices that make those needs achievable.
-
-### Vision
-
-One longer-arc target is an ecosystem of cooperating PNAs on a single user's device — a Personal Relationship Manager (PRM - where private relationship data lives) running alongside one or more Directory Archives, a Contact Manager, and a Calendar app, each in its own bundle and sharing data as per their contracts.
-
-The PRM acts as the meta-workspace: relationship data layered on top of a deduplicated read-only meta-view composed from the other apps' shared stores (Bob's cell from Google + work history from a fellowship directory + email from a Facebook export, resolved into one coherent contact view; the PRM's private overlay attached through stable IDs). The user can also work in clean per-app workspaces when they want a single context. Composing the meta-view requires per-source connectors, dedup with conflict resolution, and disciplined provenance — work for later spec versions. The eventual *ecosystem reference design* is the goal; v0.1 ships one PNA (fellows_local_db) and the spec it conforms to, along with MCP servers, with the architectural seams sized to let the ecosystem grow into place.
-
-PNAs that participate in such an ecosystem need to be reachable not just to humans but to AI agents acting on the user's behalf. The spec therefore defines MCP server interfaces at five canonical connection points, split along the Shared / Private privacy boundary so an AI client can be wired to one without the other:
-
-- A **Shared Data Ops server** — read access over the Shared DB (mirrored contact data).
-- A **Private Data Ops server** — read access over the Private DB (user-owned relationship data); AC-MCP-A applies.
-- An **Ingestion server** — drives imports, dedup, orphan preview.
-- A **Communications server** — stages outreach for workspace-mediated user confirmation per AC-19 (the workspace launches the transport, not the MCP server — AC-MCP-B).
-- A **Diagnostics server** — read-only access to the Debug contract.
-
-An AI client (Claude Desktop, Cursor, a local-Ollama-backed agent, or any MCP-capable runtime) can drive a PNA through these servers without modifying its core; canonical implementations will ship with the personal_network_toolkit. Cloud AI clients (anything that sends Private DB rows off-device) require explicit per-call consent — see AC-MCP-A in [§ Universal architectural commitments](#universal-architectural-commitments). v1 surfaces are read-only on both data-ops servers; tool-side write contracts (Private DB CRUD, message-send confirmation on Comms) land in a later spec version.
-
 
 ### Goal 1 — Private data sovereignty
 
@@ -195,7 +200,7 @@ The target environment shapes several axis picks (Distribution, Storage substrat
 
 At runtime, multiple PNAs on a user's device can cooperate through their canonical MCP servers. An AI client (Claude Desktop, Cursor, a custom agent) connects to each PNA's exposed MCP servers and orchestrates across them — pull a contact from a Directory Archive, attach a private note from a PRM, schedule a follow-up in a Calendar app. The AI client is the runtime composer here, just as the AI coding agent was the build-time composer above.
 
-This is the longer-arc *ecosystem reference design* described in [§ Goals § Vision](#vision). v0.1 doesn't yet have multiple cooperating PNAs to demonstrate the pattern, but the architectural seams that enable it — the five canonical MCP server interfaces (Shared Data Ops, Private Data Ops, Ingestion, Communications, Diagnostics), AC-MCP-A's cloud-client consent rule, AC-MCP-B's workspace-mediated outreach — are part of v0.1.
+This is the longer-arc *ecosystem reference design* described in [§ Vision](#vision). v0.1 doesn't yet have multiple cooperating PNAs to demonstrate the pattern, but the architectural seams that enable it — the five canonical MCP server interfaces (Shared Data Ops, Private Data Ops, Ingestion, Communications, Diagnostics), AC-MCP-A's cloud-client consent rule, AC-MCP-B's workspace-mediated outreach — are part of v0.1.
 
 Cooperation across PNAs is not the same kind of thing as building one PNA. Building is design-time + AI coding agent + writing code that fills slots. Cooperation is runtime + AI client + invoking MCP tools across already-built PNAs. The two kinds of composition are separate concerns.
 
