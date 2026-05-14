@@ -2,6 +2,18 @@
 
 The Personal Network Toolkit is a blueprint for building **personal network applications (PNAs)** — local-only apps for viewing contact data and working on relationship data over a firewalled private data layer. PNAs run on the user's device, never as SaaS, and bridge SaaS-held contact data into a private workspace.
 
+When building a PNA, specs are foundational because users will increasingly compose software by prompting AI agents, and success is measured by adherence to them.
+
+The Personal Network Toolkit project is an attempt to offer:
+
+- Foundational specs for PNAs
+- Production-ready reference applications
+- MCP servers
+
+That combination best satisfies the composability model of Software 3.0 in this context. It should ensure that both the humans and the AIs in modern human-AI builder teams can build PNAs that they understand fully and that behave as expected. The Personal Network Toolkit augments the human-AI builder teams; it doesn't automatically build applications itself.
+
+So we expect most PNAs to be built and rebuilt by AIs — adapting a thematic reference design, or building fresh against the specs and code herein. 
+
 Three deliverables, in dependency order:
 
 1. **Foundational specs.** Universal vocabulary, goals, axes, architectural commitments, and typed contracts for a PNA. — **shipping in v0.1 (draft)**.
