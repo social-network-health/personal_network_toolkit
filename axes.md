@@ -6,7 +6,7 @@ This document catalogs the six Axes a PNA picks along, the attested picks on eac
 
 The Axis concept is defined in [`PNA_Spec.md` § Vocabulary](PNA_Spec.md#vocabulary). The Axes overview in `PNA_Spec.md` lists picks at a glance; this file is the authoritative catalog with full descriptions and AC triggers.
 
-For each Axis below: a description of what the Axis decides, the attested picks (each with a short note on what it implies, where it's attested, and which other axis-picks it commonly correlates with), and a `Triggered flavor-derived ACs` subsection when any picks on that axis fire flavor-derived ACs.
+For each Axis below: a description of what the Axis decides, the attested picks (each with a short note on what it implies, where it's attested, and which other axis-picks it commonly correlates with), and a `Triggered flavor-derived ACs` subsection when any picks on that axis fire flavor-derived ACs (Architectural Commitments).
 
 ---
 
