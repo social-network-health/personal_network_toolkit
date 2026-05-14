@@ -2,7 +2,7 @@
 
 > **Spec-Version:** 0.1 (draft)
 >
-> This document is the universal specification for personal network applications. Reference designs (e.g. [`fellows_local_db`](https://github.com/richbodo/fellows_local_db)) declare conformance to a specific spec version and to a specific flavor (constellation of axis picks). Each reference design's specialization lives in its own repo (fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md)).
+> This document is the universal specification for personal network applications. Reference designs declare conformance to a specific spec version and to a specific application flavor (defined by a constellation of feature axis picks). Each reference design's specialization lives in its own repo (ex: fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md)).
 
 ---
 
@@ -10,7 +10,7 @@
 
 The spec uses a small, deliberate set of terms. Worked examples below cite `fellows_local_db` as the first reference design — its concrete choices live in [`fellows_local_db/docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md).
 
-- **Personal network application (PNA).** A PNA is an application that helps a user view contact data and work on relationship data over it as a firewalled data layer with higher security needs than the contact data. The PNA runs local-only, never as SaaS. It bridges SaaS data (which should never contain private relationship data) into a much more functional, customizable user-owned work environment suitable for viewing personal networks, updating private data about them, and interacting with them.
+- **Personal network application (PNA).** A PNA is an application that helps a user view contact data and work on relationship data over it as a firewalled data layer with higher security needs than the contact data. The PNA runs local-only, never as SaaS - servers are only used for distribution and app updates, and only where appropriate. The PNA bridges SaaS data (which should never contain private relationship data) into a much more functional, customizable user-owned work environment suitable for viewing personal networks, updating private data about them, and interacting with them.
 
   fellows_local_db is one PNA reference design — making a directory archive useful and fast. Another PNA reference design would be an app that aggregates personal contact data ingested from the big SaaS providers and lets the user operate privately on that data, adding privacy-sensitive notes, searching, and launching tasks from the app. PNAs bridge the old world of SaaS and offer private, custom tools to operate on contact data.
 
@@ -74,7 +74,7 @@ The spec uses a small, deliberate set of terms. Worked examples below cite `fell
 
 ### Preamble
 
-We are at an inflection point. Two shifts are arriving at the same time. Personal data is withdrawing from centralized systems: users are increasingly unwilling to trust Facebook with who they talk to about politics or mental health. At the same time, edge compute and AI agents capable of running serious work locally are arriving fast. The first shift creates demand for tools that keep user data sovereign; the second makes such tools practical to build, run, and recompose at the user's own pace.
+Two shifts are arriving at the same time that make PNAs necessary.  First, personal data is withdrawing from centralized systems: users are increasingly unwilling to trust SaaS vendors (Facebook, Google, Apple, etc.) with knowing who they talk to about politics or mental health. At the same time, edge compute and AI agents capable of running serious work locally are arriving fast. The first shift creates demand for tools that keep user data sovereign; the second makes such tools practical to build, run, and recompose at the user's own pace.
 
 A personal network application is a tool for users to manage and use contact and relationship data that makes up their personal networks. A PNA handles a user's contact data and personal-relationship data with strong, declared contracts about how that data is treated. The PNA separates the concerns of editing data shared with other systems from data created and held locally as private.
 
