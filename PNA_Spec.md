@@ -14,9 +14,9 @@ A personal network application is a tool for users to manage and use contact and
 
 v0.1 PNAs all operate downstream of SaaS systems of record — they do not modify contact data, although a contact manager might well exist as a [plugin](#vocab-plugin) to a PNA, or vice-versa. What distinguishes the niche is the architectural promise: [shared data](#vocab-shared-data) is local-first and replaceable; [private data](#vocab-private-data) is sovereign and protected; the user can reclassify a record's privacy at any time, and the PNA honors it durably; communication transports are user-chosen to meet the user's privacy and other requirements; the user can reason about where their data lives without trusting a vendor.
 
-Without PNAs, we have no credible exit from SaaS systems to user-owned software - PNAs create that exit.
+With PNAs, we have **credible interop** between SaaS systems and user-owned software.  Contact and relationship data is the **root** of personal networks and personal social network graphs - we have to get that local before we can take control of the whole graph.
 
-Without PANs, we go to a list of contacts in linkedin or facebook and are overwhelmed by the number of non-relationships in the contact list, manipulation through feeds, abuse and sale of our information, and are kept on those sites as long as possible by the SaaS vendors, often never solving any relational need, even if it is extremely urgent and sensitive.  The lack of privacy in for our personal relationship data is making it much harder for many to improve individual and community health.
+Without PNAs, or something like them, we often go to a list of contacts in linkedin or facebook and are overwhelmed by the noise.  The number of non-relationships in the contact list, manipulation through feeds, and notifications keep us on those sites as long as possible, often never solving any relational need, even if it is extremely urgent and sensitive.  This makes it much harder for many to improve individual and community health.
 
 ---
 
@@ -127,7 +127,7 @@ v0.1 PNAs all operate downstream of SaaS systems of record. This goal exists due
 
 When the user wants to reach out to a contact, the workspace offers a choice of transports — including more secure / decentralized options like Signal, not just `mailto:` and `tel:`.
 
-> **Why it matters:** A user who demands sovereignty of their local data has the same high bar for the private transfer of that data. Defaulting every outreach to email — routed through whoever runs their mail server — is inconsistent with Goal 1. The architectural commitment is that transports are pluggable and the user picks per outreach.
+> **Why it matters:** A user who demands sovereignty of their local data has the same high bar for the private transfer of that data. Defaulting every outreach to email — routed through whoever runs their mail server — is inconsistent with Goal 1. The architectural commitment is that transports are pluggable and the user picks per outreach.  Contacts who demand "only talk to me about that over a secure channel!" can have that demand satisfied by a check against their contact record.
 
 ### Goal 4 — Portable, durable, recoverable user data
 
