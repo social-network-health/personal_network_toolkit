@@ -1,8 +1,8 @@
-# PNA Spec
+k# PNA Spec
 
 > **Spec-Version:** 0.1 (draft)
 >
-> This document is the universal specification for personal network applications. Reference designs declare conformance to a specific spec version and to a specific application flavor (defined by a constellation of feature axis picks). Each reference design's specialization lives in its own repo (ex: fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md)).
+> This document is the universal specification for personal network applications. Reference designs declare conformance to a specific spec version and to a specific application flavor (defined by a constellation of feature axis picks). A PNA conforms to this spec if it satisfies the universal architectural commitments and the axis-derived contracts for each of its declared axis picks, listed herein.  Each reference design's specialization lives in its own repo (ex: fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md)).
 
 ---
 
