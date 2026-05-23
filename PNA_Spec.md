@@ -1,4 +1,4 @@
-k# PNA Spec
+# PNA Spec
 
 > **Spec-Version:** 0.1 (draft)
 >
