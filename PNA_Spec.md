@@ -1,28 +1,29 @@
-# PNA Spec
+k# PNA Spec
 
 > **Spec-Version:** 0.1 (draft)
 >
-> This document is the universal specification for personal network applications. Reference designs declare conformance to a specific spec version and to a specific application flavor (defined by a constellation of feature axis picks). Each reference design's specialization lives in its own repo (ex: fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md)).
+> This document is the universal specification for personal network applications. Reference designs declare conformance to a specific spec version and to a specific application flavor (defined by a constellation of feature axis picks). A PNA conforms to this spec if it satisfies the universal architectural commitments and the axis-derived contracts for each of its declared axis picks, listed herein.  Each reference design's specialization lives in its own repo (ex: fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md)).
 
 ---
 
 ## Preamble
 
-Two shifts are arriving at the same time that make [PNAs](#vocab-pna) necessary.  First, personal data is withdrawing from centralized systems: users are increasingly unwilling to trust SaaS vendors (Facebook, Google, Apple, etc.) with knowing who they talk to about politics or mental health. At the same time, edge compute and AI agents capable of running serious work locally are arriving fast. The first shift creates demand for tools that keep user data sovereign; the second makes such tools practical to build, run, and recompose at the user's own pace.
+Two shifts are arriving at the same time that make [PNAs](#vocab-pna) necessary.  First, data is still flowing into SaaS, but trust is flowing out: users are increasingly unwilling to trust SaaS vendors (Facebook, Google, Apple, etc.) at all, nevermind with knowing who they talk to about politics or mental health. At the same time, edge compute and AI agents capable of running serious work locally are arriving fast. The first shift creates demand for tools that keep user data sovereign; the second makes such tools practical to build, run, and recompose at the user's own pace.
 
-A personal network application is a tool for users to manage and use contact and relationship data that makes up their personal networks. A PNA handles a user's contact data and personal-relationship data with strong, declared contracts about how that data is treated. The PNA separates the concerns of editing data that is shared with other systems from data that is created and held locally and privately.
+A personal network application is a tool for users to manage and use contact and relationship data that makes up their personal networks. A PNA handles a user's contact data and personal-relationship data with strong, declared contracts about how that data is treated (see the [Goals](#goals) and Architectural Committments below). The PNA separates the concerns of editing data that is shared with other systems from data that is created and held locally and privately.
 
 v0.1 PNAs all operate downstream of SaaS systems of record — they do not modify contact data, although a contact manager might well exist as a [plugin](#vocab-plugin) to a PNA, or vice-versa. What distinguishes the niche is the architectural promise: [shared data](#vocab-shared-data) is local-first and replaceable; [private data](#vocab-private-data) is sovereign and protected; the user can reclassify a record's privacy at any time, and the PNA honors it durably; communication transports are user-chosen to meet the user's privacy and other requirements; the user can reason about where their data lives without trusting a vendor.
 
-Without PNAs, we have no credible exit from SaaS systems to user-owned software - PNAs create that exit.
+With PNAs, we have **credible interop** between SaaS systems and user-owned software.  Contact and relationship data is the **root** of personal networks and personal social network graphs - we have to get that local before we can take control of the whole graph.
 
-Without PANs, we go to a list of contacts in linkedin or facebook and are overwhelmed by the number of non-relationships in the contact list, manipulation through feeds, abuse and sale of our information, and are kept on those sites as long as possible by the SaaS vendors, often never solving any relational need, even if it is extremely urgent and sensitive.  The lack of privacy in for our personal relationship data is making it much harder for many to improve individual and community health.
+Without PNAs, or something like them, we often go to a list of contacts in linkedin or facebook and are overwhelmed by the noise.  The number of non-relationships in the contact list, manipulation through feeds, and notifications keep us on those sites as long as possible, often never solving any relational need, even if it is extremely urgent and sensitive.  This makes it much harder for many to improve individual and community health.
 
 ---
 
 ## Building a PNA
 
-When an AI is asked to build a PNA, it is required to follow the contracts of the PNA on the user's behalf, and those contracts are written so the AI can pick them up and check its own work. The user's confidence comes from the spec being clear enough that both they and the AI can read it.  As long as the contracts hold, an AI can rewrite a PNA from scratch while the user is still talking to it without changing the user's sovereignty, durability, or privacy posture. The goals below are user-facing needs; the [architectural commitments](#vocab-universal-ac) after them are the choices that make those needs achievable.
+When an AI is asked to build a PNA, it is required to follow the contracts of the PNA on the user's behalf, and those contracts are written so the AI can pick them up and check its own work. The user's confidence comes from the spec being clear enough that both they and the AI can read it.  As long as the contracts hold, an AI can rewrite a PNA from scratch while the user is still talking to it without changing the user's sovereignty, durability, or privacy posture. The goals below are user-facing needs; the [architectural commitments](#vocab-universal-ac) after them are the choices that make those needs achievable.  Check out the specs of any reference design to see the output of this process.
+
 
 ---
 
@@ -126,7 +127,7 @@ v0.1 PNAs all operate downstream of SaaS systems of record. This goal exists due
 
 When the user wants to reach out to a contact, the workspace offers a choice of transports — including more secure / decentralized options like Signal, not just `mailto:` and `tel:`.
 
-> **Why it matters:** A user who demands sovereignty of their local data has the same high bar for the private transfer of that data. Defaulting every outreach to email — routed through whoever runs their mail server — is inconsistent with Goal 1. The architectural commitment is that transports are pluggable and the user picks per outreach.
+> **Why it matters:** A user who demands sovereignty of their local data has the same high bar for the private transfer of that data. Defaulting every outreach to email — routed through whoever runs their mail server — is inconsistent with Goal 1. The architectural commitment is that transports are pluggable and the user picks per outreach.  Contacts who demand "only talk to me about that over a secure channel!" can have that demand satisfied by a check against their contact record.
 
 ### Goal 4 — Portable, durable, recoverable user data
 
