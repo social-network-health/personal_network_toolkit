@@ -4,14 +4,14 @@
 
 ## Spec
 
-- [PNA Spec](PNA_Spec.md) — universal spec; Spec-Version 0.1 (draft)
-- [Axes](axes.md) — the six Axes a PNA varies along, attested picks per Axis, and the flavor-derived ACs each pick triggers
-- [Use cases](use_cases.md) — attested classes of PNA (Directory Archive, Personal Relationship Manager [draft], Multi-PNA ecosystem [target v0.2+])
+- [PNA Spec](spec/PNA_Spec.md) — universal spec; Spec-Version 0.1 (draft)
+- [Axes](spec/axes.md) — the Axes a PNA varies along, attested picks per Axis, and the flavor-derived ACs each pick triggers
+- [Use cases](spec/use_cases.md) — attested classes of PNA (Directory Archive, Personal Relationship Manager [draft], Multi-PNA ecosystem [target v0.2+])
 - [CHANGELOG](CHANGELOG.md) — spec version history
 
 ## Typed contracts
 
-- [spec/contracts/](spec/contracts/) — JSON Schema, OpenAPI fragments, SQL DDL, and TypeScript declarations for the load-bearing interfaces (worker handshake, distribution auth, comms transport, shared/private DB schemas, five canonical MCP servers — Shared Data Ops, Private Data Ops, Ingestion, Communications, Diagnostics)
+- [contracts/](contracts/) — JSON Schema, OpenAPI fragments, SQL DDL, and TypeScript declarations for the load-bearing interfaces (worker handshake, distribution auth, comms transport, shared/private DB schemas, five canonical MCP servers — Shared Data Ops, Private Data Ops, Ingestion, Communications, Diagnostics)
 
 ## Reference designs
 
