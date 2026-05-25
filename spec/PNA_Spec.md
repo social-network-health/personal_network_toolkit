@@ -242,7 +242,7 @@ The wording in the universal table below is substrate-neutral; specific *forms* 
 
 The spec defines **five slots** (positions filled by code) and **three interfaces** (cross-cutting contracts spanning multiple slots). The Slot and Interface vocab terms are defined in [§ Vocabulary](#vocabulary).
 
-Each slot has a code-level contract. The typed contracts — JSON Schema for RPC + handshake, OpenAPI fragments for distribution, SQL DDL for schemas, TypeScript declaration for the Communications transport interface, JSON Schema for each canonical MCP server's tool surface — live in [`spec/contracts/`](spec/contracts/).
+Each slot has a code-level contract. The typed contracts — JSON Schema for RPC + handshake, OpenAPI fragments for distribution, SQL DDL for schemas, TypeScript declaration for the Communications transport interface, JSON Schema for each canonical MCP server's tool surface — live in [`contracts/`](../contracts/).
 
 Many Universal ACs (see [§ Universal architectural commitments](#universal-architectural-commitments)) cite specific slots in their wording. The slot map is the architectural skeleton; the ACs are the load-bearing constraints over it. Each slot decomposes further into named sub-contracts — see [§ Sub-contracts per slot](#sub-contracts-per-slot) below — so a builder can target each piece individually.
 
@@ -288,8 +288,8 @@ Cross-slot: WS-4 sits at the boundary with Storage (the `worker` tier is RPC int
 #### Storage (`ST-`)
 
 - **ST-1: Substrate.** Single dedicated worker; OPFS-SAH-Pool VFS; sqlite-wasm runtime (or the substrate-equivalent for non-browser flavors). Only context that calls `navigator.storage.getDirectory` or opens a `FileSystemSyncAccessHandle` (per AC-3).
-- **ST-2: Init handshake.** First RPC must be `op='init'`. Returns `{workerRpcVersion, schemaVersion, buildLabel, opfsCapable, hasSharedDb, hasPrivateDb, poolFiles, trace}`. Capability detection happens here (per AC-12). Typed contract: [`spec/contracts/worker-init-handshake.schema.json`](spec/contracts/worker-init-handshake.schema.json).
-- **ST-3: RPC protocol.** `{id, op, args}` ↔ `{id, ok, result|error}`. Fan-in dispatch via sequence-numbered pending Map. `worker.onerror` rejects all pending RPCs so callers can fall back instead of hanging. Typed contract: [`spec/contracts/worker-rpc-protocol.schema.json`](spec/contracts/worker-rpc-protocol.schema.json).
+- **ST-2: Init handshake.** First RPC must be `op='init'`. Returns `{workerRpcVersion, schemaVersion, buildLabel, opfsCapable, hasSharedDb, hasPrivateDb, poolFiles, trace}`. Capability detection happens here (per AC-12). Typed contract: [`contracts/worker-init-handshake.schema.json`](../contracts/worker-init-handshake.schema.json).
+- **ST-3: RPC protocol.** `{id, op, args}` ↔ `{id, ok, result|error}`. Fan-in dispatch via sequence-numbered pending Map. `worker.onerror` rejects all pending RPCs so callers can fall back instead of hanging. Typed contract: [`contracts/worker-rpc-protocol.schema.json`](../contracts/worker-rpc-protocol.schema.json).
 - **ST-4: Two-database management.** Private DB (RW), Shared DB (RO). Cross-DB joins via `ATTACH ?mode=ro`, attached once per init in the worker.
 - **ST-5: Schema bootstrap.** `CREATE IF NOT EXISTS` for both schemas. `PRAGMA foreign_keys=ON` per connection. `PRAGMA user_version` set to schema version. Idempotent so older backups gain newer tables on restore.
 - **ST-6: Auto-backup.** Per-boot debounced snapshots of Private DB to OPFS root (outside SAH-pool dir, so survives sqlite-wasm operations). Rotation by sorted ISO filename. Per AC-9.
@@ -312,7 +312,7 @@ Cross-slot: IN-4 hands off to ST-8 for the actual stage/swap; SH-5 is the Shared
 
 #### Communications (`CO-`)
 
-- **CO-1: Transport interface.** `canHandle(action) → bool`, `launch(action, payload) → Promise<launchResult>`, `descriptor() → {id, name, secureLevel?, …}`. Typed contract: [`spec/contracts/transport-interface.d.ts`](spec/contracts/transport-interface.d.ts).
+- **CO-1: Transport interface.** `canHandle(action) → bool`, `launch(action, payload) → Promise<launchResult>`, `descriptor() → {id, name, secureLevel?, …}`. Typed contract: [`contracts/transport-interface.d.ts`](../contracts/transport-interface.d.ts).
 - **CO-2: Action set.** Fixed enum: `email_one`, `email_group_cc`, `email_group_bcc`, `direct_message_one`, `share_link_one`, `share_link_group`. Extensible — new actions can be added with toolkit version bumps.
 - **CO-3: Transport eligibility (AC-18).** Mechanism cannot read message contents.
 - **CO-4: User-driven selection (AC-16).** Workspace surfaces multiple transports; user picks per outreach.
@@ -325,7 +325,7 @@ Cross-slot: CO-4 is observable from WS (the shell renders the picker); CO-5 is t
 
 - **DI-1: Install path.** Bundle delivery + verified initial Shared DB + session bootstrap.
 - **DI-2: Update path.** Shell + worker file via SW + cache versioning. Shared DB updates user-driven (per AC-10), not automatic.
-- **DI-3: Auth contract.** `GET /api/auth/status`, `POST /api/send-unlock`, `POST /api/verify-token`, `POST /api/logout`. Session cookie HMAC-signed, version-prefixed (so prior versions reject cleanly post-deploy). Typed contract: [`spec/contracts/distribution-auth.openapi.yaml`](spec/contracts/distribution-auth.openapi.yaml).
+- **DI-3: Auth contract.** `GET /api/auth/status`, `POST /api/send-unlock`, `POST /api/verify-token`, `POST /api/logout`. Session cookie HMAC-signed, version-prefixed (so prior versions reject cleanly post-deploy). Typed contract: [`contracts/distribution-auth.openapi.yaml`](../contracts/distribution-auth.openapi.yaml).
 - **DI-4: Anti-enum + rate limit (AC-8).** Always-200 / 204 on send-unlock and client-errors. Per-IP and per-email-hash rate limits. Distinct expired/invalid error strings on verify-token.
 - **DI-5: Server hardening.** TLS terminator on :443 → 127.0.0.1 origin. COOP/COEP (AC-13). 16KB POST cap. No per-user RW endpoints (AC-2). Status-aware caching (4xx/5xx never long-cached).
 - **DI-6: PWA-specific gotchas (when distribution medium is a PWA).** Minimal manifest, no `related_applications`, no `share_target` POST. SW network-first for HTML/JS/CSS/SW + worker file; cache-first for vendored runtime. Separate asset cache. Shared DB URL bypassed in SW fetch (AC-14).
@@ -334,7 +334,7 @@ Cross-slot: DI-2's update path triggers WS's "New version available — Reload" 
 
 #### Shared schema (`SH-`)
 
-- **SH-1: Primary record table.** `record_id` PK, `slug` UNIQUE, `name`, app-defined display columns, `extra_json TEXT` overflow. Typed contract: [`spec/contracts/shared-db.schema.sql`](spec/contracts/shared-db.schema.sql).
+- **SH-1: Primary record table.** `record_id` PK, `slug` UNIQUE, `name`, app-defined display columns, `extra_json TEXT` overflow. Typed contract: [`contracts/shared-db.schema.sql`](../contracts/shared-db.schema.sql).
 - **SH-2: Optional FTS5 virtual table.** Indexes whichever columns the workspace wants searchable.
 - **SH-3: Optional per-record asset URL convention.** `/images/<slug>.{jpg,png}` style; cacheable, immutable, slug-keyed.
 - **SH-4: Read-only enforcement.** ATTACH `?mode=ro` for cross-DB joins; stray writes raise `OperationalError`.
@@ -345,7 +345,7 @@ Cross-slot: SH-5 is implemented by ST-8.
 
 #### Private schema (`PR-`)
 
-- **PR-1: Core tables.** `groups`, `group_members`, `record_tags`, `record_notes`, `settings(workspace_id, key, value)` with composite PK. Typed contract: [`spec/contracts/private-db.schema.sql`](spec/contracts/private-db.schema.sql).
+- **PR-1: Core tables.** `groups`, `group_members`, `record_tags`, `record_notes`, `settings(workspace_id, key, value)` with composite PK. Typed contract: [`contracts/private-db.schema.sql`](../contracts/private-db.schema.sql).
 - **PR-2: Opt-in tables.** `record_comms_history`. **Disabled by default** (`settings['comms_history_enabled']='1'` to enable). User has full read/edit/delete control.
 - **PR-3: Schema metadata.** `PRAGMA user_version`; `PRAGMA foreign_keys=ON` per connection.
 - **PR-4: Durability.** Never replaced on app update; survives Clear App Cache; only Reset Everything wipes.
@@ -358,7 +358,7 @@ Cross-slot: PR-4 is enforced by ST-1 (separate file from Shared DB) and ST-10 (R
 - **DB-1: Build label substitution.** Placeholder substitution at build *and* serve time (AC-15). Format `<YYYY-MM-DD>-<short-sha>` is the recommended default; implementations may pick another stable format.
 - **DB-2: Build badge.** Always-visible runtime display showing local + server labels.
 - **DB-3: Boot phase marks + watchdog.** Named `bootMarks`; watchdog timeout surfaces a recovery panel; slow-boot persistence across sessions.
-- **DB-4: Sanitized error sink.** POST endpoint; 16KB cap; rate limit; always 204; allowlisted `kind=` enum; server-side free-text sanitization. Typed contract: [`spec/contracts/client-errors-payload.schema.json`](spec/contracts/client-errors-payload.schema.json).
+- **DB-4: Sanitized error sink.** POST endpoint; 16KB cap; rate limit; always 204; allowlisted `kind=` enum; server-side free-text sanitization. Typed contract: [`contracts/client-errors-payload.schema.json`](../contracts/client-errors-payload.schema.json).
 - **DB-5: Sink-as-analytics.** Adding a new `kind=` enum is the only widening lever. No separate analytics endpoint, no separate identifier scheme.
 - **DB-6: Bug-report dialog.** Collects DB-2 + DB-3 + DB-4 ring; opens mailto to configured maintainer.
 - **DB-7: Force-gate / force-reset escape hatch.** Reachable from `?diag` (or the substrate-equivalent diagnostics affordance) and a hardcoded URL parameter regardless of cookie / localStorage state (per AC-6).
