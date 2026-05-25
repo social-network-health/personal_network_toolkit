@@ -36,7 +36,7 @@ Substantive changes from v0.1 bump the spec version per `[CHANGELOG.md](CHANGELO
 Read in this order if you're new:
 
 - `**[spec/PNA_Spec.md](spec/PNA_Spec.md)`** — universal PNA specification. Vocabulary, goals, use cases, axes, composition, universal architectural commitments, slot map with 57 sub-contracts, scope/versioning. **Start here.**
-- `**[spec/axes.md](spec/axes.md)`** — the six Axes a PNA varies along, attested picks per Axis, and the flavor-derived ACs each pick triggers.
+- `**[spec/axes.md](spec/axes.md)`** — the Axes a PNA varies along, attested picks per Axis, and the flavor-derived ACs each pick triggers.
 - `**[spec/use_cases.md](spec/use_cases.md)**` — attested classes of PNA (Directory Archive realized; Personal Relationship Manager draft; Multi-PNA ecosystem target).
 - `**[contracts/](contracts/)**` — typed contracts for the load-bearing interfaces: JSON Schema for the worker init handshake + RPC protocol, OpenAPI for distribution auth, SQL DDL for the two database schemas, TypeScript for the Communications transport interface, JSON Schema for the five canonical MCP server tool surfaces.
 - `**[CHANGELOG.md](CHANGELOG.md)**` — spec version history.

@@ -2,7 +2,7 @@
 
 > **Spec-Version:** 0.1 (draft)
 
-This document catalogs the six Axes a PNA picks along, the attested picks on each Axis, and the flavor-derived ACs each pick triggers.
+This document catalogs the Axes a PNA picks along, the attested picks on each Axis, and the flavor-derived ACs each pick triggers.
 
 The Axis concept is defined in [`PNA_Spec.md` § Vocabulary](PNA_Spec.md#vocabulary). The Axes overview in `PNA_Spec.md` lists picks at a glance; this file is the authoritative catalog with full descriptions and AC triggers.
 
