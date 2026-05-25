@@ -2,7 +2,7 @@
 
 The PNA Spec is the canonical specification; this guide is the canonical how-to. It gives step-by-step instructions corresponding to each of the success criteria listed in [`README.md` § Status](../README.md#status).
 
-PNT is built to be consumed by AI coding agents. Most of this guide assumes you have an agent (Claude Code, Cursor, an equivalent) you can ask things like *"use the PNT skill to validate my design."* The skill at [`skill/SKILL.md`](../skill/SKILL.md) is the agent-consumption view of everything in this guide.
+PNT is built to be consumed by AI coding agents. Most of this guide assumes you have an agent (Claude Code, Cursor, an equivalent) you can ask things like *"use the PNT skill to validate my design."* The skill at [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md) is the agent-consumption view of everything in this guide.
 
 ---
 
@@ -110,7 +110,7 @@ Once the PR is merged, run preflight one more time against the merged state. It 
 
 You don't do anything here — it happens after your PR is accepted.
 
-When the maintainer accepts your PR, they trigger Software Heritage archival via `tools/swh-save.sh <your-repo-url> <commit-sha>`. The resulting SWHID (a `swh:1:dir:...` content-addressed identifier) is recorded in your design record at `reference_designs/<design-name>/README.md`.
+When the maintainer accepts your PR, they trigger Software Heritage archival on your repo at the accepted commit. The planned tooling is `tools/swh-save.sh <your-repo-url> <commit-sha>` (landing in Phase 5 of the reorganization plan); until then, archival is performed manually via Software Heritage's Save Code Now. The resulting SWHID (a `swh:1:dir:...` content-addressed identifier) is recorded in your design record at `reference_designs/<design-name>/README.md`.
 
 This means your design's source survives even if your upstream repo is deleted or relocated. You don't need to do anything; the maintainer handles it. If they forget, remind them.
 
@@ -176,7 +176,7 @@ The skill description triggers on natural-language requests fitting any of these
 - [`spec/use_cases.md`](../spec/use_cases.md) — attested classes of PNA
 - [`contracts/`](../contracts/) — typed contracts, each with `Realizes:` header
 - [`reference_designs/`](../reference_designs/) — accepted designs + templates
-- [`skill/SKILL.md`](../skill/SKILL.md) — the agent-consumption view (what you're invoking through the agent above)
+- [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md) — the agent-consumption view (what you're invoking through the agent above)
 - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — full contribution rules
 - [`tools/`](../tools/) — validators
 - [`plans/reorganization-plan.md`](../plans/reorganization-plan.md) — the live plan tracking PNT's own evolution

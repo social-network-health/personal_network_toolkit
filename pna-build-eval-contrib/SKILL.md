@@ -1,5 +1,5 @@
 ---
-name: build-evaluate-contribute-pna
+name: pna-build-eval-contrib
 description: Use when building, extending, or evaluating a Personal Network Application (PNA) — local-first, private-by-default applications that mirror SaaS contact data into a user-owned workspace and operate on relationship data with no remote authority. Triggers on requests to build a local-first contact app, relationship manager, private CRM-like tool, or any app built around personal-network data; on requests to audit an existing application for PNA-spec conformance ("is this app safe to install?", "does my app conform?"); and on requests to propose a change back to the PNT spec when a builder finds a gap. Three flows: build a conformant PNA from the spec, evaluate whether an existing application conforms, and author a contribution PR back to PNT.
 ---
 
@@ -91,7 +91,7 @@ Once preflight passes:
 4. **Copy the Architecture document** to `reference_designs/<design-name>/Architecture.md`. (PNT keeps its own copy at acceptance time; the design's own repo may evolve after.)
 5. **Open the PR** with: spec diff (if any), design record, Architecture document, canonical repo URL, and the commit SHA being submitted.
 
-After merge, the maintainer triggers Software Heritage archival via `tools/swh-save.sh` and records the returned SWHID in the design record. A final preflight run against the merged state should come out clean.
+After merge, the maintainer triggers Software Heritage archival on the design's repo at the accepted commit (planned tooling: `tools/swh-save.sh`, landing in Phase 5; until then, archival is performed manually via Software Heritage's Save Code Now) and records the returned SWHID in the design record. A final preflight run against the merged state should come out clean.
 
 A builder using Claude Code can drive both preflight and PR authoring end-to-end. Maintainer review at acceptance time is the human-judgment gate that's intentionally not automated.
 

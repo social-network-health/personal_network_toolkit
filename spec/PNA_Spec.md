@@ -400,7 +400,7 @@ These cross-slot threads are what make the spec describe a *system* rather than 
 
 This spec is intentionally narrow. It addresses the user demand and runtime realities we can implement and deploy now. New demand develops further versions of the spec; reference designs continue to satisfy whatever spec version they were built against.
 
-**This is PNA Spec v0.1** (placeholder until real numbering lands). When new demand surfaces or runtime constraints shift, we bump the version, declare what changed in [`CHANGELOG.md`](CHANGELOG.md), and update the architectural commitments accordingly.
+**This is PNA Spec v0.1.** When new demand surfaces or runtime constraints shift, we bump the version, declare what changed in [`CHANGELOG.md`](CHANGELOG.md), and update the architectural commitments accordingly.
 
 Items deliberately deferred to future spec versions:
 

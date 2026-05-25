@@ -1,6 +1,6 @@
 # PNA Spec Changelog
 
-## v0.1 alpha (in progress)
+## v0.1 draft (in progress)
 
 ### Formalization pass (Phase 3 of the reorg plan)
 

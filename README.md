@@ -18,7 +18,7 @@ Note: This does not quite fit into a /skill or I would make it one.  Building th
 
 ## Status
 
-**v0.1 alpha.** The spec is feature-complete for v0.1 — universal ACs, axes, use cases, slot map with sub-contracts, and typed contracts are all in place. We say "alpha" rather than "draft" because the contribution workflow described in `[plans/reorganization-plan.md](plans/reorganization-plan.md)` hasn't yet been validated against `fellows_local_db` as the first reference design.
+**v0.1 (draft).** The spec is feature-complete for v0.1 — universal ACs, axes, use cases, slot map with sub-contracts, and typed contracts are all in place. The "draft" label reflects that the contribution workflow described in `[plans/reorganization-plan.md](plans/reorganization-plan.md)` hasn't yet been validated against `fellows_local_db` as the first reference design.
 
 What we're working toward — success looks like:
 

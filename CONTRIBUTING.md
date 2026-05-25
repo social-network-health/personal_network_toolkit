@@ -37,7 +37,7 @@ A contribution PR contains:
 - **A copy of the design's Architecture document** at `reference_designs/<design-name>/Architecture.md` per [`reference_designs/templates/ARCHITECTURE_TEMPLATE.md`](reference_designs/templates/ARCHITECTURE_TEMPLATE.md)
 - **The design's canonical repo URL and the commit SHA being submitted**
 
-The skill's contribute flow (see [`skill/SKILL.md`](skill/SKILL.md)) walks an LLM agent through producing this PR end-to-end. Manually-authored PRs are also fine.
+The skill's contribute flow (see [`pna-build-eval-contrib/SKILL.md`](pna-build-eval-contrib/SKILL.md)) walks an LLM agent through producing this PR end-to-end. Manually-authored PRs are also fine.
 
 ## Acceptance process
 
@@ -51,7 +51,7 @@ Maintainer review focuses on the judgment-and-review layer of conformance verifi
 On merge:
 
 - Spec changes land (including any new AC IDs, sub-contracts, or axis-pick additions)
-- Maintainer triggers Software Heritage archival via `tools/swh-save.sh <repo-url> <commit-sha>` and records the returned SWHID in the design record
+- Maintainer triggers Software Heritage archival (planned tooling: `tools/swh-save.sh <repo-url> <commit-sha>`, landing in Phase 5; until then, archival is performed manually via Software Heritage's Save Code Now) and records the returned SWHID in the design record
 - Maintainer decides whether the design warrants an additional `archive/<design-name>` fork in the `pnt-archive` GitHub organization (high-signal designs only; SWHID alone is sufficient for the archival promise)
 - Spec version bumped per the versioning rules below
 
