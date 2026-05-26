@@ -21,5 +21,5 @@
 
 ## Reference designs
 
-- [fellows_local_db Architecture](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md) — first reference design; Directory Archive use case; magic-link distributed PWA + static network DB archive + single shared directory
+- [reference_designs/](reference_designs/) — accepted reference designs (each a working PNA demonstrating one valid combination of axis picks against the spec). Index at `reference_designs/README.md`; per-design records and Architecture documents live in subdirectories.
 
