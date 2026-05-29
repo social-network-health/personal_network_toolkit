@@ -116,4 +116,4 @@ A builder using Claude Code can drive both preflight and PR authoring end-to-end
 - `tools/egress-lint.py` — deterministic private-data-sovereignty check (AC-1): static scan for unsanctioned off-device egress vectors; `--json` emits evidence that folds into the report schema above. Run it against a candidate and fold its evidence into the AC-1 (and AC-2, server-side) finding.
 - `tools/lint-spec-ids.py` — checks AC ↔ contract traceability invariants
 - `CONTRIBUTING.md` — full contribution rules
-- `docs/prior_art.md` — survey of related work
+- `docs/PriorArt.md` — survey of related work (annotated source list in `docs/PriorArtReferences.md`)

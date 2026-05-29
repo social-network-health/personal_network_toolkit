@@ -145,7 +145,8 @@ personal_network_toolkit/
 │   ├── validate-architecture.py                 # Lint Architecture documents against the template
 │   └── lint-spec-ids.py                         # Check ID rigor across spec and contracts
 ├── docs/
-│   └── prior_art.md                             # Was: research/prior_art_survey.md
+│   ├── PriorArt.md                              # Prior-art survey (was: research/prior_art_survey.md)
+│   └── PriorArtReferences.md                    # Annotated source list for the survey
 ├── plans/                                       # This file lives here
 └── archive/                                     # Optional: forked snapshots of high-signal designs
     └── <design-name>/                           # Git submodule pointing at pnt-archive/<design-name>
@@ -347,7 +348,7 @@ Phases are sized for Claude Code sessions. Each ends in a committable, working s
 - [x] Create new directory layout: `spec/`, `contracts/`, `reference_designs/`, `reference_designs/templates/`, `pna-build-eval-contrib/`, `tools/`, `docs/`, `archive/`.
 - [x] Move existing spec documents into `spec/`.
 - [x] Move existing typed contracts from `spec/contracts/` into top-level `contracts/`.
-- [x] Relocate `research/prior_art_survey.md` to `docs/prior_art.md`.
+- [x] Relocate `research/prior_art_survey.md` to `docs/prior_art.md` (later split into `docs/PriorArt.md` (prose survey) + `docs/PriorArtReferences.md` (annotated source list)).
 - [x] Create `reference_designs/fellows_local_db/` with a placeholder README pointing to the external repo (SWHID added in Phase 5).
 - [x] Update root `README.md` to reflect the new layout (the `## Status` section is the home for success criteria).
 
@@ -375,9 +376,9 @@ Phases are sized for Claude Code sessions. Each ends in a committable, working s
 
 ### Phase 4.5 — User's Guide and contribute-flow preflight
 
-- [ ] Write `docs/users-guide.md` — concise step-by-step instructions organized around the six success criteria in `README.md § Status`. The reference-design submission workflow gets the most space (since `fellows_local_db` is the first user of it in Phase 5).
-- [ ] Enhance `pna-build-eval-contrib/SKILL.md`'s contribute flow with an explicit **preflight validation** step (does the design have all required files? is the Architecture document complete and accurate against the code?), the **"what's interesting architecturally?"** prompt — with three valid patterns documented (new AC, existing pattern on a new platform, ecosystem-value-add) — and explicit **interactive** guidance for creating the Architecture document when it doesn't yet exist.
-- [ ] Link `docs/users-guide.md` from `README.md`.
+- [x] Write `docs/users-guide.md` — concise step-by-step instructions organized around the six success criteria in `README.md § Status`. The reference-design submission workflow gets the most space (since `fellows_local_db` is the first user of it in Phase 5).
+- [x] Enhance `pna-build-eval-contrib/SKILL.md`'s contribute flow with an explicit **preflight validation** step (does the design have all required files? is the Architecture document complete and accurate against the code?), the **"what's interesting architecturally?"** prompt — with three valid patterns documented (new AC, existing pattern on a new platform, ecosystem-value-add) — and explicit **interactive** guidance for creating the Architecture document when it doesn't yet exist.
+- [x] Link `docs/users-guide.md` from `README.md`.
 
 Phase 4.5 lands in the same PR as Phases 1–4 so the User's Guide is exercisable against `fellows_local_db` immediately in Phase 5.
 
