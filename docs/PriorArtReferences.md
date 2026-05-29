@@ -56,7 +56,12 @@ Companion reference list to [`PriorArt.md`](./PriorArt.md), the analytical surve
 
 ## Architecture standards & verification frameworks
 
+- **[Common Criteria Protection Profiles](https://www.commoncriteriaportal.org/)** (ISO/IEC 15408) — A Protection Profile states the security requirements for a *category* of products; each product publishes a Security Target declaring how it conforms. The closest mature analog to PNT's spec + axis-pick attestation model (the PNA Spec plays the Protection Profile; each Architecture document plays the Security Target), though heavy and security-flavored. PNT's conceptual ancestor.
 - **[OWASP Application Security Verification Standard (ASVS)](https://owasp.org/www-project-application-security-verification-standard/)** — Level-based verification framework where applications attest to a specific conformance level rather than passing a binary check.
+- **[IEEE 1471 / ISO 42010](https://en.wikipedia.org/wiki/ISO/IEC_42010)** — The architecture-description standard. Defines vocabulary for architecture description but is prose-oriented and not machine-checkable.
+- **[TOGAF](https://www.opengroup.org/togaf)** — The Open Group's enterprise-architecture framework; advisory reference architecture, not contract-based.
+- **[NIST SP 800-160](https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final)** — Systems-security-engineering guidance; advisory prose, not a machine-checkable conformance artifact.
+- **[GAMP 5](https://ispe.org/publications/guidance-documents/gamp-5)** — ISPE's validation framework for computerized systems (pharma lineage); a risk-based validation methodology, not contract-based.
 - **[SLSA — Supply chain Levels for Software Artifacts](https://slsa.dev/)** — Level-based attestation framework for build provenance; the same per-implementation attestation pattern at a different problem.
 
 ## Coding-agent benchmarks & evals
