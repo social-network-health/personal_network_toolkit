@@ -20,7 +20,7 @@
         "op":   { "const": "init" },
         "args": {
           "type": "object",
-          "description": "v0.1: no init args. Future spec versions may add bootstrap flags (e.g. a 'skipAutoBackup' switch for test runners).",
+          "description": "v0.1: no init args. Future toolkit versions may add bootstrap flags (e.g. a 'skipAutoBackup' switch for test runners).",
           "additionalProperties": false,
           "properties": {}
         }

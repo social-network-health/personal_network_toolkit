@@ -118,7 +118,7 @@
     },
     "NormativeErrorCodes": {
       "type": "object",
-      "description": "v0.1 normative `errorCode` allowlist. The codes here are reserved across all conforming implementations — their semantics are tied to ACs, and workspaces are entitled to dispatch UI specifically on them. Implementations MAY add additional codes for op-specific failures, but additions MUST NOT collide with these names and MUST NOT change their AC meaning. Future spec versions may extend this set.",
+      "description": "v0.1 normative `errorCode` allowlist. The codes here are reserved across all conforming implementations — their semantics are tied to ACs, and workspaces are entitled to dispatch UI specifically on them. Implementations MAY add additional codes for op-specific failures, but additions MUST NOT collide with these names and MUST NOT change their AC meaning. Future toolkit versions may extend this set.",
       "required": ["OWNERSHIP_CONFLICT", "VERSION_MISMATCH", "LOCAL_DATA_UNAVAILABLE", "NOT_FOUND", "INTERNAL"],
       "additionalProperties": false,
       "properties": {
@@ -304,7 +304,7 @@
     },
     "op_getOpfsInventory": {
       "type": "object",
-      "description": "ST-11 diagnostic read. Snapshot of every entry at OPFS root (browser PNAs) or the substrate-equivalent storage root, plus the SAH-pool slot inventory. Used by the `?diag=1` panel post-Phase-1 so the maintainer can see exactly what's on disk without main-thread substrate access. Pure read; no writes, no fetches. The name reflects browser-PNA heritage; native-PNA implementations may rename this op to `getStorageInventory` in a future spec version.",
+      "description": "ST-11 diagnostic read. Snapshot of every entry at OPFS root (browser PNAs) or the substrate-equivalent storage root, plus the SAH-pool slot inventory. Used by the `?diag=1` panel post-Phase-1 so the maintainer can see exactly what's on disk without main-thread substrate access. Pure read; no writes, no fetches. The name reflects browser-PNA heritage; native-PNA implementations may rename this op to `getStorageInventory` in a future toolkit version.",
       "required": ["input", "output"],
       "properties": {
         "input": {

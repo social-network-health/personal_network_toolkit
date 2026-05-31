@@ -6,15 +6,14 @@ PNT (Personal Network Toolkit) is built to be consumed by AI coding agents. Most
 
 **The fastest way in is auditing.** If you just want to know whether a contact app is safe before you install it — without building or contributing anything — go straight to [Goal 2](#goal-2--audit-a-candidate-pna-before-installing-it). It's the lowest-friction front door to PNT: point an agent at the app's source and get back an AC-keyed safety report.
 
-> **Status note (May 2026).** PNT's deterministic tooling is now tested; the agent-driven flows are not yet exercised end-to-end.
+> **Status note (May 2026).** PNT's deterministic tooling is tested; the agent-driven flows are now being exercised for real.
 >
 > **Tested / CI-enforced:**
 > - [`tools/egress-lint.py`](../tools/egress-lint.py) — the deterministic AC-1 egress check, with clean/dirty self-test fixtures run in CI.
-> - [`tools/lint-spec-ids.py`](../tools/lint-spec-ids.py) — AC ↔ contract traceability lint, run in CI.
+> - [`tools/lint-spec-ids.py`](../tools/lint-spec-ids.py) — AC ↔ contract / exception / toolkit-version traceability lint, run in CI.
 > - [`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json) — the audit-report schema, validated against its meta-schema and conditional rules.
 >
-> **Not yet exercised end-to-end:**
-> - The **build**, **audit**, and **contribute** skill flows. The materials are in place; Phase 5 of the reorganization plan validates them against `fellows_local_db` as the first reference design. The agent prompts and output shapes below describe the *intended* behavior per [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md); expect refinement as the skill gets dogfooded.
+> **Exercised end-to-end:** the **contribute** flow — `fellows_local_db`'s Exceptions contribution and this Toolkit-Version work were both authored through it, with the build and evaluate flows informing that work. The **build** and **audit** flows are still being dogfooded; Phase 5 continues to validate them against `fellows_local_db`. The agent prompts and output shapes below describe the intended behavior per [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md); expect continued refinement.
 
 ---
 
@@ -202,7 +201,7 @@ For high-signal designs, the maintainer may additionally mirror the design to a 
 
 If you find a spec gap, ambiguity, or contradiction while building or operating your PNA, your PR includes a spec diff. The maintainer reviews the diff in the context of your demonstrating reference design.
 
-After merge, the PNA Spec version is bumped per linear SemVer:
+After merge, the Toolkit-Version is bumped per linear SemVer:
 
 - **Patch** — clarifications, typo fixes
 - **Minor** — additive changes (new ACs, new axes, new picks, new sub-contracts)

@@ -57,7 +57,7 @@ On merge:
 - Spec changes land (including any new AC IDs, sub-contracts, or axis-pick additions)
 - Maintainer triggers Software Heritage archival (planned tooling: `tools/swh-save.sh <repo-url> <commit-sha>`, landing in Phase 5; until then, archival is performed manually via Software Heritage's Save Code Now) and records the returned SWHID (Software Heritage Persistent IDentifier) in the design record
 - Maintainer decides whether the design warrants an additional `archive/<design-name>` fork in the `pnt-archive` GitHub organization (high-signal designs only; SWHID alone is sufficient for the archival promise)
-- Spec version bumped per the versioning rules below
+- Toolkit version bumped per the versioning rules below
 
 ## Versioning
 
