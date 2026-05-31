@@ -116,6 +116,19 @@ Background research on the application class PNT targets.
 
 **Proximity to PNT:** Background. Defines the domain but not the class-blueprint approach.
 
+### 9. Behavioral exceptions, consent propagation, and graded assurance
+
+Prior art for the [Exceptions](../spec/exceptions.md) concept — a PNA *deliberately and honestly* departing from a guarantee — and for its per-dimension strength profiles. Surveyed when designing `EX-CLOUD-LLM`.
+
+- **Graded assurance levels.** Common Criteria EAL, [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) levels, and [SLSA](https://slsa.dev/) levels (all surveyed in § 4–5) establish the *grade-the-strength* precedent. PNT's strength profile borrows the idea but **rejects a single collapsed level** in favor of per-dimension classes — one number would hide that "the boundary is enforced" and "the provider's data handling is unverifiable" are different *kinds* of assurance.
+- **Machine-readable conformance reporting.** [W3C EARL](https://www.w3.org/TR/EARL10-Schema/)'s pass / fail / cannot-tell vocabulary is the model for the evaluate flow reporting exception handling by ID (including "unable-to-determine").
+- **Consent propagation through delegation chains.** The IAB Europe [Transparency & Consent Framework](https://iabeurope.eu/transparency-consent-framework/) (a consent string propagated down an ad-tech chain), [User-Managed Access and Consent Receipts](https://kantarainitiative.org/) (Kantara), and **macaroons** (Birgisson et al., Google Research, 2014 — bearer credentials with *attenuating* caveats). Macaroons are the closest match to handler clause EX-H7: delegated authority only **narrows** as it passes through intermediaries, never amplifies — exactly the property "consent must reach the ultimate human; a proxy can't manufacture it" requires.
+- **Legible strength/limitation labeling.** Apple privacy "nutrition labels", [model cards](https://arxiv.org/abs/1810.03993) (Mitchell et al., 2019), and [datasheets for datasets](https://arxiv.org/abs/1803.09010) (Gebru et al., 2018) — precedent for surfacing strengths *and* limitations in a fixed, user-readable structure. The per-dimension strength profile is this idea applied to a behavioral exception.
+
+**Finding:** the *mechanics* — grade the strength, attest it, propagate attenuated consent, report cannot-tell — have solid precedent, and PNT borrows them rather than inventing. What appears genuinely new is **framing a deliberate behavioral deviation as a first-class, stable-ID'd, caught-and-handled "exception" for an application class**; no surveyed artifact offers a description language for that. The human-AI-team development context is why it surfaces now.
+
+**Proximity to PNT:** Informative (mechanism). The grading, reporting, and attenuation patterns are adopted; the exception-as-class-concept is the novel part.
+
 ## Proximity matrix
 
 | Artifact | Generative? | Class-scoped? | Multi-flavor? | Machine-checkable? | Overall proximity |

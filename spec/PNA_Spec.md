@@ -24,6 +24,8 @@ Without PNAs, or something like them, we often go to a list of contacts in linke
 
 When an AI is asked to build a PNA, it is required to follow the contracts of the PNA on the user's behalf, and those contracts are written so the AI can pick them up and check its own work. The user's confidence comes from the spec being clear enough that both they and the AI can read it.  As long as the contracts hold, an AI can rewrite a PNA from scratch while the user is still talking to it without changing the user's sovereignty, durability, or privacy posture. The goals below are user-facing needs; the [architectural commitments (ACs)](#vocab-universal-ac) after them are the choices that make those needs achievable.  Check out the specs of any reference design to see the output of this process.
 
+> **Validation, not certification.** PNT validates behaviors against the Goals; it does not certify. There is no pass/fail badge and no certifying body (see [`CONTRIBUTING.md`](../CONTRIBUTING.md) § "Acceptance is not certification" and the skill's § Principles, "Conformance is checked, not awarded"). Conformance is *checked* — by the user, or by an AI running the evaluate flow — against this spec. Where a PNA deliberately departs from a guarantee it raises an [Exception](exceptions.md); the evaluate flow then detects each exception and verifies how it is handled, **reporting by `AC-*`/`EX-*` ID rather than awarding a grade.**
+
 
 ---
 
