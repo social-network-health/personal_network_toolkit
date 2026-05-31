@@ -41,7 +41,8 @@ The skill's contribute flow (driven by [`docs/users-guide.md` § Goal 3](docs/us
 - **Spec diff (if any)** — changes to `spec/PNA_Spec.md`, `spec/axes.md`, `spec/use_cases.md`, or `contracts/` files
 - **A design record** at `reference_designs/<design-name>/README.md` per [`reference_designs/templates/TEMPLATE.md`](reference_designs/templates/TEMPLATE.md)
 - **A copy of the design's Architecture document** at `reference_designs/<design-name>/Architecture.md` per [`reference_designs/templates/ARCHITECTURE_TEMPLATE.md`](reference_designs/templates/ARCHITECTURE_TEMPLATE.md)
-- **The design's canonical repo URL and the commit SHA being submitted**
+- **The design's canonical repo URL and the commit SHA (and tag, if any) being submitted**
+- **The evaluate-flow report** at `reference_designs/<design-name>/evaluate-report.json` — an instance of [`tools/evaluate-report.schema.json`](tools/evaluate-report.schema.json), produced by running the skill's evaluate flow against the design. It is the typed, diffable record of *what was validated*, and the input the maintainer attests to at acceptance.
 
 ## Acceptance process
 
@@ -54,10 +55,13 @@ Maintainer review focuses on the judgment-and-review layer of conformance verifi
 
 On merge:
 
-- Spec changes land (including any new AC IDs, sub-contracts, or axis-pick additions)
-- Maintainer triggers Software Heritage archival (planned tooling: `tools/swh-save.sh <repo-url> <commit-sha>`, landing in Phase 5; until then, archival is performed manually via Software Heritage's Save Code Now) and records the returned SWHID (Software Heritage Persistent IDentifier) in the design record
-- Maintainer decides whether the design warrants an additional `archive/<design-name>` fork in the `pnt-archive` GitHub organization (high-signal designs only; SWHID alone is sufficient for the archival promise)
-- Toolkit version bumped per the versioning rules below
+- Spec changes land (including any new AC IDs, sub-contracts, or axis-pick additions).
+- **Maintainer attests validation.** The maintainer confirms the evaluate-flow report and the AC attestation table check out against the cited code, at a specific **Toolkit-Version**, and records an acceptance line in the design record (`reference_designs/<design-name>/README.md`): *date · accepted-by · Toolkit-Version validated against*. The merge is the acceptance; this line is the durable record of *what* was validated. While there is a single maintainer this stays lightweight — and the first reference design, `fellows_local_db`, is accepted *by definition* as the design the toolkit was distilled from.
+- Maintainer triggers Software Heritage archival with [`tools/swh-save.sh <repo-url> [<git-ref>] [<clone-path>]`](tools/swh-save.sh) — a thin wrapper over Save Code Now that also prints the git-compatible SWHIDs — and records the returned `swh:1:dir` SWHID (Software Heritage Persistent IDentifier) in the design record.
+- Maintainer decides whether the design warrants an additional `archive/<design-name>` fork in the `pnt-archive` GitHub organization (high-signal designs only; SWHID alone is sufficient for the archival promise).
+- Toolkit version bumped per the versioning rules below.
+
+> **Re-validation on a version bump.** A design is validated against a specific Toolkit-Version (recorded above). A later toolkit bump does not retroactively re-validate it; the design's `Toolkit-Version` declares what it was checked against, and re-validation is a fresh evaluate-flow run when the maintainer chooses to re-attest it.
 
 ## Versioning
 
