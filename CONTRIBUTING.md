@@ -19,7 +19,7 @@ The step-by-step procedure for a contribution — preflight your design via the 
 - Reference designs derived from working applications.
 - Under any OSI-approved license.
 - With an Architecture document (the design's "Security Target") that:
-  - declares the PNA Spec version the design conforms to,
+  - declares the Toolkit-Version the design conforms to,
   - declares per-axis picks and their versions,
   - documents per-axis implementation choices, and
   - includes an **AC (Architectural Commitment) attestation table** mapping every applicable AC to (a) how the design realizes it, with code references, and (b) the specific test(s), LLM (Large Language Model) evaluation rubric, or human-review record(s) that verify it for this design. Rows without a Verification reference are not accepted.

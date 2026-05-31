@@ -66,7 +66,7 @@ You're starting (or extending) a personal network application.
 1. Skim the spec for vocabulary, then pick a use case.
 2. Walk through axis picks with the agent (via the skill).
 3. Study the reference design closest to your axis picks.
-4. Stub an Architecture document declaring spec version + axis picks.
+4. Stub an Architecture document declaring Toolkit-Version + axis picks.
 5. Build code that satisfies the typed contracts for your picks.
 6. Fill in the AC attestation table as you build.
 7. Self-check via Goal 2 before declaring done.
@@ -83,7 +83,7 @@ You're starting (or extending) a personal network application.
 
 **3. Study the closest reference design.** Each [`reference_designs/<name>/`](../reference_designs/) directory has a design record naming its flavor and a Software Heritage SWHID (Persistent IDentifier) pointing to archived source. Pick the design whose flavor has the most overlap with your picks. Read its code; treat it as the seed your PNA grows from. Adapting from an existing design is faster than starting from scratch — most of the cross-slot integration work is already done.
 
-**4. Stub an Architecture document.** Copy [`reference_designs/templates/ARCHITECTURE_TEMPLATE.md`](../reference_designs/templates/ARCHITECTURE_TEMPLATE.md) to `docs/Architecture.md` (or equivalent) in your design's own repo. Fill in: PNA Spec version, axis picks and their versions, and per-axis implementation notes. Leave the AC attestation table empty for now — you'll fill it in as you build (step 6).
+**4. Stub an Architecture document.** Copy [`reference_designs/templates/ARCHITECTURE_TEMPLATE.md`](../reference_designs/templates/ARCHITECTURE_TEMPLATE.md) to `docs/Architecture.md` (or equivalent) in your design's own repo. Fill in: Toolkit-Version, axis picks and their versions, and per-axis implementation notes. Leave the AC attestation table empty for now — you'll fill it in as you build (step 6).
 
 **5. Build against the typed contracts.** [`contracts/`](../contracts/) holds the load-bearing interfaces — JSON Schema for the worker init handshake and RPC (Remote Procedure Call) protocol, OpenAPI for distribution auth, SQL DDL for the two database schemas, TypeScript for the Communications transport, JSON Schema for each canonical MCP server's tool surface. Every contract opens with `Realizes: AC-X, AC-Y` naming the ACs it serves; your code conforms to these contracts. If you find you need to deviate from a contract, propose a spec change via Goal 3 (Contribute) rather than just diverging.
 
@@ -168,7 +168,7 @@ If your design is *identical* to an existing reference with no novelty, reach ou
 
    The agent will:
 
-   1. **Locate your Architecture document.** If it exists, validate it against the code. If it doesn't, walk you through creating one interactively (PNA Spec version, axis picks, per-axis notes, AC attestation rows).
+   1. **Locate your Architecture document.** If it exists, validate it against the code. If it doesn't, walk you through creating one interactively (Toolkit-Version, axis picks, per-axis notes, AC attestation rows).
    2. **Ask what's interesting architecturally** about your design (one of the three patterns above).
    3. **Report what's broken or missing** as a structured list — files, sections, Verification fields, cited-but-absent code, failing tests, license problems.
 

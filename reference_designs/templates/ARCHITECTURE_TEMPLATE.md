@@ -93,7 +93,7 @@ What spec changes (if any) this submission proposes, and what working code in th
 - **<change 1>**: ... — demonstrated by `<file:line>` in the canonical repo.
 - **<change 2>**: ... — demonstrated by `<file:line>` in the canonical repo.
 
-If this is an additive submission (no spec changes proposed; the design simply attests against the current spec version), say so: "No spec changes proposed; this submission attests conformance to PNA Spec v<X.Y.Z>."
+If this is an additive submission (no spec changes proposed; the design simply attests against the current Toolkit-Version), say so: "No spec changes proposed; this submission attests conformance to Toolkit-Version <X.Y>."
 
 ## Reproducibility notes
 
