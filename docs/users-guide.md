@@ -34,10 +34,26 @@ Symlinking keeps the skill in sync with your PNT clone — a `git pull` here upd
 **Alternatives:**
 
 - **Copy instead of symlink** — replace `ln -s` with `cp -r` to pin the skill to a specific version. You'll re-copy when you want updates.
-- **Project-level install** — replace `~/.claude/skills` with `<your-project>/.claude/skills` to scope the skill to one project (useful if you want different skill versions in different projects).
 - **Run Claude Code from PNT itself** — no install required; the skill is discoverable from this directory. Adequate for one-off auditing.
 
-**Verify.** Start Claude Code in any directory and try one of the prompts below; if the skill triggers, you're set. You can also ask the agent something like *"what PNT skills do you have available?"* to check.
+### Per-repo install (for a design that contributes to PNT)
+
+When a PNA repo actively contributes back (it's a reference design, or you drive the contribute flow from it), scope the skill to that repo at `<your-project>/.claude/skills/pna-build-eval-contrib` so collaborators on it pick the skill up. Two forms:
+
+- **Symlink** (dev convenience, no drift):
+  ```bash
+  ln -s <path-to-pnt>/pna-build-eval-contrib <your-project>/.claude/skills/pna-build-eval-contrib
+  ```
+  Stays in sync with your PNT clone, but the absolute path is machine-specific — **don't commit a machine-specific symlink.**
+- **Vendored copy** (portable, committable):
+  ```bash
+  cp -r <path-to-pnt>/pna-build-eval-contrib <your-project>/.claude/skills/pna-build-eval-contrib
+  ```
+  Commit it **with a provenance note pinning the PNT commit** it was copied from (e.g. an `INSTALLED_FROM.md` beside `SKILL.md`). Collaborator-friendly and reproducible, but it **drifts** from upstream — re-sync (re-copy + bump the pinned commit) before relying on it for a contribution.
+
+Pick the symlink for local iteration; pick the vendored copy when the design repo should carry the skill for everyone working on it.
+
+**Verify.** Start Claude Code and try one of the prompts below; if the skill triggers, you're set. You can also ask *"what PNT skills do you have available?"*. **Note:** skills load at **session start** — if you just installed the skill, restart Claude Code (or open a fresh session) before it becomes invocable; a mid-session install is not picked up.
 
 ---
 

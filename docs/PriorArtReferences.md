@@ -95,6 +95,21 @@ Companion reference list to [`PriorArt.md`](./PriorArt.md), the analytical surve
 - **[vCard (draft-ietf-vcarddav-vcardrev-02)](https://www.ietf.org/archive/id/draft-ietf-vcarddav-vcardrev-02.html)** — The contact-data format underlying CardDAV and most contact-exchange systems.
 - **[Defensics vCard Test Suite (Black Duck)](https://www.blackduck.com/fuzz-testing/defensics/protocols/vcard.html)** — Commercial fuzz/robustness conformance suite for vCard implementations.
 
+## Behavioral exceptions & consent propagation
+
+Sources for [`PriorArt.md` § 9](./PriorArt.md) — prior art for the Exceptions concept (a PNA deliberately, honestly departing from a guarantee) and its per-dimension strength profiles.
+
+- **[Macaroons: Cookies with Contextual Caveats for Decentralized Authorization](https://research.google/pubs/pub41892/)** — Birgisson, Politz, Erlingsson, Taly, Vrable, Lentczner (Google, 2014). Bearer credentials whose authority can only be *attenuated* (narrowed) by adding caveats as they pass through intermediaries, never amplified. The closest formal analog to handler clause EX-H7 — consent must reach the ultimate human; a proxy cannot manufacture it.
+- **[IAB Europe Transparency & Consent Framework (TCF)](https://iabeurope.eu/transparency-consent-framework/)** — A consent string propagated down a multi-party (ad-tech) delegation chain; prior art — cautionary as much as exemplary — for carrying a consent signal across actors.
+- **[Kantara Initiative — User-Managed Access (UMA) & Consent Receipts](https://kantarainitiative.org/)** — Standards for user-controlled delegated authorization and for issuing a machine-readable receipt that a specific consent was given; relevant to recording and propagating the human's consent under an exception.
+- **[Common Criteria — Evaluation Assurance Levels (ISO/IEC 15408)](https://www.commoncriteriaportal.org/)** — Graded assurance levels (EAL1–7); the canonical "grade the strength" precedent the strength profile borrows from while rejecting a single collapsed level.
+- **[OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)** — Application Security Verification Standard; level-based (L1–L3) assurance — another graded-strength precedent.
+- **[SLSA](https://slsa.dev/)** — Supply-chain Levels for Software Artifacts; graded build-integrity assurance levels.
+- **[W3C EARL — Evaluation and Report Language](https://www.w3.org/TR/EARL10-Schema/)** — pass / fail / cannot-tell reporting vocabulary; the model for reporting exception handling by ID, including "unable-to-determine".
+- **[Model Cards for Model Reporting](https://arxiv.org/abs/1810.03993)** — Mitchell et al., 2019. Fixed-structure disclosure of a model's intended use, performance, and limitations; precedent for surfacing strengths *and* limitations legibly (the per-dimension strength profile applies this to a behavioral exception).
+- **[Datasheets for Datasets](https://arxiv.org/abs/1803.09010)** — Gebru et al., 2018. Standardized dataset documentation (provenance, composition, limitations); same legible-disclosure lineage as model cards.
+- **Apple App Store privacy "nutrition labels"** — Per-app privacy summaries in a fixed structure; a consumer-facing instance of legible strength/limitation labeling.
+
 ---
 
 *Reference list compiled from a conversation with Claude (Anthropic), May 2026. See [`PriorArt.md`](./PriorArt.md) for the analytical survey that uses these sources.*
