@@ -1,0 +1,185 @@
+# PNA Exceptions
+
+> **Spec-Version:** tracks the PNA Spec version in [`PNA_Spec.md`](PNA_Spec.md).
+>
+> This file defines **Exceptions**: stable-ID'd conditions (`EX-*`) under which a PNA deliberately
+> departs from a baseline guarantee — a named AC, or the core PNA definition ("runs local-only,
+> never as SaaS"; see [`PNA_Spec.md` § Vocabulary](PNA_Spec.md), `vocab-pna`).
+
+## Concept
+
+An Exception is modeled on a software exception. It is **raised** by a specific user action, must
+be **caught** (never raised silently), and must be **handled** by a defined **solution**.
+
+| Software exception | PNA Exception |
+|---|---|
+| A condition that interrupts normal control flow | A condition under which a PNA departs from a baseline guarantee |
+| `raise` / `throw` | **Raised** by a specific user action (e.g. connecting a cloud MCP client) |
+| Uncaught exception crashes / leaks | A *silent* deviation is the failure mode — exceptions MUST be **caught** |
+| `try/except` handler | A defined **solution** (consent + signal + explainer + reversal path) |
+| Stack trace identifies the exception | Every exception has a stable `EX-*` ID and a registry entry |
+
+**An app is in PNA mode when no exceptions are active.** Raising any exception exits PNA mode. A PNA
+is spec-conformant in non-PNA mode **iff** every active exception is handled to the [handler
+contract](#handler-contract) below. This reframes conformance:
+
+- **Old framing:** conformant = *never deviates from any AC or the PNA definition.*
+- **New framing:** conformant = *in PNA mode, honors every applicable AC; in non-PNA mode, catches
+  and handles every active deviation honestly.*
+
+A tool that lets a user point a hosted model at their Private DB is neither "non-conformant garbage"
+nor "secretly fine" — it is **a conformant PNA operating in a declared non-PNA mode**, and the
+[evaluate flow](pna-build-eval-contrib/SKILL.md) can say exactly that, by `EX-*` ID.
+
+### Validation, not certification
+
+PNT **validates behaviors against the Goals; it does not certify.** There is no pass/fail badge and
+no certifying body (see `CONTRIBUTING.md` and the skill's § Principles, "Conformance is checked, not
+awarded"). The evaluate flow *detects* exceptions and *verifies how each is handled*, reporting by
+`EX-*` ID. "This app raises `EX-CLOUD-LLM` and handles it to contract" is a finding, not a grade.
+
+### Scope discipline
+
+Exceptions are bounded so they stay a PNA-class mechanism rather than a general deviation framework:
+
+- **Goal-anchored.** Every exception MUST name, via `Relaxes:`, the specific `AC-*` (or
+  `PNA-DEFINITION`) it departs from. PNT defines exceptions ONLY for deviations from its own
+  Goals/ACs — not for other application classes. A proposed "exception" that relaxes no named PNA
+  guarantee is not a PNA exception.
+- **Composition, not enumeration.** Non-PNA mode is binary (in / out). The active-set explainer
+  (EX-H4) renders the *currently-active* exceptions at runtime, each with its own entry and strength
+  profile. PNT never pre-enumerates combinations; cost scales linearly in the number of defined
+  exceptions, not combinatorially.
+
+## Handler contract
+
+Normative language uses RFC 2119 / RFC 8174 keywords (MUST, MUST NOT, SHOULD, MAY) only when
+capitalized, consistent with [`PNA_Spec.md` § Universal architectural commitments](PNA_Spec.md). For
+each exception it can raise, a conforming PNA:
+
+- **EX-H1 — Stable identity.** MUST define and reference the exception by its stable `EX-*` ID.
+- **EX-H2 — Consent before raise.** MUST obtain explicit informed consent BEFORE raising the
+  exception (no silent raise). The consent surface MUST link to an explanation of that specific
+  exception.
+- **EX-H3 — Persistent non-PNA-mode signal.** While the exception is active, MUST present a
+  persistent user-facing signal that the app is not in PNA mode. The signal MUST name the active
+  exception and MUST link to an explanation of the active exception set. The signal MAY be
+  dismissable, but dismissal MUST NOT clear the exception (dismissal acknowledges; it does not
+  resolve).
+- **EX-H4 — Active-set explainer.** MUST provide a user-reachable explanation of the
+  CURRENTLY-ACTIVE exception set. Because active combinations are installation-specific and cannot
+  be enumerated in a static document, this explainer MUST be generated at runtime from the active
+  set and MUST link out to each active exception's registry entry in this file.
+- **EX-H5 — Declared reversibility.** MUST declare whether returning to PNA mode is supported
+  (reversible) or not (irreversible). If it declares reversible, it MUST provide a practical,
+  user-reachable path back to PNA mode that the validation flow can confirm from code/UX.
+  Reversibility refers to **MODE ONLY**: a handler MUST NOT imply that returning to PNA mode undoes
+  consequences already incurred (e.g. data already disclosed to a third party).
+- **EX-H6 — Recommended solution.** SHOULD name a recommended solution in its registry entry,
+  demonstrated by a reference design.
+- **EX-H7 — Consent reaches the ultimate human.** Where the consuming actor is an agent/proxy
+  rather than the ultimate human (e.g. an orchestrator agent invoking the PNA on a person's behalf),
+  the handler MUST make a best-effort attempt to propagate the notice and acceptance (EX-H2) to the
+  ultimate human interface, and MUST NOT treat an intermediary agent's acceptance as the human's.
+  This clause is **best-effort by nature**: a PNA can instruct a cooperating client to surface the
+  notice but cannot compel a non-cooperating one (its strength is `best-effort`, EX-H8). It sharpens
+  AC-MCP-A — the required consent is the *human's*, and a middleman must not manufacture it. (Cf.
+  macaroon attenuation: delegated authority only narrows down a chain, never amplifies.)
+- **EX-H8 — Per-dimension strength disclosure.** MUST publish a **strength profile** for the
+  exception (see [Strength profiles](#strength-profiles)): for each dimension of the guarantee, the
+  *kind* of assurance offered, drawn from the fixed vocabulary. The profile MUST be user-reachable
+  from the active-set explainer (EX-H4). A single collapsed "assurance level" MUST NOT be used in
+  place of the per-dimension profile.
+
+> **Sub-contract IDs.** `EX-H1..EX-H8` follow PNT's existing sub-contract convention
+> (`<prefix>-<integer>`). They are deliberately prose/list items, not `| EX-… |` registry rows, so
+> the lint collects them as handler clauses, not as registry exceptions. The evaluate flow cites
+> them ("fails EX-H3 — no persistent signal").
+
+## Header conventions
+
+These mirror the `Realizes: AC-…` header that contract files carry (see `tools/lint-spec-ids.py`).
+They appear in an exception's registry entry and in a reference design's handler declaration.
+
+- **`Relaxes:`** — the baseline guarantee(s) the exception departs from; the inverse of `Realizes:`.
+  Each token is an `AC-*` ID or the literal `PNA-DEFINITION` (for departures from "local-only, never
+  SaaS"). Comma-separated. Example: `Relaxes: PNA-DEFINITION, AC-MCP-A`.
+- **`Reversible:`** — whether returning to PNA mode is supported. `yes` or `no`. If `yes`, a
+  `Reversal:` field MUST follow naming the mechanism (a route, control, or code reference the
+  validation flow can confirm). See EX-H5.
+- **`Stresses:`** *(optional, non-normative)* — a Goal the exception puts under pressure without
+  strictly relaxing a single AC. Example: `Stresses: Goal 1`.
+
+## Strength profiles
+
+The strength of an exception's handling is disclosed **per dimension, not as a single graded level.**
+A collapsed level (à la Common Criteria EAL or OWASP ASVS L1/2/3) would fold "the boundary is
+enforced" together with "the provider's data handling is unverifiable" into one misleading number.
+The honest frame: **once data crosses to a third party, the PNA can guarantee nothing about the data
+itself; every real guarantee is about the *boundary* (consent, signaling, reversibility,
+auditability) and *local recoverability*.**
+
+Each dimension's class is one of the fixed vocabulary (lint-checked for membership; the evaluate
+flow judges accuracy):
+
+| Class | Meaning |
+|---|---|
+| `enforced` | The app's own code makes it true; locally testable/auditable. |
+| `verifiable` | A claim an auditor can confirm from open code (not enforced at runtime, but checkable). |
+| `best-effort` | The app requests it of an untrusted party; cannot compel. |
+| `provider-asserted` | Depends entirely on a third party's own, app-unverifiable policy. |
+| `recoverable-only` | The app cannot prevent the harm but can undo/restore it. |
+| `none` | No guarantee is possible. |
+
+## Exception registry
+
+| EX | Name | Relaxes | Stresses | Reversible | Recommended solution |
+|---|---|---|---|---|---|
+| EX-CLOUD-LLM | Cloud-hosted AI over PNA data | PNA-DEFINITION, AC-MCP-A | Goal 1 | yes (mode only) | consent gate + persistent dismissable "not a PNA" signal + active-set explainer + return-to-PNA-mode — demonstrated by `fellows_local_db` |
+
+### EX-CLOUD-LLM — Cloud-hosted AI over PNA data
+
+**Relaxes:** PNA-DEFINITION, AC-MCP-A
+**Stresses:** Goal 1
+**Reversible:** yes
+**Reversal:** mode only — the user disconnects the cloud MCP client and returns to PNA mode.
+Returning to PNA mode does NOT undo any disclosure already made to the cloud provider (EX-H5).
+
+**Raised when:** the user connects a cloud-hosted MCP client (e.g. Claude Desktop on a hosted
+model, a desktop AI app on a hosted API) to a PNA's MCP servers that can return Private DB rows. The
+canonical trigger is the Private Data Ops server (see [`PNA_Spec.md` § Vocabulary](PNA_Spec.md), MCP
+server).
+
+**Recommended solution:** pre-raise consent gate (EX-H2) naming the exception and linking the
+explainer; persistent dismissable "not a PNA right now" signal (EX-H3); runtime active-set explainer
+(EX-H4) surfacing the strength profile below; declared, reversible return-to-PNA-mode path (EX-H5);
+best-effort consent-propagation notice to cloud clients via the MCP `instructions` handshake (EX-H7).
+Demonstrated by `fellows_local_db` (`reference_designs/fellows_local_db/`).
+
+**Strength profile (EX-H8):**
+
+| Dimension | Strength | Why |
+|---|---|---|
+| Consent precedes the raise | enforced | Setup is blocked until the user accepts the agreement. |
+| Non-PNA-mode signal while active | enforced | A persistent banner shows until the user returns to PNA mode. |
+| Mode is reversible | enforced | A return-to-PNA-mode control clears the exception. |
+| Servers read-only, two files only | verifiable | Databases opened `mode=ro`; auditable in open source. |
+| Local data damage from a bad AI step | recoverable-only | Not prevented — restorable from a backup/export. |
+| Consent reaches the human, not a proxy | best-effort | EX-H7 — cloud clients are asked to relay it; cannot be compelled. |
+| Provider won't train on / retain the data | provider-asserted | The provider's policy; unverifiable by the app. |
+| Data already sent to the provider | none | Irreversible once it has crossed the boundary. |
+
+#### What it does and does not relax
+
+`EX-CLOUD-LLM` relaxes the *delivery* guarantee (data leaves the device to a cloud model) and
+AC-MCP-A's consent posture. It does **not** relax AC-MCP-B (the workspace still launches
+transports), AC-1, or any other AC. Keeping the `Relaxes:` set tight is part of honest handling — an
+exception names the *minimum* set of guarantees it actually departs from.
+
+## Origin
+
+The Exceptions concept was distilled from operating the `fellows_local_db` reference design with a
+~500-user base: users wanted cloud-LLM integration, local models were impractical for them, and the
+spec had no first-class way to deviate *honestly*. See that design's `docs/architectural_findings.md`
+(upstream) and `reference_designs/fellows_local_db/`. Per PNT's reference-driven model, this concept
+ships alongside the working design that demonstrates it.
