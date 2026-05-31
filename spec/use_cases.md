@@ -1,5 +1,7 @@
 # Use cases
 
+> **Toolkit-Version:** 0.1 (draft) — the toolkit (spec, contracts, skill, lint, templates) is versioned as a unit; see [VERSION](../VERSION).
+
 > **Spec-Version:** 0.1 (draft)
 
 This document catalogs the use cases the spec attests. Each use case names a coherent class of PNA from the user's perspective; it suggests default axis picks but does not determine them. The Use case concept is defined in [`PNA_Spec.md` § Vocabulary](PNA_Spec.md#vocabulary).

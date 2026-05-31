@@ -1,5 +1,7 @@
 # Contributing to PNT
 
+> **Toolkit-Version:** 0.1 (draft) — the toolkit (spec, contracts, skill, lint, templates) is versioned as a unit; see [VERSION](VERSION).
+
 PNT (the Personal Network Toolkit) evolves through reference-driven specification: spec changes are accompanied by a working reference design that demonstrates the change in code. This document describes how to contribute a reference design — and how a spec change rides along with it.
 
 ## Philosophy
@@ -66,6 +68,8 @@ The PNA Spec uses linear SemVer:
 - **Major** — breaking changes (semantically altered ACs, removed picks, contract-shape changes)
 
 Individual axes carry their own version (declared per-axis in each design's Architecture document). A breaking change to an axis bumps that axis's version and the PNA Spec major.
+
+**The toolkit is versioned as a unit.** The version in `/VERSION` covers the whole toolkit — spec, contracts, skill, lint, and templates — not just the prose spec; every toolkit artifact carries a matching `Toolkit-Version:` header, enforced by `tools/lint-spec-ids.py`. A contribution is a PR against that versioned toolkit, whatever its shape — (a) a reference design, (b) a new architectural commitment, exception, or solution, or (c) a modification to the spec documents. Releases are git-tagged (`v<MAJOR.MINOR.PATCH>`). A design declares the `Toolkit-Version` it was built and validated against in its Architecture document; that is how a reader knows which toolkit version a design conforms to.
 
 ## Archival
 

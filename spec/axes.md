@@ -1,5 +1,7 @@
 # Axes
 
+> **Toolkit-Version:** 0.1 (draft) — the toolkit (spec, contracts, skill, lint, templates) is versioned as a unit; see [VERSION](../VERSION).
+
 > **Spec-Version:** 0.1 (draft)
 
 This document catalogs the Axes a PNA picks along, the attested picks on each Axis, and the flavor-derived ACs each pick triggers.

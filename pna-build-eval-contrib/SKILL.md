@@ -5,6 +5,8 @@ description: 'Use when building, extending, or evaluating a Personal Network App
 
 # Building, Evaluating, and Contributing to PNAs
 
+> **Toolkit-Version:** 0.1 (draft) — the toolkit (spec, contracts, skill, lint, templates) is versioned as a unit; see [VERSION](../VERSION).
+
 A PNA is a local-first application built to the PNT spec. The spec defines the architectural commitments (ACs) all PNAs share and the axes along which they legitimately differ. Conformance is satisfied by implementing the typed contracts in `contracts/` for each declared axis pick and honoring every applicable AC.
 
 PNT itself is a *generative + evaluative* application-class blueprint:
