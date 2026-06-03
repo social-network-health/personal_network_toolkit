@@ -111,8 +111,8 @@ VERSIONED_ARTIFACTS = [
     "spec/PNA_Spec.md", "spec/axes.md", "spec/use_cases.md", "spec/exceptions.md",
     "spec/constraints.md",
     "pna-build-eval-contrib/SKILL.md", "CONTRIBUTING.md", "README.md",
-    "tools/lint-spec-ids.py", "tools/egress-lint.py", "tools/evaluate-report.schema.json",
-    "tools/swh-save.sh",
+    "tools/lint-spec-ids.py", "tools/egress-lint.py", "tools/export-readable-lint.py",
+    "tools/evaluate-report.schema.json", "tools/swh-save.sh",
     "reference_designs/templates/TEMPLATE.md",
     "reference_designs/templates/ARCHITECTURE_TEMPLATE.md",
 ]

@@ -9,6 +9,14 @@
 - **`spec/PNA_Spec.md` + `spec/axes.md`.** A Constraints pointer near Goal 4 and in the "Validation, not certification" callout; the triggering picks (`storage:opfs-sqlite-wasm`, `web-bundle-*`) now cross-reference the constraints they inherit.
 - **`pna-build-eval-contrib/SKILL.md`.** Build flow gains "enumerate inherited Constraints" after axis selection; evaluate flow gains "detect and verify Constraints" after the exceptions pass (reporting by `CST-*` ID, with over-reach as the backstop).
 - **Reference design.** `reference_designs/fellows_local_db/` adds the Constraints contribution note and a § Constraint attestation table demonstrating the handling (the private-data capability gate, folder mode, data-layer browse-only enforcement). Distilled from a real MCP-handoff fragility finding on that design.
+### Private-DB portability (PR-6)
+
+- **PR-6: human-readable export (SHOULD).** New Private-schema sub-contract: implementations SHOULD export the Private DB to a flat, tool-free format (CSV per table, schema-embedded JSON, or a Markdown vault) *in addition to* the canonical SQLite file, readable with a generic CSV/JSON/Markdown reader and no PNA tooling. Closes the practical-ownership gap in Goal 4 — owning the bytes is not the same as being able to read them without a SQLite browser. The export is explicitly **one-way**: implementations MUST NOT treat it as a guaranteed re-import surface; re-import stays on the PR-5 SQLite path. Sub-contract count: `PR-` (6), 58 total.
+- **`tools/export-readable-lint.py`.** Deterministic PR-6 checker (mirrors `egress-lint.py`): every file in a human-readable export must parse with a Python stdlib reader and require no project code. Clean/dirty fixtures + a CI self-test job. The canonical `.sqlite` binary in an export is the textbook failure it catches. Motivated by mapping the spec against the Ink & Switch "local-first software" ultimate-ownership ideal; see `richbodo/fellows_local_db#216`. Demonstrating reference-design attestation (fellows_local_db) is the companion follow-up.
+
+### Threat-model scope clarification (at-rest encryption)
+
+- **At-rest encryption is not a universal AC — by decision.** `spec/PNA_Spec.md` § Scope and versioning now records that defending against *local device access* (lost/stolen/seized/shared machine) is out of v0.1's threat model: OS full-disk encryption is the right layer, and a boolean "encrypted at rest" AC would invite false assurance and tension with Goal 4 (lost key = lost data). At-rest encryption remains the `native-sqlcipher` flavor with deferred key-management ACs and a required strength profile. Full rationale captured as the first entry in a new **§ Design notes** in `docs/PriorArt.md`, alongside the Ink & Switch local-first ideal-mapping that motivated both this and PR-6. Resolves `richbodo/fellows_local_db#216` proposal 1.
 
 ### Formalization pass (Phase 3 of the reorg plan)
 
