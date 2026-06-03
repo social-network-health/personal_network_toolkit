@@ -175,3 +175,28 @@ The artifacts surveyed remain useful as references:
 
 These references inform PNT's design without constraining it to any of their workflows.
 
+## Design notes
+
+A running log of decisions where mapping PNT against the prior art above drove a concrete spec change (or a deliberate decision *not* to make one). Newest first; each entry is dated and names what it changed.
+
+### 2026-06 — Ink & Switch "local-first" ideals → PR-6, and the at-rest scope decision
+
+Mapping the spec against the Ink & Switch [*local-first software*](https://www.inkandswitch.com/essay/local-first/) essay (§ 8 above) surfaced two gaps. One became a spec change; the other became an explicit decision *not* to add one. Origin: `richbodo/fellows_local_db#216`.
+
+| Ink & Switch ideal | PNA spec coverage | Status |
+|---|---|---|
+| 1. No spinners (fast/local) | Implicit — AC-1 puts both DBs in local SQLite; AC-5 falls through to local cache on auth failure; AC-PRM-D forbids background polling. Not a named goal. | Structurally yes, not contractually stated |
+| 2. Not trapped on one device | Goal 4 gives backup/restore + AC-9 auto-snapshots + PR-5 idempotent migrations + **PR-6 tool-free export** — manual portability, not sync. | Aligned (portability); sync deliberately deferred |
+| 3. Network is optional (offline) | Strong yes. AC-5 cached fallback, AC-PRM-D no background polling, Browser PNAs run offline by construction. | Aligned |
+| 4. Seamless collaboration (real-time multi-user) | Not a goal. PNAs are personal. A Directory Archive ships the same Shared DB to many users with independent Private overlays, but no merge, no CRDT, no real-time. | Deliberately not in scope |
+| 5. The Long Now (longevity) | Strong, arguably more concrete than I&S. SWHID archival of reference designs is mandatory. AC-2 forbids a SaaS surface on the distribution server. The Distribution slot is optional — a single-user PNA runs forever with no server. | Aligned, arguably stronger |
+| 6. Security and privacy by default | Stronger than I&S on the network threat: the Private DB never leaves the device (Goal 1) — more absolute than I&S's E2E-encrypted *sync*. AC-18, AC-19, AC-PRM-A, AC-MCP-A. **At-rest-against-local-access is the one gap — and a deliberate scope decision, not a missing AC** (see below). | Stronger on the network threat; at-rest deliberately out of scope |
+| 7. Ultimate ownership and control | Aligned and explicit. Goal 5 requires source availability to the user — stronger than I&S, which said open source isn't required. AC-2 prevents architectural lock-in; PR-5 idempotent backup/restore. **Gap closed by PR-6:** the export is now a format a non-developer can open in another tool, not just "your data is in a SQLite file." | Aligned; export-format gap closed |
+
+**What it drove:**
+
+- **Ideal #7 → PR-6 (added).** The practical-ownership gap — owning the bytes is not the same as being able to *read* them without a SQLite browser — became a Private-schema sub-contract: a flat, human-readable export (CSV / schema-embedded JSON / Markdown) readable with no PNA tooling, SHOULD-level, demonstrated by `export-readable-lint.py`. The "Long Now" test (all PNT tooling vanishes; can a non-developer still use their notes?) now has a real answer.
+- **Ideal #6 → no universal at-rest AC (decided against).** The at-rest gap is real but narrow, and a universal AC is the wrong instrument. The threat it addresses — an adversary with *local access to the device* — is **outside v0.1's threat model** (which is network/platform exposure); its strongest forms are **platform-provided** (OS full-disk encryption already covers the powered-off-device case, better, and app-level encryption can't help a running, unlocked machine); a boolean "encrypted at rest" AC would invite **false assurance** under the evidence-discipline rules and tension with Goal 4 (a lost key is lost data). At-rest encryption stays a **flavor** (`native-sqlcipher`), with key-management ACs deferred until a SQLCipher reference design demonstrates them and a per-dimension **strength profile** required at attestation rather than a boolean. Recorded normatively in `spec/PNA_Spec.md` § Scope and versioning. (Notably, I&S's own answer to ideal #6 was E2E-encrypted *sync*, which PNT rejects by not syncing at all — so the at-rest gap is orthogonal to what I&S meant.)
+
+**Structural differences worth keeping in mind** (why the mapping isn't 1:1): I&S's seven ideals are *properties* (observable, aspirational, framed as UX); PNT's ACs are *contracts* (RFC 2119 MUST/SHOULD pinned to architectural seams), which is what makes PNT machine-checkable where I&S isn't. PNT also covers ground I&S didn't anticipate — the Shared/Private split itself, and the AI-as-transport framing (AC-PRM-A, AC-MCP-A/B). And it deliberately omits what I&S centers: CRDTs, real-time collaboration, cross-device sync.
+
