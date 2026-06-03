@@ -16,6 +16,12 @@ Checks:
   6. Every "Reversible:" field is well-formed (yes|no); a "yes" requires a
      "Reversal:" field. Every value in a strength-profile column is one of the
      fixed strength classes (EX-H8).
+  6b. Every Constraint in spec/constraints.md carries a stable ID (CST-*) in a
+     registry table row; every "Triggered-by:" token resolves to a known axis
+     pick (axis prefix + pick family from axes.md); every "Bounds:" token is a
+     valid AC/Goal-N/PNA-DEFINITION; every "Frontier:" is well-formed
+     (Open|Mitigated|Solved-on-<platform>|Inherent), and Mitigated/Solved-* each
+     require a "Workaround:"; every "Detectability:" is one of the fixed classes.
   7. The toolkit is versioned as a unit: a /VERSION file is the source of
      truth, and every versioned toolkit artifact (spec, skill, lint,
      contracts, templates, CONTRIBUTING, README) carries a "Toolkit-Version:"
@@ -54,12 +60,48 @@ STRENGTH_CLASSES = {
     "provider-asserted", "recoverable-only", "none",
 }
 
+# --- Constraints (spec/constraints.md) ---
+# Constraint registry IDs live in `| CST-... |` table rows (mirrors AC_RE / EX_RE).
+CST_RE = re.compile(r"^\| (CST-[A-Z0-9-]+?)(?=\s|\*|\|)", re.MULTILINE)
+# Triggered-by tokens are axis-pick identifiers of the form <axis>:<pick>. The
+# `\**` after each colon tolerates the markdown-bold field form (`**Field:**`),
+# matching how TOOLKIT_VERSION_RE handles `**Toolkit-Version:**`.
+TRIGGERED_RE = re.compile(
+    r"Triggered-by:\**\s*((?:[a-z0-9-]+:[a-z0-9-]+(?:\s*,\s*)?)+)", re.IGNORECASE
+)
+# Bounds tokens may be AC-*, Goal-N, or PNA-DEFINITION (inverse of REALIZES_RE,
+# same shape as RELAXES_RE minus EX). Entries that bound only the build space
+# omit the header (the regex simply finds none for them).
+BOUNDS_RE = re.compile(
+    r"Bounds:\**\s*((?:(?:AC-[A-Z0-9-]+|Goal-[0-9]+|PNA-DEFINITION)(?:\s*,\s*)?)+)",
+    re.IGNORECASE,
+)
+# Frontier: Open | Mitigated | Solved-on-<platform> | Inherent. Mitigated and
+# Solved-* require a Workaround: field (cross-checked below).
+FRONTIER_RE = re.compile(
+    r"Frontier:\**\s*(Open|Mitigated|Solved-on-[a-z0-9-]+|Inherent)\b", re.IGNORECASE
+)
+DETECT_RE = re.compile(r"Detectability:\**\s*([a-z-]+)", re.IGNORECASE)
+DETECT_CLASSES = {"feature-detect", "empirical-probe", "ua-sniff"}
+# The known axis prefixes Triggered-by tokens may use. These mirror the axes
+# catalogued in spec/axes.md (Distribution, Storage substrate, Ingestion shape,
+# Workspace shell, Comms transport set, MCP-exposure). The pick portion is
+# resolved against the pick IDs collected from axes.md (exact or family prefix).
+KNOWN_AXIS_PREFIXES = {
+    "distribution", "storage", "ingestion", "workspace", "comms", "mcp-exposure",
+}
+# Pick IDs in axes.md appear as the leading bolded code span of a Picks bullet:
+#   - **`opfs-sqlite-wasm`** — …
+AXES_PICK_RE = re.compile(r"^- \*\*`([a-z0-9-]+)`", re.MULTILINE)
+
 # Matches the version stamp across every artifact format: markdown
 # (`**Toolkit-Version:** 0.1`), comments (`# / -- / //  Toolkit-Version: 0.1`),
 # and JSON `$comment` strings (`... Toolkit-Version: 0.1.`).
 TOOLKIT_VERSION_RE = re.compile(r"Toolkit-Version:\**\s*(\d+\.\d+)")
 
 EXCEPTIONS_PATH = REPO / "spec" / "exceptions.md"
+CONSTRAINTS_PATH = REPO / "spec" / "constraints.md"
+AXES_PATH = REPO / "spec" / "axes.md"
 VERSION_PATH = REPO / "VERSION"
 
 # Toolkit artifacts that must carry a Toolkit-Version stamp matching /VERSION.
@@ -67,6 +109,7 @@ VERSION_PATH = REPO / "VERSION"
 # lint stays usable on partial checkouts.
 VERSIONED_ARTIFACTS = [
     "spec/PNA_Spec.md", "spec/axes.md", "spec/use_cases.md", "spec/exceptions.md",
+    "spec/constraints.md",
     "pna-build-eval-contrib/SKILL.md", "CONTRIBUTING.md", "README.md",
     "tools/lint-spec-ids.py", "tools/egress-lint.py", "tools/evaluate-report.schema.json",
     "tools/swh-save.sh",
@@ -144,6 +187,90 @@ def collect_strength_violations(text: str) -> list[str]:
     return violations
 
 
+def collect_constraint_ids() -> set[str]:
+    """CST-* registry IDs from spec/constraints.md. Empty if the file is absent
+    (the lint stays green on checkouts that haven't adopted constraints)."""
+    if not CONSTRAINTS_PATH.exists():
+        return set()
+    return set(CST_RE.findall(CONSTRAINTS_PATH.read_text()))
+
+
+def collect_axis_pick_ids() -> set[str]:
+    """Pick IDs catalogued under each axis's '### Picks' bullets in axes.md."""
+    if not AXES_PATH.exists():
+        return set()
+    return set(AXES_PICK_RE.findall(AXES_PATH.read_text()))
+
+
+def _triggered_by_resolves(token: str, picks: set[str]) -> bool:
+    """A Triggered-by token `<axis>:<pick>` resolves iff the axis prefix is known
+    and the pick portion is a known pick ID OR a family prefix of one (so
+    `distribution:web-bundle` matches `web-bundle-with-magic-link`)."""
+    axis, _, pick = token.partition(":")
+    if axis.lower() not in KNOWN_AXIS_PREFIXES:
+        return False
+    if not pick:
+        return False
+    return any(p == pick or p.startswith(pick + "-") for p in picks)
+
+
+def collect_constraint_violations(spec_ids: set[str]) -> list[str]:
+    """Shape-validate spec/constraints.md: Triggered-by resolves to axis picks,
+    Bounds tokens are valid, Frontier is well-formed (Mitigated/Solved-* need a
+    Workaround), Detectability is a known class. Absent file → no violations."""
+    if not CONSTRAINTS_PATH.exists():
+        return []
+    text = CONSTRAINTS_PATH.read_text()
+    violations: list[str] = []
+    picks = collect_axis_pick_ids()
+
+    # Triggered-by → axis picks.
+    for m in TRIGGERED_RE.finditer(text):
+        for tok in (t.strip() for t in m.group(1).split(",")):
+            if not _triggered_by_resolves(tok, picks):
+                violations.append(
+                    f"Triggered-by names {tok!r}, which is not a known axis pick "
+                    "(<axis>:<pick> from axes.md)."
+                )
+
+    # Bounds → valid AC / Goal-N / PNA-DEFINITION.
+    known_bounds = spec_ids | {"PNA-DEFINITION"}
+    for m in BOUNDS_RE.finditer(text):
+        for tok in (t.strip() for t in m.group(1).split(",")):
+            if tok == "PNA-DEFINITION" or re.fullmatch(r"Goal-[0-9]+", tok, re.IGNORECASE):
+                continue
+            if tok not in known_bounds:
+                violations.append(
+                    f"Bounds names {tok}, which is not a known AC, Goal-N, or PNA-DEFINITION."
+                )
+
+    # Frontier values + the Mitigated/Solved-* → Workaround cross-check, per entry.
+    # Each registry detail block starts at a '### CST-...' heading; check within.
+    blocks = re.split(r"^### (CST-[A-Z0-9-]+)", text, flags=re.MULTILINE)
+    # re.split keeps captured IDs interleaved: [pre, id1, body1, id2, body2, ...]
+    for i in range(1, len(blocks), 2):
+        cst_id, body = blocks[i], blocks[i + 1]
+        fm = FRONTIER_RE.search(body)
+        if not fm:
+            violations.append(f"{cst_id}: no well-formed 'Frontier:' field.")
+        else:
+            frontier = fm.group(1).lower()
+            if (frontier == "mitigated" or frontier.startswith("solved-on")) \
+                    and "Workaround:" not in body:
+                violations.append(
+                    f"{cst_id}: Frontier '{fm.group(1)}' requires a 'Workaround:' field."
+                )
+        dm = DETECT_RE.search(body)
+        if not dm:
+            violations.append(f"{cst_id}: no 'Detectability:' field.")
+        elif dm.group(1).lower() not in DETECT_CLASSES:
+            violations.append(
+                f"{cst_id}: Detectability '{dm.group(1)}' is not one of "
+                f"{', '.join(sorted(DETECT_CLASSES))}."
+            )
+    return violations
+
+
 def expected_toolkit_minor() -> str | None:
     """The MAJOR.MINOR series from /VERSION (e.g. '0.1' from '0.1.0-draft')."""
     if not VERSION_PATH.exists():
@@ -215,6 +342,10 @@ def main() -> int:
             failures.append("exceptions.md: 'Reversible: yes' present but no 'Reversal:' field.")
         failures.extend(f"exceptions.md: {v}" for v in collect_strength_violations(ex_text))
 
+    # --- Constraints (spec/constraints.md) ---
+    constraint_ids = collect_constraint_ids()
+    failures.extend(f"constraints.md: {v}" for v in collect_constraint_violations(spec_ids))
+
     # --- Toolkit version stamps ---
     toolkit_minor, version_failures = check_toolkit_versions()
     failures.extend(version_failures)
@@ -231,6 +362,7 @@ def main() -> int:
     print(f"  spec defines {len(spec_ids)} AC IDs")
     print(f"  {n_realizing}/{len(contract_realizes)} contract files declare a 'Realizes:' header")
     print(f"  exceptions.md defines {len(exception_ids)} exception ID(s)")
+    print(f"  constraints.md defines {len(constraint_ids)} constraint ID(s)")
     return 0
 
 

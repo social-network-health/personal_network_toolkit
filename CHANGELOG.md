@@ -2,6 +2,14 @@
 
 ## v0.1 draft (in progress)
 
+### Constraints concept (additive)
+
+- **`spec/constraints.md` (new).** Introduces **Constraints** — the dual of Exceptions: stable-ID'd (`CST-*`) platform/substrate-imposed ceilings, inherited automatically by axis picks, that bound a capability a PNA would otherwise offer. No one raises a Constraint (the platform imposes it); the PNA must *detect* it honestly and *handle* it by per-platform capability reduction. Handling a Constraint does **not** exit PNA mode — the failure mode is over-reach (false durability). Carries the `Triggered-by:`/`Bounds:`/`Frontier:`/`Detectability:` header conventions, two meta-principles (capability presence ≠ usefulness ≠ permanence; reduce at the data layer, not UI-only), and the eight-entry `CST-PWA-*` registry for the `web-bundle` × `opfs-sqlite-wasm` flavor.
+- **`tools/lint-spec-ids.py`.** Extended to collect `CST-*` IDs and validate constraint declarations: `Triggered-by:` tokens resolve to known axis picks (axis prefix + pick family from `axes.md`); `Bounds:` tokens are valid `AC-*`/`Goal-N`/`PNA-DEFINITION`; `Frontier:` is well-formed (`Open`/`Mitigated`/`Solved-on-<platform>`/`Inherent`) with `Mitigated`/`Solved-*` requiring a `Workaround:`; `Detectability:` is one of `feature-detect`/`empirical-probe`/`ua-sniff`. (Also fixed the field regexes to tolerate the markdown-bold field form, matching the version-stamp regex.)
+- **`spec/PNA_Spec.md` + `spec/axes.md`.** A Constraints pointer near Goal 4 and in the "Validation, not certification" callout; the triggering picks (`storage:opfs-sqlite-wasm`, `web-bundle-*`) now cross-reference the constraints they inherit.
+- **`pna-build-eval-contrib/SKILL.md`.** Build flow gains "enumerate inherited Constraints" after axis selection; evaluate flow gains "detect and verify Constraints" after the exceptions pass (reporting by `CST-*` ID, with over-reach as the backstop).
+- **Reference design.** `reference_designs/fellows_local_db/` adds the Constraints contribution note and a § Constraint attestation table demonstrating the handling (the private-data capability gate, folder mode, data-layer browse-only enforcement). Distilled from a real MCP-handoff fragility finding on that design.
+
 ### Formalization pass (Phase 3 of the reorg plan)
 
 - **RFC 2119 normative language.** Every AC and every sub-contract in `spec/PNA_Spec.md` and `spec/axes.md` was reworded so that conformance-bearing statements use MUST / MUST NOT / SHOULD / SHOULD NOT / MAY. Readable prose around the keywords preserved (motivation, examples, why-it-matters). A short "Normative language" note added at the top of each AC-bearing section.
