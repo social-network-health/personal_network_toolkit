@@ -2,6 +2,29 @@
 
 ## v0.1 draft (in progress)
 
+### Proposed (RFC — not yet accepted): honest-exit amendments to the Exceptions mechanism
+
+> **Status: RFC, opened for maintainer consideration — not merged behavior.** Changes (2) and (3)
+> impose new obligations on designs, so per `CONTRIBUTING.md` § Contribution types they require a
+> demonstrating reference design before acceptance. Rationale:
+> `docs/design-notes/2026-06-exceptions-existential-review.md`.
+
+- **(1) Predicate split (clarification).** `spec/exceptions.md` § Concept + `spec/PNA_Spec.md`
+  (`vocab-pna`, § Vision, § Composition): the overloaded "conformant PNA in non-PNA mode" is split
+  into two reported predicates — **`pna-active`** (the mode bit; `false` while any exception is
+  active; the categorical "is it a PNA right now?" claim a relying party keys on) and
+  **`exception-handling` conformant** (the process). The interop future-direction now gates on
+  `pna-active`, not on exception-handling conformance.
+- **(2) EX-H7 fail-closed.** `spec/exceptions.md` § Handler contract: consent for a Private-DB
+  exception MUST be obtained on a PNA-controlled surface (`enforced`), the PNA SHOULD relay a
+  best-effort "confirm in the app" notice to cooperating clients via the MCP `instructions` handshake,
+  and where it cannot confirm a human consented it MUST fail closed (AC-MCP-A's "either refuse" arm)
+  rather than raise on a proxy's say-so.
+- **(3) Un-relaxable floor.** `spec/exceptions.md` § Scope discipline: AC-18, AC-19, and AC-MCP-B are
+  a floor no exception may relax even with consent (a user may consent to *disclose data they read*,
+  never to remove the human-in-the-loop on action taken on their behalf, which reaches third parties).
+- Lint + self-tests stay green (prose-only; no machine-parsed table changed).
+
 ### Slots optionality + the Minimum Viable PNA use case (normative clarification)
 
 - **Required vs optional slots clarified.** Only **Ingestion, Storage, and Workspace** are required; **Communications and Distribution are optional** (previously only Distribution was marked optional). A PNA that never reaches out omits Communications — its comms ACs (AC-16/18/19) are then vacuous, mirroring how the MCP ACs are vacuous when no MCP server is exposed. This is a **relaxation**: every existing design (which has all slots) stays conformant; it just lets a smaller app qualify. See `spec/PNA_Spec.md` § Slots, Interfaces, and Sub-contracts.
