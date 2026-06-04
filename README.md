@@ -63,7 +63,7 @@ To dig into the spec more deeply:
 
 - **[`pna-build-eval-contrib/SKILL.md`](pna-build-eval-contrib/SKILL.md)** — the skill packaging the three flows (build, evaluate, contribute) for AI agents. The agent-consumption view of the toolkit.
 - **[`spec/axes.md`](spec/axes.md)** — the Axes a PNA varies along, attested picks per Axis, and the flavor-derived ACs each pick triggers.
-- **[`spec/use_cases.md`](spec/use_cases.md)** — attested classes of PNA (Directory Archive realized; Personal Relationship Manager draft; Multi-PNA ecosystem target).
+- **[`spec/use_cases.md`](spec/use_cases.md)** — attested classes of PNA (Minimum Viable PNA; Directory Archive realized; Personal Relationship Manager draft; Multi-PNA ecosystem target).
 - **[`contracts/`](contracts/)** — typed contracts for the load-bearing interfaces: JSON Schema for the worker init handshake + RPC (Remote Procedure Call) protocol, OpenAPI for distribution auth, SQL DDL (Data Definition Language) for the two database schemas, TypeScript for the Communications transport interface, JSON Schema for the five canonical MCP server tool surfaces.
 - **[`CHANGELOG.md`](CHANGELOG.md)** — toolkit version history.
 - **[`llms.txt`](llms.txt)** — discovery file for the spec (humans + AI agents land here cold).
