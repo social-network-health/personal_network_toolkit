@@ -4,11 +4,28 @@
 
 This document catalogs the use cases the spec attests. Each use case names a coherent class of PNA from the user's perspective; it suggests default axis picks but does not determine them. The Use case concept is defined in [`PNA_Spec.md` § Vocabulary](PNA_Spec.md#vocabulary).
 
-v0.1 attests two named use cases plus one longer-arc target:
+v0.1 attests three named use cases plus one longer-arc target:
 
+- [Minimum Viable PNA](#minimum-viable-pna-personal-vault) — the smallest conformant shape (ingest + store + a minimal workspace)
 - [Directory Archive](#directory-archive) — realized in fellows_local_db
 - [Personal Relationship Manager](#personal-relationship-manager-draft) — draft (no PNA-spec-conforming reference design yet)
 - [Multi-PNA ecosystem](#multi-pna-ecosystem-target-v02) — target (v0.2+, no reference design)
+
+---
+
+## Minimum Viable PNA ("Personal Vault")
+
+The smallest shape that is still a conformant PNA: **Ingestion + Storage + a minimal Workspace**, with **no Communications and no Distribution**. It mirrors your contact data locally (Shared store) and lets you add a private overlay — notes, tags, groups — through a thin surface (a CLI, a small script, or any `workspace-shell` pick). Nothing ever leaves the device; nothing is distributed to anyone else.
+
+This is useful on its own — a personal **backup-with-notes** / vault — and it is the floor every richer PNA builds on (a Directory Archive adds Distribution; a PRM adds multi-source Ingestion + Communications; an ecosystem adds MCP cooperation).
+
+**Likely flavor:** `distribution:never-distributed-single-user + storage:native-sqlite-via-filesystem (or opfs-sqlite-wasm) + ingestion:single-source-static-mirror + workspace-shell:cli-subcommands + comms:` *(none)* `+ mcp-exposure:none (or shared+private read-only for a local AI client)`.
+
+**Why it's the floor.** A pure mirror with *no* private overlay isn't a PNA — it's just a backup; the private layer is what makes it "personal network." And the Workspace can't be dropped even with MCP servers: in v0.1 the data-ops MCP servers are read-only (you can't *write* private data through MCP), and the Workspace is the human-in-the-loop consent boundary AC-MCP-A/B require. So the minimum is ingest + store + *some* workspace.
+
+> **Future direction — headless / MCP-native PNA (v0.2+).** Once write-side MCP tools land and the consent boundary can be relocated into a thin, PNA-owned confirmation shell (rather than the best-effort client propagation of EX-H7), a PNA whose only surface is its MCP servers — driven entirely by an AI client — becomes coherent. v0.1 doesn't define it; it connects to the [Multi-PNA ecosystem](#multi-pna-ecosystem-target-v02) target.
+
+**Reference design:** none yet; the closest realized shape is `fellows_local_db` minus Distribution and Communications.
 
 ---
 

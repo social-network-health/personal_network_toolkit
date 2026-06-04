@@ -2,6 +2,12 @@
 
 ## v0.1 draft (in progress)
 
+### Slots optionality + the Minimum Viable PNA use case (normative clarification)
+
+- **Required vs optional slots clarified.** Only **Ingestion, Storage, and Workspace** are required; **Communications and Distribution are optional** (previously only Distribution was marked optional). A PNA that never reaches out omits Communications — its comms ACs (AC-16/18/19) are then vacuous, mirroring how the MCP ACs are vacuous when no MCP server is exposed. This is a **relaxation**: every existing design (which has all slots) stays conformant; it just lets a smaller app qualify. See `spec/PNA_Spec.md` § Slots, Interfaces, and Sub-contracts.
+- **New use case — Minimum Viable PNA ("Personal Vault").** The smallest conformant shape: Ingestion + Storage + a minimal Workspace, no Communications, no Distribution — a local mirror of your contacts plus a private overlay you add via a CLI; nothing leaves the device. Added to `spec/use_cases.md` and the PNA_Spec use-cases list (README / SKILL / llms.txt summaries updated to match).
+- **Workspace stays required — MCP can't replace it (v0.1).** The Workspace bundles three roles: render, write-private-data, and the human-in-the-loop consent boundary. MCP servers can *add* an AI-driven surface but can't replace the Workspace in v0.1, because the data-ops MCP servers are read-only (no private writes via MCP) and AC-MCP-A/B make the Workspace the mandatory consent surface (the MCP server proposes; the Workspace disposes). A **headless / MCP-native PNA** is recorded as a v0.2+ direction in `use_cases.md`.
+
 ### ID columns moved to the right + header-aware lint + deep-link anchors (toolkit fix)
 
 - **The ID column now sits last** in every ID-bearing spec table — the Universal AC table (`Commitment | Serves | ID`), the axes "Extra commitments these picks add" tables (`Commitment | Applies when you pick | AC`), and the constraints + exceptions registries — so a human reads the commitment before the ID. **No AC/EX/CST ID changed and every `<a id>` deep-link anchor is preserved** (verified), so PR #27's external references (which `fellows_local_db` relies on) still resolve.

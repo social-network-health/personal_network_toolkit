@@ -156,7 +156,7 @@ Use when the change is to the toolkit's own artifacts and imposes **no** new con
 - `spec/PNA_Spec.md` — canonical spec (vocabulary, goals, ACs, slot map, sub-contracts)
 - `spec/axes.md` — axes, attested picks per axis, flavor-derived ACs, and the constraints each pick inherits
 - `spec/constraints.md` — platform/substrate ceilings (`CST-*`) inherited by axis picks; the dual of exceptions.md
-- `spec/use_cases.md` — attested classes of PNA (Directory Archive, PRM [draft], Multi-PNA ecosystem [target])
+- `spec/use_cases.md` — attested classes of PNA (Minimum Viable PNA, Directory Archive, PRM [draft], Multi-PNA ecosystem [target])
 - `contracts/` — typed contracts (JSON Schema, OpenAPI, SQL DDL, TypeScript), each with a `Realizes: AC-X` header
 - `reference_designs/README.md` — index of accepted reference designs
 - `reference_designs/templates/` — the per-design record, Architecture, and `design.toml` manifest templates
