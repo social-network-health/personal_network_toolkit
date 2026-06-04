@@ -169,7 +169,7 @@ For developers working **on the toolkit itself** (the spec, lints, contracts, sk
 
 ## Contributing beyond reference designs
 
-Not every contribution is a reference design. The [PR template](../.github/pull_request_template.md) has two lanes:
+Not every contribution is a reference design — most aren't. The routing is owned by [`CONTRIBUTING.md` § Contribution types](../CONTRIBUTING.md#contribution-types) (the deciding question: *does a design have to do anything new to stay conformant after this change?*) and surfaced in the [PR template](../.github/pull_request_template.md)'s two lanes; in brief:
 
 - **Toolkit fix / docs / tooling** — a lint improvement, a new tool, a doc fix, a clarifying spec edit (Patch-level). No reference-design attestation needed; just `just ci` green and (per the rule above) any user-facing doc updated in the same PR.
 - **Reference design, or a spec/contracts change** — completes the reference-design checklist. Note the policy in [`CONTRIBUTING.md`](../CONTRIBUTING.md): **new normative content (a new AC, Exception, or Constraint) is not accepted without a demonstrating reference design** — the spec and a working design that exercises it co-evolve. So "a new AC" rides in on a design's PR; "fix a typo in an AC" or "tighten a lint" does not.
