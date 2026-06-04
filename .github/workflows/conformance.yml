@@ -1,0 +1,52 @@
+name: conformance (reference designs)
+
+# SCAFFOLD — Tier B of the conformance suite (plans/conformance-suite-plan.md § Phase 4).
+#
+# Pulls a reference design's SWHID-pinned source, verifies the pin, builds it, and
+# runs its [verify] entrypoint, reporting by AC/EX/CST. INERT until at least one
+# reference design's design.toml declares `archival = "archived"` + a [verify]
+# entrypoint + a container. Triggers are manual (workflow_dispatch) and reusable
+# (workflow_call) only; the nightly/weekly schedule is intentionally commented out
+# so this never runs automatically before it does anything.
+#
+# Activation checklist (per design, see the plan doc § Phase 4):
+#   1. design.toml: archival = "archived", real commit + swhid_rev + swhid_dir,
+#      and a [verify] entrypoint that builds + runs the attested tests.
+#   2. The design ships a container (or adopts a toolkit base image) for its stack.
+#   3. Run in an ephemeral, least-privilege, network-restricted runner — executing
+#      contributed code is RCE by design; no repo secrets in this job.
+#   4. Only `status = "active"` designs enter the matrix; archival designs are
+#      pinned knowledge, not continuously tested (see docs/conformance-scope-and-lifecycle.md).
+#   5. Uncomment the schedule for the version-bump re-attestation sweep (roadmap R2).
+
+on:
+  workflow_dispatch:
+    inputs:
+      design:
+        description: "Reference design name to test (blank = all active)"
+        required: false
+        default: ""
+  workflow_call:
+    inputs:
+      design:
+        type: string
+        required: false
+        default: ""
+  # schedule:
+  #   - cron: "0 7 * * 1"   # weekly sweep of the active set, once designs are runnable
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: status — Tier B not yet active
+        run: |
+          echo "Reference-design conformance (Tier B) is scaffolded but inert."
+          echo "It activates when a design's design.toml declares archival='archived'"
+          echo "plus a [verify] entrypoint and a container. Until then this is a no-op."
+          echo "See plans/conformance-suite-plan.md § Phase 4 and the activation"
+          echo "checklist at the top of this workflow file."

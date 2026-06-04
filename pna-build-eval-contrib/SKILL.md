@@ -102,6 +102,7 @@ Before authoring the PR, validate that the design is submission-ready. This step
    - A deferral living in a code comment instead of the attestation or a `strict=True` xfail
    - AC realizations whose cited code doesn't match the claim
    - Failing or missing tests on the Verification side
+   - A missing or malformed `design.toml` manifest — no `[verify]` entrypoint declared, a `[flavor]` pick that doesn't resolve in `spec/axes.md`, or (once `archival = "archived"`) a missing/malformed SWHID
    - License problems (must be OSI-approved; must permit Software Heritage archival)
 
 4. **Iterate.** When the user fixes things, re-run preflight. Keep going until the report is clean.
@@ -113,10 +114,11 @@ Once preflight passes:
 1. **Read `CONTRIBUTING.md`** for the acceptance rules.
 2. **Frame the contribution.** If proposing a spec change, write the spec diff and explain what working code in the design demonstrates each change. If purely additive (no spec change), say so in the design record's contributions section.
 3. **Author the design record** at `reference_designs/<design-name>/README.md` per `reference_designs/templates/TEMPLATE.md`.
-4. **Copy the Architecture document** to `reference_designs/<design-name>/Architecture.md`. (PNT keeps its own copy at acceptance time; the design's own repo may evolve after.)
-5. **Open the PR** with: spec diff (if any), design record, Architecture document, canonical repo URL, and the commit SHA being submitted.
+4. **Author the machine-readable manifest** at `reference_designs/<design-name>/design.toml` per `reference_designs/templates/design.toml`. This is the source of truth the conformance suite reads: `name`, `repo`, `toolkit_version`, `status`, `archival`, the `[flavor]` axis picks (each must resolve in `spec/axes.md`), and the `[verify]` block declaring the one command that builds and runs the design's attested tests (`tools/lint-spec-ids.py` validates the shape). While archival is still pending, leave `commit`/`swhid_rev`/`swhid_dir` empty (`archival = "pending"`); the lint permits that for an in-flight design.
+5. **Copy the Architecture document** to `reference_designs/<design-name>/Architecture.md`. (PNT keeps its own copy at acceptance time; the design's own repo may evolve after.)
+6. **Open the PR** with: spec diff (if any), design record, `design.toml`, Architecture document, canonical repo URL, and the commit SHA being submitted.
 
-After merge, the maintainer triggers Software Heritage archival on the design's repo at the accepted commit (planned tooling: `tools/swh-save.sh`, landing in Phase 5; until then, archival is performed manually via Software Heritage's Save Code Now) and records the returned SWHID in the design record. A final preflight run against the merged state should come out clean.
+After merge, the maintainer triggers Software Heritage archival on the design's repo at the accepted commit (planned tooling: `tools/swh-save.sh`, landing in Phase 5; until then, archival is performed manually via Software Heritage's Save Code Now), then records the returned `swh:1:dir`/`swh:1:rev` and the commit SHA **into `design.toml`** and flips `archival = "archived"` (at which point the lint requires those fields and checks `swhid_rev` against `commit`). The SWHID also goes in the prose design record. A final preflight run against the merged state should come out clean.
 
 A builder using Claude Code can drive both preflight and PR authoring end-to-end. Maintainer review at acceptance time is the human-judgment gate that's intentionally not automated.
 
@@ -135,7 +137,8 @@ A builder using Claude Code can drive both preflight and PR authoring end-to-end
 - `spec/use_cases.md` — attested classes of PNA (Directory Archive, PRM [draft], Multi-PNA ecosystem [target])
 - `contracts/` — typed contracts (JSON Schema, OpenAPI, SQL DDL, TypeScript), each with a `Realizes: AC-X` header
 - `reference_designs/README.md` — index of accepted reference designs
-- `reference_designs/templates/` — the per-design and Architecture templates
+- `reference_designs/templates/` — the per-design record, Architecture, and `design.toml` manifest templates
+- `reference_designs/<name>/design.toml` — the machine-readable design record (SWHID pin, flavor, verify entrypoint) the conformance suite consumes; see `plans/conformance-suite-plan.md`
 - `tools/evaluate-report.schema.json` — typed artifact for the evaluate flow's AC-keyed report (the canonical, diffable output; the prose report is a view over it)
 - `tools/egress-lint.py` — deterministic private-data-sovereignty check (AC-1): static scan for unsanctioned off-device egress vectors; `--json` emits evidence that folds into the report schema above. Run it against a candidate and fold its evidence into the AC-1 (and AC-2, server-side) finding.
 - `tools/lint-spec-ids.py` — checks AC ↔ contract traceability invariants

@@ -41,6 +41,7 @@ The skill's contribute flow (driven by [`docs/users-guide.md` § Goal 3](docs/us
 - **Spec diff (if any)** — changes to `spec/PNA_Spec.md`, `spec/axes.md`, `spec/use_cases.md`, or `contracts/` files
 - **A design record** at `reference_designs/<design-name>/README.md` per [`reference_designs/templates/TEMPLATE.md`](reference_designs/templates/TEMPLATE.md)
 - **A copy of the design's Architecture document** at `reference_designs/<design-name>/Architecture.md` per [`reference_designs/templates/ARCHITECTURE_TEMPLATE.md`](reference_designs/templates/ARCHITECTURE_TEMPLATE.md)
+- **A machine-readable manifest** at `reference_designs/<design-name>/design.toml` per [`reference_designs/templates/design.toml`](reference_designs/templates/design.toml) — the source of truth the conformance suite reads (repo, flavor, the `[verify]` entrypoint, and the SWHID pin once archived). `tools/lint-spec-ids.py` validates its shape; a design dir with an `Architecture.md` must carry one.
 - **The design's canonical repo URL and the commit SHA (and tag, if any) being submitted**
 - **The evaluate-flow report** at `reference_designs/<design-name>/evaluate-report.json` — an instance of [`tools/evaluate-report.schema.json`](tools/evaluate-report.schema.json), produced by running the skill's evaluate flow against the design. It is the typed, diffable record of *what was validated*, and the input the maintainer attests to at acceptance.
 
@@ -57,7 +58,7 @@ On merge:
 
 - Spec changes land (including any new AC IDs, sub-contracts, or axis-pick additions).
 - **Maintainer attests validation.** The maintainer confirms the evaluate-flow report and the AC attestation table check out against the cited code, at a specific **Toolkit-Version**, and records an acceptance line in the design record (`reference_designs/<design-name>/README.md`): *date · accepted-by · Toolkit-Version validated against*. The merge is the acceptance; this line is the durable record of *what* was validated. While there is a single maintainer this stays lightweight — and the first reference design, `fellows_local_db`, is accepted *by definition* as the design the toolkit was distilled from.
-- Maintainer triggers Software Heritage archival with [`tools/swh-save.sh <repo-url> [<git-ref>] [<clone-path>]`](tools/swh-save.sh) — a thin wrapper over Save Code Now that also prints the git-compatible SWHIDs — and records the returned `swh:1:dir` SWHID (Software Heritage Persistent IDentifier) in the design record.
+- Maintainer triggers Software Heritage archival with [`tools/swh-save.sh <repo-url> [<git-ref>] [<clone-path>]`](tools/swh-save.sh) — a thin wrapper over Save Code Now that also prints the git-compatible SWHIDs — and records the returned `swh:1:dir` SWHID (Software Heritage Persistent IDentifier) in the design record **and in `design.toml`** (set `commit`/`swhid_rev`/`swhid_dir` and flip `archival = "archived"`; the lint then requires them and checks `swhid_rev` against `commit`).
 - Maintainer decides whether the design warrants an additional `archive/<design-name>` fork in the `pnt-archive` GitHub organization (high-signal designs only; SWHID alone is sufficient for the archival promise).
 - Toolkit version bumped per the versioning rules below.
 

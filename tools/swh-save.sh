@@ -51,11 +51,17 @@ if [ -n "$GITDIR" ] && git -C "$GITDIR" rev-parse "$REF" >/dev/null 2>&1; then
   tree=$(git -C "$GITDIR" rev-parse "${REF}^{tree}")
   echo "SWHIDs for ${URL} @ ${REF} (${commit:0:12}):"
   echo "  swh:1:rev:${commit}"
-  echo "  swh:1:dir:${tree}   <- record this in reference_designs/<name>/README.md"
+  echo "  swh:1:dir:${tree}"
   if [ "$fmt" != "sha1" ]; then
     echo "  ⚠ repo object-format is ${fmt}, not sha1 — these are NOT git-compatible;"
     echo "    take the canonical swh:1:dir from the SH archive after ingest instead."
   fi
+  echo
+  echo "Paste into reference_designs/<name>/design.toml (and record in the README),"
+  echo "then set archival = \"archived\" — the lint requires and cross-checks these:"
+  echo "  commit    = \"${commit}\""
+  echo "  swhid_rev = \"swh:1:rev:${commit}\""
+  echo "  swhid_dir = \"swh:1:dir:${tree}\""
 else
   echo "No local clone provided — re-run with a clone path to compute the SWHID locally:"
   echo "    tools/swh-save.sh ${URL} ${REF} <clone-path>"

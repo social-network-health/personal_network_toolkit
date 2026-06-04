@@ -29,6 +29,13 @@ Checks:
      truth, and every versioned toolkit artifact (spec, skill, lint,
      contracts, templates, CONTRIBUTING, README) carries a "Toolkit-Version:"
      header whose minor matches /VERSION.
+  8. Every reference_designs/<name>/design.toml is well-formed: required keys
+     present; status/archival from their fixed vocab; [flavor] picks resolve to
+     the right axis in axes.md; [verify] runner known. An `archived` design must
+     carry a 40-hex commit + well-formed swhid_rev/swhid_dir (swhid_rev matching
+     the commit) + a verify entrypoint; a `pending` design may defer those but
+     any present value must still be well-formed. A design dir with an
+     Architecture.md must have a manifest.
 
 The lint validates the *shape* of declarations (presence + ID/vocabulary/
 version resolution), not their behavioral correctness — that is the LLM
@@ -108,10 +115,20 @@ AXIS_PREFIX_TO_HEADING = {
     "mcp-exposure": "mcp-exposure",
 }
 # Pick IDs in axes.md appear as the leading bolded code span of a Picks bullet:
-#   - **`opfs-sqlite-wasm`** — …
-AXES_PICK_RE = re.compile(r"^- \*\*`([a-z0-9-]+)`", re.MULTILINE)
+#   - **`opfs-sqlite-wasm`** — …   (the `+` admits mcp-exposure picks like
+#   `shared+private+comms`, which would otherwise be truncated at the plus).
+AXES_PICK_RE = re.compile(r"^- \*\*`([a-z0-9+-]+)`", re.MULTILINE)
 # Section headings in axes.md: '## Storage substrate'.
 AXES_SECTION_RE = re.compile(r"^## (.+)$", re.MULTILINE)
+
+# --- Reference-design manifests (reference_designs/<name>/design.toml) ---
+DESIGNS_PATH = REPO / "reference_designs"
+SWHID_REV_RE = re.compile(r"^swh:1:rev:[0-9a-f]{40}$")
+SWHID_DIR_RE = re.compile(r"^swh:1:dir:[0-9a-f]{40}$")
+GIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+DESIGN_STATUS = {"active", "archived", "superseded"}
+DESIGN_ARCHIVAL = {"pending", "archived"}
+DESIGN_RUNNERS = {"container", "just", "make"}
 
 # Matches the version stamp across every artifact format: markdown
 # (`**Toolkit-Version:** 0.1`), comments (`# / -- / //  Toolkit-Version: 0.1`),
@@ -372,6 +389,113 @@ def collect_constraint_violations(spec_ids: set[str]) -> list[str]:
     return violations
 
 
+def _parse_design_manifest(text: str) -> dict:
+    """Parse the deliberately-simple subset of TOML a design.toml uses: comments
+    (`#`), `[section]` headers, and `key = "quoted string"` lines. Returns a dict
+    with top-level keys plus `flavor` and `verify` sub-dicts. Not a general TOML
+    parser — the manifest format is ours and stays this simple so the lint needs
+    no `tomllib` (py3.11+) and runs on any python3."""
+    root: dict = {}
+    section = root
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("[") and line.endswith("]"):
+            name = line[1:-1].strip()
+            section = root.setdefault(name, {})
+            continue
+        if "=" not in line:
+            continue
+        key, _, val = line.partition("=")
+        key, val = key.strip(), val.strip()
+        if val.startswith('"'):
+            end = val.find('"', 1)
+            val = val[1:end] if end != -1 else val[1:]
+        else:  # bare value up to a trailing comment
+            val = val.split("#", 1)[0].strip()
+        section[key] = val
+    return root
+
+
+def collect_design_manifest_violations(spec_ids: set[str]) -> tuple[int, list[str]]:
+    """Validate every reference_designs/<name>/design.toml — the conformance
+    suite's machine-readable record. Returns (count, violations).
+
+    Shape: required top keys; status/archival from their fixed vocab; toolkit
+    version well-formed; [flavor] names a pick that resolves to the right axis in
+    axes.md; [verify] runner is known. Honest-deferral rule: an `archived` design
+    MUST carry a 40-hex commit, well-formed swhid_rev/swhid_dir with
+    swhid_rev == swh:1:rev:<commit>, and a non-empty verify entrypoint; a
+    `pending` (in-flight) design MAY leave those empty, but any value present MUST
+    still be well-formed. Any design dir with an Architecture.md MUST have a
+    manifest (an accepted design needs one)."""
+    if not DESIGNS_PATH.exists():
+        return 0, []
+    picks_by_axis = collect_axis_picks_by_axis()
+    violations: list[str] = []
+    count = 0
+    for sub in sorted(p for p in DESIGNS_PATH.iterdir() if p.is_dir()):
+        if sub.name == "templates":
+            continue
+        manifest, arch = sub / "design.toml", sub / "Architecture.md"
+        if not manifest.exists():
+            if arch.exists():
+                violations.append(
+                    f"{sub.name}: has Architecture.md (an accepted design) but no design.toml.")
+            continue
+        count += 1
+        label = f"{sub.name}/design.toml"
+        m = _parse_design_manifest(manifest.read_text())
+
+        for key in ("name", "repo", "toolkit_version", "status", "archival"):
+            if not m.get(key):
+                violations.append(f"{label}: missing required key '{key}'.")
+        flavor, verify = m.get("flavor", {}), m.get("verify", {})
+        if not isinstance(flavor, dict) or not flavor:
+            violations.append(f"{label}: missing [flavor] table.")
+        if not isinstance(verify, dict) or not verify:
+            violations.append(f"{label}: missing [verify] table.")
+
+        if (s := m.get("status")) and s not in DESIGN_STATUS:
+            violations.append(f"{label}: status '{s}' not one of {sorted(DESIGN_STATUS)}.")
+        archival = m.get("archival")
+        if archival and archival not in DESIGN_ARCHIVAL:
+            violations.append(f"{label}: archival '{archival}' not one of {sorted(DESIGN_ARCHIVAL)}.")
+        if (tv := m.get("toolkit_version")) and not re.fullmatch(r"\d+\.\d+", tv):
+            violations.append(f"{label}: toolkit_version '{tv}' is not MAJOR.MINOR.")
+
+        for axis, pick in (flavor.items() if isinstance(flavor, dict) else []):
+            axis_picks = picks_by_axis.get(axis)
+            if axis_picks is None:
+                violations.append(f"{label}: [flavor] names unknown axis '{axis}'.")
+            elif pick not in axis_picks:
+                violations.append(
+                    f"{label}: [flavor] {axis} = '{pick}' is not a pick of that axis in axes.md.")
+        if isinstance(verify, dict) and (r := verify.get("runner")) and r not in DESIGN_RUNNERS:
+            violations.append(f"{label}: [verify] runner '{r}' not one of {sorted(DESIGN_RUNNERS)}.")
+
+        # Field well-formedness (any present value must be valid, regardless of archival state).
+        commit, srev, sdir = m.get("commit", ""), m.get("swhid_rev", ""), m.get("swhid_dir", "")
+        if commit and not GIT_SHA_RE.match(commit):
+            violations.append(f"{label}: commit '{commit}' is not a 40-hex git SHA.")
+        if srev and not SWHID_REV_RE.match(srev):
+            violations.append(f"{label}: swhid_rev '{srev}' is malformed (want swh:1:rev:<40-hex>).")
+        if sdir and not SWHID_DIR_RE.match(sdir):
+            violations.append(f"{label}: swhid_dir '{sdir}' is malformed (want swh:1:dir:<40-hex>).")
+        if commit and srev and srev != f"swh:1:rev:{commit}":
+            violations.append(f"{label}: swhid_rev does not match commit (want swh:1:rev:{commit}).")
+
+        # Honest-deferral: an archived design must have the pin + a way to replicate.
+        if archival == "archived":
+            for key, val in (("commit", commit), ("swhid_rev", srev), ("swhid_dir", sdir)):
+                if not val:
+                    violations.append(f"{label}: archival='archived' requires '{key}'.")
+            if not (isinstance(verify, dict) and verify.get("entrypoint")):
+                violations.append(f"{label}: archival='archived' requires a [verify] entrypoint.")
+    return count, violations
+
+
 def expected_toolkit_minor() -> str | None:
     """The MAJOR.MINOR series from /VERSION (e.g. '0.1' from '0.1.0-draft')."""
     if not VERSION_PATH.exists():
@@ -447,6 +571,10 @@ def main() -> int:
     constraint_ids = collect_constraint_ids()
     failures.extend(f"constraints.md: {v}" for v in collect_constraint_violations(spec_ids))
 
+    # --- Reference-design manifests (reference_designs/<name>/design.toml) ---
+    n_manifests, manifest_failures = collect_design_manifest_violations(spec_ids)
+    failures.extend(manifest_failures)
+
     # --- Toolkit version stamps ---
     toolkit_minor, version_failures = check_toolkit_versions()
     failures.extend(version_failures)
@@ -464,6 +592,7 @@ def main() -> int:
     print(f"  {n_realizing}/{len(contract_realizes)} contract files declare a 'Realizes:' header")
     print(f"  exceptions.md defines {len(exception_ids)} exception ID(s)")
     print(f"  constraints.md defines {len(constraint_ids)} constraint ID(s)")
+    print(f"  reference designs: {n_manifests} design.toml manifest(s)")
     return 0
 
 
