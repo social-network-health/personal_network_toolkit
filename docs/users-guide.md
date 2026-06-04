@@ -13,6 +13,7 @@ PNT (Personal Network Toolkit) is built to be consumed by AI coding agents, and 
 > - [`tools/tests/lint_selftest.py`](../tools/tests/lint_selftest.py) — the lints' own self-tests (each check is proven to fail on an injected fault).
 > - [`tools/egress-lint.py`](../tools/egress-lint.py) — the deterministic AC-1 off-device-egress check, with clean/dirty fixtures.
 > - [`tools/export-readable-lint.py`](../tools/export-readable-lint.py) — the deterministic PR-6 export-readability check, with clean/dirty fixtures.
+> - [`tools/attestation-evidence-lint.py`](../tools/attestation-evidence-lint.py) — the deterministic attestation-evidence check (a `conformant` row must cite a live, non-`xfail`/`skip` test or a declared review kind), with clean/dirty fixtures.
 > - [`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json) — the audit-report schema.
 >
 > **Exercised end-to-end:** the **contribute** flow — `fellows_local_db`'s Exceptions, Constraints, and conformance-suite contributions were all authored through it. The **build** and **audit** flows are still being dogfooded against `fellows_local_db`; the agent prompts and output shapes below describe the intended behavior per [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md), and continue to be refined.
@@ -109,7 +110,7 @@ You have a PNA in front of you (someone else's, or your own in-progress one) and
 
    > "Use the PNT skill to audit `<path-to-candidate>` for PNA-spec conformance. Is this app safe for me to install?"
 
-   If the candidate ships its own Architecture document, the agent validates it against the code (do cited locations match? do declared verifications pass?). Otherwise it infers axis picks from the source and walks every applicable AC from scratch. It also **detects and verifies Exceptions** (`EX-*`) and **Constraints** (`CST-*`) — confirming each declared deviation is handled honestly and flagging any *undeclared* one. As part of the audit it runs the deterministic checks in `tools/` (`just egress-lint <path>` for AC-1 off-device leaks; `just export-lint <path>` for PR-6 export readability) and folds their results into the matching AC findings as `source: deterministic` evidence.
+   If the candidate ships its own Architecture document, the agent validates it against the code (do cited locations match? do declared verifications pass?). Otherwise it infers axis picks from the source and walks every applicable AC from scratch. It also **detects and verifies Exceptions** (`EX-*`) and **Constraints** (`CST-*`) — confirming each declared deviation is handled honestly and flagging any *undeclared* one. As part of the audit it runs the deterministic checks in `tools/` (`just egress-lint <path>` for AC-1 off-device leaks; `just export-lint <path>` for PR-6 export readability; `just attestation-lint <path>` to confirm the candidate's own `conformant` attestation rows cite live, non-deferred evidence) and folds their results into the matching AC findings as `source: deterministic` evidence.
 
 4. **Read the AC-keyed report.** The agent emits a typed artifact ([`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json)) with a human-readable rendering over it. Per-finding status is one of `conformant` / `non-conformant` / `not-applicable` / `unable-to-determine`, each keyed by AC, EX, or CST ID. Because the report is typed, two runs over the same candidate are diffable — save the artifact, re-audit after an update, and diff the JSON for the per-finding status changes (the "did anything quietly stop conforming?" signal).
 
@@ -156,6 +157,7 @@ For developers working **on the toolkit itself** (the spec, lints, contracts, sk
 | `just lint-selftest` | The lints' own self-tests: assert the clean tree passes and that each check fails on an injected fault (`tools/tests/lint_selftest.py`). |
 | `just egress-lint <dir> [args]` | Scan a candidate PNA's source for off-device egress vectors — the deterministic AC-1 check (args like `--json`, `--allow <origin>` pass through). |
 | `just export-lint <path> [args]` | Check a Private-DB human-readable export is readable with no PNA tooling — the deterministic PR-6 check. |
+| `just attestation-lint <dir> [args]` | Check a design's Architecture document — every `conformant` attestation row cites a live, non-deferred (`xfail`/`skip`-free) test or a declared review kind. The deterministic half of "exists **and** passes." |
 | `just swh-save <repo-url> [ref] [clone]` | Request Software Heritage archival of a design's repo and print the SWHID fields to paste into its `design.toml`. |
 | `just test-design <name>` | *(Scaffold, inert)* the planned per-design conformance harness — see [`plans/conformance-suite-plan.md`](../plans/conformance-suite-plan.md) § Phase 4. |
 
@@ -209,6 +211,7 @@ Working on the toolkit itself: `just` for the command menu, `just ci` before pus
   - [`tools/tests/lint_selftest.py`](../tools/tests/lint_selftest.py) — the lints' own self-tests
   - [`tools/egress-lint.py`](../tools/egress-lint.py) — deterministic AC-1 off-device-egress check
   - [`tools/export-readable-lint.py`](../tools/export-readable-lint.py) — deterministic PR-6 export-readability check
+  - [`tools/attestation-evidence-lint.py`](../tools/attestation-evidence-lint.py) — deterministic attestation-evidence check (every `conformant` row cites a live, non-deferred test or a declared review kind)
   - [`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json) — typed schema for the audit report
   - [`tools/swh-save.sh`](../tools/swh-save.sh) — Software Heritage archival + SWHID computation
 - [`docs/conformance-scope-and-lifecycle.md`](conformance-scope-and-lifecycle.md) — what the conformance suite covers, the active/archival lifecycle, and the roadmap
