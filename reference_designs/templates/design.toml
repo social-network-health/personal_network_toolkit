@@ -1,0 +1,36 @@
+# Reference-design manifest — the machine-readable record the conformance suite
+# reads (Tier B). Copy to reference_designs/<name>/design.toml and fill in.
+#
+# The prose record (README.md) and the Security Target (Architecture.md) remain
+# the human views; this file is the source of truth the toolkit's tooling parses.
+# Kept to a deliberately simple subset of TOML (flat string keys + the [flavor]
+# and [verify] tables) so the lint can parse it with no dependency on tomllib.
+#
+# SWHIDs are git-compatible: swh:1:rev:<commit-sha>, swh:1:dir:<tree-sha>.
+# Recompute swhid_dir later from a clone with `git rev-parse <commit>^{tree}`;
+# tools/swh-save.sh prints both at archival time.
+
+name = "<design-name>"
+repo = "https://github.com/<owner>/<repo>"
+toolkit_version = "0.1"          # the Toolkit-Version this design was validated against
+status = "active"                # active | archived | superseded
+archival = "pending"             # pending | archived  (SWHIDs required once archived)
+
+# Filled at archival (tools/swh-save.sh). May be empty while archival = "pending";
+# once archival = "archived" all three are required and swhid_rev must match commit.
+commit = ""                      # full 40-hex git commit SHA the SWHIDs pin
+swhid_rev = ""                   # swh:1:rev:<commit>
+swhid_dir = ""                   # swh:1:dir:<tree>   (also recorded in README.md)
+
+[flavor]                         # axis picks; each must resolve against spec/axes.md
+distribution = "<pick>"
+storage = "<pick>"
+ingestion = "<pick>"
+workspace = "<pick>"
+comms = "<pick>"
+mcp-exposure = "<pick>"
+
+[verify]                         # how the suite replicates this design's attested tests
+runner = "container"             # container | just | make  (how entrypoint is invoked)
+entrypoint = "<command>"         # builds + runs the attested tests; nonzero on any failure
+emits_report = "evaluate-report.json"   # the typed artifact the run produces

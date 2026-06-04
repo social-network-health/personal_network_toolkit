@@ -15,6 +15,16 @@ jobs:
           python-version: "3.11"
       - run: python3 tools/lint-spec-ids.py
 
+  lint-selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: lints behave as specified (clean passes, faults fail)
+        run: python3 tools/tests/lint_selftest.py
+
   egress-lint-selftest:
     runs-on: ubuntu-latest
     steps:
