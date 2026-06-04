@@ -6,8 +6,19 @@
 
 ## Type
 
-- [ ] Reference design (new or updated), or a spec/contracts change → complete the checklists below
-- [ ] Toolkit fix / docs / tooling (no reference-design attestation needed)
+- [ ] Reference design (new or updated), or a spec/contracts change that imposes a new obligation on designs → complete the Reference-design checklist
+- [ ] Toolkit fix / docs / tooling, or a spec note that clarifies/declines a commitment (no reference-design attestation) → complete the Toolkit-fix checklist
+
+<!-- Routing: does a design have to do anything new to stay conformant after this change? Yes → reference design. Nothing does → toolkit fix. See CONTRIBUTING.md § Contribution types. -->
+
+## Toolkit-fix checklist
+
+<!-- Only if this PR is a toolkit fix / docs / tooling change (no reference design). Delete if not applicable. -->
+
+- [ ] **No new design obligation** — this change imposes no new contract a conformant design must satisfy. *(If it does, it's a reference-design contribution — use the checklist below instead.)*
+- [ ] **Lint green** — `python tools/lint-spec-ids.py` passes (CI-enforced), plus any fixture self-test for a tool touched (`tools/tests/lint_selftest.py`).
+- [ ] **CHANGELOG entry** added.
+- [ ] **Design note** appended to `docs/PriorArt.md § Design notes` if this PR embodies a decision (added or declined a direction, with rationale worth preserving). Mechanical/typo fixes don't need one.
 
 ## Reference-design / spec contribution checklist
 
