@@ -18,7 +18,12 @@
 > exception may relax (§ Scope discipline). Changes (2) and (3) impose **new obligations** on designs,
 > so per [`CONTRIBUTING.md`](../CONTRIBUTING.md) § Contribution types they require a **demonstrating
 > reference design** before acceptance (`fellows_local_db` would demonstrate fail-closed; a PRM the
-> hardened model). Inline changes are tagged *(Proposed, RFC)*.
+> hardened model). A **fourth, separately-tracked** correction came out of a follow-up review — an
+> *architectural data-floor* (`AC-MCP-C` / `PR-7`) that bounds *what* an exception can disclose, not
+> just the act of disclosing — drafted as its own proposal
+> ([`docs/design-notes/2026-06-data-floor-disclosure-tiers.md`](../docs/design-notes/2026-06-data-floor-disclosure-tiers.md)),
+> to be demonstrated by the PRM reference design; it **complements, not replaces**, the three here.
+> Inline changes are tagged *(Proposed, RFC)*.
 
 ## Concept
 
@@ -42,9 +47,14 @@ exists to prevent: *(Proposed, RFC — predicate split; a reporting clarificatio
   right now.* A relying party — a user reading the screen, or another PNA deciding whether to expose
   its Private DB (see [`PNA_Spec.md` § Vision](PNA_Spec.md), interop) — keys on this bit, and on
   nothing else.
-- **`exception-handling`** — `conformant` iff **every** active exception is handled to the [handler
-  contract](#handler-contract) below. This is a statement about *process*, not about the guarantee:
-  the app is deviating *honestly*.
+- **`exception-handling`** — how honestly the app handles each active exception, **reported per
+  handler clause** (EX-H1..EX-H8) as `pass` / `partial` / `cannot-tell` (à la EARL). A statement
+  about *process*, not about the guarantee: the app is deviating *honestly*. It is deliberately
+  **never aggregated into a single conferred "conformant" status, and is never an interop
+  credential** — only `pna-active` is conferred and gated on (see *Discipline* below). This is the
+  same refusal-to-collapse PNT already applies in the strength profile (EX-H8) and that EARL applies
+  per-assertion: a rolled-up "handled conformantly" bit would hide exactly the `partial` /
+  `cannot-tell` the per-clause report exists to surface.
 
 This reframes conformance:
 
@@ -59,6 +69,18 @@ active (`pna-active = false`), and exception-handling conformant.* The earlier s
 conformant PNA operating in a declared non-PNA mode" — fused the two and is **retired**: *PNA* is the
 guarantee, and the guarantee is suspended while an exception is active. The [evaluate
 flow](pna-build-eval-contrib/SKILL.md) reports both, by `EX-*` ID.
+
+**Discipline — confer the membership bit, report the rest.** *(Proposed, RFC — sharpens this change
+with the "detect, don't bless" rule.)* `pna-active` is the **only conferred conformance verdict** and
+the **only thing a future interop gate keys on** ([`PNA_Spec.md` § Vision](PNA_Spec.md)); a peer MUST
+refuse Private-DB access to an app whose `pna-active` is false *regardless* of how well it handles its
+exceptions. The per-clause handler report is description a *human* reads — never a badge a vendor can
+wave or a gate a machine can pass. Concretely: the evaluate report's `summary.posture`
+([`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json)) MUST be redefined so its
+conferred value reports **PNA membership only** (exception handling living solely in the per-`EX-*`
+findings), so that a cleanly-handled `EX-CLOUD-LLM` app can never surface a top-line
+`posture: conformant`. (That schema edit lands with acceptance; it is named here so acceptance accepts
+it.)
 
 ### Validation, not certification
 
@@ -90,6 +112,10 @@ Exceptions are bounded so they stay a PNA-class mechanism rather than a general 
   people*, the contacts in their graph, who consented to nothing. Disclosure is a bounded harm to
   one's own data; unreviewed delegated action is an open-ended harm to third parties. An exception
   that lists a floor AC among the guarantees it departs from is **malformed**, not merely strong.
+  This is the *action*-floor (no unreviewed action on the user's behalf). A symmetric *data*-floor —
+  the most-sensitive Private-DB fields structurally unreachable by a cloud surface, even with consent
+  — is proposed as a separate follow-up (`AC-MCP-C` / `PR-7`; see the banner) and demonstrated by PRM;
+  together they bound both *what is done* and *what is disclosed*.
 
 ## Handler contract
 
@@ -132,7 +158,12 @@ each exception it can raise, a conforming PNA:
   "either refuse" arm — rather than raise on a proxy's say-so. This moves the consent dimension from
   `best-effort` toward `enforced` for the case the PNA controls, while staying honest that a
   non-cooperating client cannot be compelled to relay anything. (Cf. macaroon attenuation: delegated
-  authority only narrows down a chain, never amplifies.)
+  authority only narrows down a chain, never amplifies.) The gate is genuinely `enforced` because the
+  consent artifact lives on the PNA's **own** surface — a cloud client cannot forge a workspace-side
+  human action — but note its *role*: it governs the **act** of disclosing the user-shareable view,
+  not **which data is eligible** to cross. Bounding the latter is the proposed *data-floor*
+  (`AC-MCP-C`; see the banner's fourth correction), which is why this gate is a real but
+  **secondary** control, not the load-bearing protection for sensitive fields.
 - **EX-H8 — Per-dimension strength disclosure.** MUST publish a **strength profile** for the
   exception (see [Strength profiles](#strength-profiles)): for each dimension of the guarantee, the
   *kind* of assurance offered, drawn from the fixed vocabulary. The profile MUST be user-reachable

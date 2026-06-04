@@ -13,16 +13,30 @@
   (`vocab-pna`, § Vision, § Composition): the overloaded "conformant PNA in non-PNA mode" is split
   into two reported predicates — **`pna-active`** (the mode bit; `false` while any exception is
   active; the categorical "is it a PNA right now?" claim a relying party keys on) and
-  **`exception-handling` conformant** (the process). The interop future-direction now gates on
-  `pna-active`, not on exception-handling conformance.
+  **`exception-handling`** reported *per handler clause* (`pass`/`partial`/`cannot-tell`, EARL-style).
+  Discipline (refined): **`pna-active` is the only conferred verdict and the only interop key**;
+  handling is never aggregated into a "conformant" badge, and `tools/evaluate-report.schema.json`'s
+  `summary.posture` is redefined to report PNA membership only (so a cleanly-handled `EX-CLOUD-LLM`
+  app can never surface `posture: conformant`). The interop future-direction gates on `pna-active`,
+  not on exception-handling conformance.
 - **(2) EX-H7 fail-closed.** `spec/exceptions.md` § Handler contract: consent for a Private-DB
   exception MUST be obtained on a PNA-controlled surface (`enforced`), the PNA SHOULD relay a
   best-effort "confirm in the app" notice to cooperating clients via the MCP `instructions` handshake,
   and where it cannot confirm a human consented it MUST fail closed (AC-MCP-A's "either refuse" arm)
-  rather than raise on a proxy's say-so.
+  rather than raise on a proxy's say-so. Refined: the gate is **workspace-bound** (a cloud client
+  can't forge a workspace-side human action, so it is genuinely `enforced`) and is a real but
+  **secondary** control governing the *act* of disclosure — bounding *what* may be disclosed is the
+  data-floor (4).
 - **(3) Un-relaxable floor.** `spec/exceptions.md` § Scope discipline: AC-18, AC-19, and AC-MCP-B are
   a floor no exception may relax even with consent (a user may consent to *disclose data they read*,
   never to remove the human-in-the-loop on action taken on their behalf, which reaches third parties).
+  This is the *action*-floor; the symmetric *data*-floor is the separately-tracked correction (4).
+- **(4) Architectural data-floor (separate follow-up, demonstrated by PRM).** Out of a follow-up
+  review: bound *what* an exception can disclose, not just the act. A per-field Private-DB disclosure
+  tier (`PR-7`, default most-protective), a projection-bound cloud surface that structurally cannot
+  return a sealed field even with consent (`AC-MCP-C`), and a blast-radius strength dimension
+  (`EX-H9`). Drafted as its own proposal (`docs/design-notes/2026-06-data-floor-disclosure-tiers.md`);
+  not part of this PR's diff — it lands with the PRM reference design that demonstrates it.
 - Lint + self-tests stay green (prose-only; no machine-parsed table changed).
 
 ### Slots optionality + the Minimum Viable PNA use case (normative clarification)
