@@ -2,6 +2,10 @@
 
 ## v0.1 draft (in progress)
 
+### Command consistency — contributor docs use `just` (toolkit fix)
+
+- The contributor-facing checklists and skill now reference the `just` entry point introduced in the docs work, instead of bare `python tools/lint-spec-ids.py`: `just lint` in the PR template's reference-design checklist, `just ci` (lint + self-tests) in `CONTRIBUTING.md` § Contribution types and the skill's Toolkit-fix flow. (CI still calls the tools directly; this is human-facing prose only.) Mechanical consistency fix — the first contribution authored through the newly first-classed *Toolkit fix* path.
+
 ### Contribution types — toolkit fix vs reference design (process, additive)
 
 - **The toolkit-fix path is now first-class and discoverable.** A "Toolkit fix" PR type already existed in `.github/pull_request_template.md` and was acknowledged in passing under `CONTRIBUTING.md § Versioning`, but the **skill** (the LLM entry point) documented only the heavyweight reference-design flow, and the template shipped no toolkit-fix checklist — so an agent contributing a lint/docs/scope change had no path to follow and would wrongly force it through reference-design preflight. Since most PNT PRs are toolkit fixes, the dominant case was the undocumented one.
