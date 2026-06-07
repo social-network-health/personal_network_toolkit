@@ -2,6 +2,25 @@
 
 ## v0.1 draft (in progress)
 
+### Consolidated roadmap + inbound-findings registry (toolkit fix)
+
+- **New `docs/roadmap.md`** — the prioritization/sequencing layer above the per-plan phases:
+  dependency-ordered priority tiers (Tier 0 = finalize the fellows attestation keystone, which is
+  ~80% done; Tier 1 = PRM as the second reference design carrying the distribution-axis split; then
+  the value-driven surfaces and the tracked inbound findings), a dependency graph, an
+  **inbound-findings registry** that tracks reference-design findings as demonstrator-gated
+  spec-change candidates, a **cross-repo execution order** (Waves 1–5) over every open issue/PR
+  across fellows_local_db / prm / the toolkit with an open-work utility classification, and a
+  **deprecations map** (encryption-at-rest for the live store retired — the "lock my data" lineage,
+  fellows #154/#155/#256/PR #258 — reframed to encrypt-in-transit). dwebcamp dropped as a forcing
+  function this cycle (sequence by dependency, not calendar). `README.md` § Status now links it.
+  Planning artifact only — no spec/AC/contract change.
+- **Cross-repo sync (GitHub):** the three recent `fellows_local_db` findings now have toolkit tracking
+  issues under the new `inbound-finding` label — #40 (workspace user-mediation invariant → candidate
+  3rd general mechanism, ⇄ fellows#252), #41 (EAR rejected for the live store; encrypt-the-export
+  kernel, ⇄ fellows#256), #42 (cross-device over commodity channels, ⇄ fellows#257) — and the
+  distribution-axis finding is bidirectionally linked (#39 ⇄ prm#8).
+
 ### Visual Validator plan + Chromium-only capability-gap note (toolkit fix)
 
 - **New plan `plans/visual-validator-plan.md`** — a phased plan for a static, zero-dependency,

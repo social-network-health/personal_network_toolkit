@@ -45,6 +45,8 @@ What we're working toward — success looks like:
 6. Every AC in the spec carries a stable ID; every typed contract names the AC(s) it realizes; every Architecture document maps each applicable AC to a verification mechanism. *— First two CI-enforced via [`tools/lint-spec-ids.py`](tools/lint-spec-ids.py); `fellows_local_db` Architecture-doc backfill pending (Phase 5).*
 
 Step-by-step instructions for each of those goals live in [`docs/users-guide.md`](docs/users-guide.md).
+How they're **sequenced** — the dependency-ordered priority tiers and the registry of inbound findings
+from reference designs — lives in [`docs/roadmap.md`](docs/roadmap.md).
 
 Substantive changes from v0.1 bump the toolkit version per [`CHANGELOG.md`](CHANGELOG.md).
 
