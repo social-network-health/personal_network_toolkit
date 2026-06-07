@@ -40,7 +40,7 @@ low-cost, high-reversibility moves.
 ## Priority tiers
 
 ### Tier 0 — Keystone: finalize the fellows attestation *(do first; cheap; unblocks the most)*
-- **What:** finish [`plans/reorganization-plan.md`](reorganization-plan.md) Phase 5. Run
+- **What:** finish [`plans/reorganization-plan.md`](../plans/reorganization-plan.md) Phase 5. Run
   [`tools/swh-save.sh`](../tools/swh-save.sh) → Software Heritage archival; in
   [`reference_designs/fellows_local_db/design.toml`](../reference_designs/fellows_local_db/design.toml)
   fill `commit` / `swhid_rev` / `swhid_dir`, set the `[verify].entrypoint` (the container command
@@ -52,12 +52,12 @@ low-cost, high-reversibility moves.
   `Architecture.md` (full AC attestation + EX-CLOUD-LLM + CST-PWA-* attestations, mostly
   `conformant` with real test refs) already exist. What remains is archival finalization + the
   verify entrypoint + the drift reconcile. **Small.**
-- **Unblocks:** conformance-suite Phase 4 ([`plans/conformance-suite-plan.md`](conformance-suite-plan.md));
+- **Unblocks:** conformance-suite Phase 4 ([`plans/conformance-suite-plan.md`](../plans/conformance-suite-plan.md));
   README criteria 1/3/4/6; a real `evaluate-report.json` that becomes the Visual Validator's content.
 
 ### Tier 1 — PRM as the second reference design + the spec change it carries
 - **What:** take **PRM** ([richbodo/prm](https://github.com/richbodo/prm)) through the contribute
-  flow ([`plans/reorganization-plan.md`](reorganization-plan.md) Phase 7) — Architecture doc +
+  flow ([`plans/reorganization-plan.md`](../plans/reorganization-plan.md) Phase 7) — Architecture doc +
   `design.toml` + AC attestation + archival. Graduate the **distribution-axis verifiability split**
   (#39 ⇄ prm#8) to a spec change in [`spec/axes.md`](../spec/axes.md), with PRM as the demonstrator
   (it is the build-from-verifiable-source case).
@@ -66,15 +66,15 @@ low-cost, high-reversibility moves.
   findings); second dogfood of the contribute flow. R2–R3 value (PRM is the relationship-memory app).
 - **Status:** PRM is **days from done** (2026-06-07) → immediate after Tier 0.
 - **Unblocks:** AC-PRM-* validation; the **community-care / mutual-aid use case**
-  ([`plans/pnt-next-steps-plan.md`](pnt-next-steps-plan.md) item 5) if PRM hosts it; multi-source
+  ([`plans/pnt-next-steps-plan.md`](../plans/pnt-next-steps-plan.md) item 5) if PRM hosts it; multi-source
   ingestion → the Atlas (Tier 2).
 
 ### Tier 2 — Toolkit surfaces riding on the now-proven flows *(value-driven, no deadline)*
-- **Visual Validator** (Phases 1–3) — [`plans/visual-validator-plan.md`](visual-validator-plan.md).
+- **Visual Validator** (Phases 1–3) — [`plans/visual-validator-plan.md`](../plans/visual-validator-plan.md).
   Renders the real fellows/PRM `evaluate-report.json` from Tiers 0–1; the **toggle + side-by-side
   educational view** is the payoff. Artifact/recruiting value; no longer deadline-gated.
 - **Contact Data Format Atlas** (Phase 1: Google + Apple) —
-  [`plans/contact-data-formats-research-plan.md`](contact-data-formats-research-plan.md). Feeds PRM's
+  [`plans/contact-data-formats-research-plan.md`](../plans/contact-data-formats-research-plan.md). Feeds PRM's
   multi-source ingestion (AC-PRM-B). Start when PRM needs multi-source.
 
 ### Tier 3 — Inbound findings maturing in their demonstrators *(tracked, not scheduled)*
@@ -85,7 +85,7 @@ to the toolkit at the next fellows re-sync, per the `CONTRIBUTING.md` reference-
 - **#42** (fellows#257) — cross-device over commodity channels; exploratory; 4 candidates.
 
 ### Tier 4 — Parked / later
-- Conformance **living-suite roadmap R1–R4** ([`docs/conformance-scope-and-lifecycle.md`](../docs/conformance-scope-and-lifecycle.md)) — activates after Tier 0.
+- Conformance **living-suite roadmap R1–R4** ([`docs/conformance-scope-and-lifecycle.md`](conformance-scope-and-lifecycle.md)) — activates after Tier 0.
 - next-steps **item 6** (Tonsky commodity file-sync as an axis pick; reading-gated; relates to #42).
 - next-steps **item 2** (split `pna-evaluate` into its own skill; optimization, last).
 - Visual Validator **registry** (the parked voluntary-validation registry).

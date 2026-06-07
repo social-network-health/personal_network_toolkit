@@ -46,7 +46,7 @@ What we're working toward — success looks like:
 
 Step-by-step instructions for each of those goals live in [`docs/users-guide.md`](docs/users-guide.md).
 How they're **sequenced** — the dependency-ordered priority tiers and the registry of inbound findings
-from reference designs — lives in [`plans/roadmap.md`](plans/roadmap.md).
+from reference designs — lives in [`docs/roadmap.md`](docs/roadmap.md).
 
 Substantive changes from v0.1 bump the toolkit version per [`CHANGELOG.md`](CHANGELOG.md).
 

@@ -4,7 +4,7 @@
 
 ### Consolidated roadmap + inbound-findings registry (toolkit fix)
 
-- **New `plans/roadmap.md`** — the prioritization/sequencing layer above the per-plan phases:
+- **New `docs/roadmap.md`** — the prioritization/sequencing layer above the per-plan phases:
   dependency-ordered priority tiers (Tier 0 = finalize the fellows attestation keystone, which is
   ~80% done; Tier 1 = PRM as the second reference design carrying the distribution-axis split; then
   the value-driven surfaces and the tracked inbound findings), a dependency graph, and an
