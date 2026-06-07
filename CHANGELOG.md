@@ -2,6 +2,19 @@
 
 ## v0.1 draft (in progress)
 
+### Proposed (RFC, separate follow-up to #32): architectural data-floor — disclosure tiers
+
+> **Status: RFC stub, not in this repo's normative tables yet.** Lands with the PRM reference design
+> that demonstrates it (per `CONTRIBUTING.md` § Contribution types). Companion to PR #32. Full stub:
+> `docs/design-notes/2026-06-data-floor-disclosure-tiers.md`.
+
+- Proposes bounding *what* an exception can disclose (not just the act of disclosing): a per-field
+  Private-DB `disclosure_tier` (**`PR-7`**, default `private-sealed`, workspace-only mutable, enforced
+  at the query layer), a projection-bound cloud MCP surface that structurally cannot return a sealed
+  field even with consent (**`AC-MCP-C`**, the data twin of AC-MCP-B's action-floor), and a
+  blast-radius strength dimension (**`EX-H9`**) — verified by a static disclosure-tier lint + a dynamic
+  egress probe. Came out of the moderated tournament of alternate solutions recorded in the existential
+  review. Doc-only in this PR; no normative table changed (lint + self-tests green).
 ### Proposed (RFC — not yet accepted): honest-exit amendments to the Exceptions mechanism
 
 > **Status: RFC, opened for maintainer consideration — not merged behavior.** Changes (2) and (3)
