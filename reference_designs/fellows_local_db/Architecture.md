@@ -59,7 +59,7 @@ Cross-referenced to the toolkit's [axes.md](https://github.com/richbodo/personal
 |---|---|---|---|---|
 | AC-2 (no SaaS surface) | `dist:web-bundle-with-magic-link` | `deploy/server.py` ships no per-user RW endpoints; the dev server's retired `/api/groups` and `/api/settings` were the only ones that ever existed (Phase 1 cutover). | `tests/test_deploy_auth_round_trip.py::test_directory_api_is_403_without_session`; `test_deploy_sqlite_api.py`; `test_deploy_mcpb_routes.py` | conformant |
 | AC-3 (single OPFS owner) | `storage:opfs-sqlite-wasm` | `app/static/vendor/sqlite-worker.js` is the sole context that calls `navigator.storage.getDirectory` or opens a `FileSystemSyncAccessHandle`. | `tests/e2e/test_worker_rpc.py`; `test_worker_cold_start.py`; `test_local_first_boot.py` | conformant |
-| AC-5 (stale session never locks users out of cache) | `dist:web-bundle-with-magic-link` (auth-gated) | Three-tier `window.__dataProvider` hot-swaps `worker` → `api+idb` on 401/403 mid-boot; the cached directory stays readable. | `tests/e2e/test_offline_only_mode.py::test_returning_visit_renders_from_local_opfs_when_network_down`; `test_search_offline_fallback.py`; `test_local_first_boot.py` | conformant |
+| AC-5 (stale session never locks users out of cache) | `dist:web-bundle-with-magic-link` (auth-gated) | Three-tier `window.__dataProvider` hot-swaps `worker` → `api+idb` on 401/403 mid-boot; the cached directory stays readable. | `tests/e2e/test_offline_only_mode.py::test_401_with_cached_data_shows_directory_from_cache`; `test_search_offline_fallback.py`; `test_local_first_boot.py` | conformant |
 | AC-8 (anti-enumeration + abuse-bounded analytics) | `dist:web-bundle-with-magic-link` + `debug:has-error-sink` | `deploy/server.py` auth endpoints return neutral payloads with per-IP rate limits (`deploy/magic_link_auth.py:check_rate_limit`); the `/api/client-errors` sink is sanitized (`deploy/client_error_sanitizer.py`). See [`./email_gate.md`](./email_gate.md). | `tests/test_magic_link_auth.py`; `test_deploy_auth_round_trip.py`; `test_deploy_client_errors.py`; `test_client_error_sanitizer.py` | conformant |
 | AC-12 (capability detection inside worker) | `storage:opfs-sqlite-wasm` | Worker `init` reports `opfsCapable`; the main thread reads the field and renders the unsupported-browser panel rather than UA-sniffing. | `tests/e2e/test_unsupported_browser.py::test_no_sah_falls_back_to_api_idb_provider`; `test_worker_cold_start.py` | conformant |
 | AC-13 (COOP/COEP required) | `storage:opfs-sqlite-wasm` + `dist:web-served` | Both dev (`app/server.py:Handler.end_headers`) and prod (`deploy/server.py`) send `Cross-Origin-Opener-Policy: same-origin` + `Cross-Origin-Embedder-Policy: require-corp` and a strict CSP. Caddy preserves them at the edge. | `tests/test_api.py::TestSecurityHeaders::test_coop_coep_present`, `::test_strict_csp_present`, `::test_other_hardening_headers_present` | conformant |
@@ -114,6 +114,15 @@ for this upstream-contribution plan.
 > future version beats them and documents *how*. fellows claims only what it has done (capability
 > reduction, avoidance, bounding), never that it overcame a ceiling it merely reduced — over-reach
 > (false durability) would itself be a silent conformance failure.
+
+> **Non-goal — encryption-at-rest for the live private store.** App-layer EAR of `relationships.db`
+> is intentionally **not** done (decision 2026-06-07;
+> [#256](https://github.com/richbodo/fellows_local_db/issues/256)): it is *dominated* by device
+> full-disk encryption and *contradicts* `CST-PWA-SANDBOX-SEALED` — a `.locked` file is unreadable by
+> the MCP / CLI / backup tools folder mode exists to feed, so "encrypted" and "tool-readable" are
+> mutually exclusive. Encryption's sanctioned home is **in-transit** (the encrypted portable export,
+> [#257](https://github.com/richbodo/fellows_local_db/issues/257)); device FDE is the recommended
+> at-rest layer.
 
 ---
 
