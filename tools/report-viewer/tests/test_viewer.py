@@ -3,8 +3,10 @@
 OPT-IN / not in `just ci`. Run:  just test-viewer   (one-time:  just setup-test)
 
 These close the Phase-2 gap: they confirm the viewer actually *renders* a report
-(not just that the JSON is valid — that's tools/report-fixtures-lint.py). A broken
-selector or a render regression turns them red.
+(not just that the JSON is valid — that's tools/report-fixtures-lint.py) in both the
+developer (A0) and end-user (A1) registers, plus the side-by-side view. A broken
+selector or a render regression turns them red. Tests pin the view via ?mode= so they
+don't depend on the persisted default.
 """
 from __future__ import annotations
 
@@ -34,10 +36,12 @@ def _attach_error_capture(page: Page) -> list[str]:
     return errs
 
 
+# ---- developer (A0) register ----
+
 @pytest.mark.parametrize("sample,posture,n_findings,ac_id", SAMPLES)
-def test_sample_renders(page: Page, viewer_url, sample, posture, n_findings, ac_id):
+def test_developer_register_renders(page: Page, viewer_url, sample, posture, n_findings, ac_id):
     errs = _attach_error_capture(page)
-    page.goto(f"{viewer_url}/index.html?report=sample-reports/{sample}", wait_until="networkidle")
+    page.goto(f"{viewer_url}/index.html?report=sample-reports/{sample}&mode=developer", wait_until="networkidle")
     page.locator(".finding").first.wait_for(state="visible", timeout=5000)
 
     # posture badge = first badge in the summary card (2nd .card: header, then summary)
@@ -51,13 +55,16 @@ def test_sample_renders(page: Page, viewer_url, sample, posture, n_findings, ac_
     # candidate name flows into the document title
     expect(page).to_have_title(re.compile(r" — PNA evaluate-report$"))
 
+    # developer mode only — no end-user cells leak in
+    assert page.locator(".a1-finding").count() == 0
+
     assert not errs, f"{sample}: console/page errors: {errs}"
 
 
 def test_evidence_source_badges_render(page: Page, viewer_url):
     """Sample 03 carries deterministic + llm + human evidence — all three badges must show."""
     page.goto(
-        f"{viewer_url}/index.html?report=sample-reports/03-mixed-exceptions-and-constraints.json",
+        f"{viewer_url}/index.html?report=sample-reports/03-mixed-exceptions-and-constraints.json&mode=developer",
         wait_until="networkidle",
     )
     page.locator(".finding").first.wait_for(state="visible", timeout=5000)
@@ -65,6 +72,57 @@ def test_evidence_source_badges_render(page: Page, viewer_url):
     for source in ("deterministic", "llm", "human"):
         assert source in badges, f"missing evidence-source badge {source!r} in {badges!r}"
 
+
+# ---- end-user (A1) register ----
+
+def test_end_user_register_renders(page: Page, viewer_url):
+    """Sample 02 is non-conformant — the plain-language register shows 'At risk' + the caveat."""
+    errs = _attach_error_capture(page)
+    page.goto(
+        f"{viewer_url}/index.html?report=sample-reports/02-non-conformant-leaky-app.json&mode=end-user",
+        wait_until="networkidle",
+    )
+    page.locator(".a1-finding").first.wait_for(state="visible", timeout=5000)
+    assert page.locator(".a1-finding").count() == 3
+    # end-user mode only — no developer cards
+    assert page.locator(".finding").count() == 0
+    # the two non-conformant findings read "At risk"
+    expect(page.locator(".a1-verdict", has_text="At risk").first).to_be_visible()
+    # the liability-safe caveat is present
+    expect(page.locator(".caveat").first).to_be_visible()
+    assert not errs, f"end-user render errors: {errs}"
+
+
+# ---- side-by-side (finding-aligned) ----
+
+def test_side_by_side_shows_both_registers_aligned(page: Page, viewer_url):
+    page.goto(
+        f"{viewer_url}/index.html?report=sample-reports/03-mixed-exceptions-and-constraints.json&mode=side-by-side",
+        wait_until="networkidle",
+    )
+    page.locator(".sxs").wait_for(state="visible", timeout=5000)
+    # both registers present, one cell each per finding (aligned 2-col grid)
+    assert page.locator(".a1-finding").count() == 3
+    assert page.locator(".finding").count() == 3
+    expect(page.locator(".caveat").first).to_be_visible()
+
+
+# ---- the toggle re-renders without a reload ----
+
+def test_mode_toggle_re_renders(page: Page, viewer_url):
+    page.goto(
+        f"{viewer_url}/index.html?report=sample-reports/01-conformant-minimal-pna.json&mode=developer",
+        wait_until="networkidle",
+    )
+    page.locator(".finding").first.wait_for(state="visible", timeout=5000)
+    assert page.locator(".finding").count() == 7 and page.locator(".a1-finding").count() == 0
+
+    page.locator("[data-mode='end-user']").click()
+    page.locator(".a1-finding").first.wait_for(state="visible", timeout=5000)
+    assert page.locator(".a1-finding").count() == 7 and page.locator(".finding").count() == 0
+
+
+# ---- edge cases ----
 
 def test_empty_state(page: Page, viewer_url):
     page.goto(f"{viewer_url}/index.html", wait_until="networkidle")

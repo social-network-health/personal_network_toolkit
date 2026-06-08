@@ -2,6 +2,20 @@
 
 ## v0.1 draft (in progress)
 
+### Visual Validator Phase 3: end-user register + side-by-side (toolkit fix)
+
+- **`tools/report-viewer/index.html`** now renders a report in **two registers from the same JSON**:
+  the developer (A0) view (Phase 2) and a plain-language **end-user (A1)** view — good / at-risk /
+  how-to-be-safer, organized by Goal, with the liability-safe caveat ("measured against this spec's
+  promises; the app may not be trying to be a PNA"). A segmented **view-mode control** — `end-user` ·
+  `side-by-side` (finding-aligned) · `developer` — persists in `localStorage` and is deep-linkable via
+  `?mode=`. Side-by-side pairs each finding's plain-language and technical cells in one aligned grid
+  row — the educational payoff. Still static / zero-dep / engine-agnostic; DOM built with `textContent`.
+- **e2e:** the Playwright suite grows to **9 tests** covering both registers, the side-by-side
+  alignment, and the live mode toggle (`just test-viewer`); a captured screenshot confirmed the
+  rendering. Implements [`plans/visual-validator-plan.md`](plans/visual-validator-plan.md) Phase 3.
+  `just ci` unchanged (24/24).
+
 ### Visual Validator browser-render tests — Playwright (e2e plan Phases 1–2) (toolkit fix)
 
 - **`tools/report-viewer/tests/`** — an opt-in Playwright suite that render-tests the viewer in a real
