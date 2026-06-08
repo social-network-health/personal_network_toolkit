@@ -12,6 +12,73 @@
   pytest dependency, scoped to browser-UI rendering and **never** part of the stdlib-only `just ci`.
   Planning artifact only — no deps added yet, no spec/AC/contract change.
 
+### Visual Validator Phase 5: report-set flip-through + `just view-reports` (toolkit fix)
+
+- **`tools/report-viewer/index.html`** now loads a **set** of reports and flips through them with
+  **‹ Prev / Next ›**, **← / →**, or a jump dropdown (with a position indicator) — the view mode
+  (developer / end-user / side-by-side) is preserved across flips. Load a set via multi-file
+  drag-drop / file-picker, `?reports=a,b,c`, or `?dir=<path>` (fetches `<path>/index.json`, an array
+  of filenames). A single report renders with no nav, as before.
+- **`just view-reports [dir]`** — serves the viewer (stdlib `http.server`, port 8009) and opens it
+  pointed at a directory of reports; no arg flips through the three bundled samples. (`tools/report-viewer/_reports`
+  is a transient symlink it creates for a custom dir, gitignored + cleaned up on exit.)
+- **e2e:** the Playwright suite grows to **13 tests** — adds flip-through via `?reports=` and a
+  `?dir=` manifest, mode-preserved-across-flip, and single-report-has-no-nav. Verified: 13 passed in
+  headless Chromium; screenshot confirmed the nav + side-by-side. Implements
+  [`plans/visual-validator-plan.md`](plans/visual-validator-plan.md) Phase 5. `just ci` unchanged (24/24).
+
+### Visual Validator e2e CI job — `viewer-e2e` (e2e plan Phase 3) (toolkit fix)
+
+- **`.github/workflows/viewer-e2e.yml`** — a dedicated GitHub Actions job that installs Playwright +
+  Chromium (browser cache keyed on `requirements-dev.txt`) and runs the viewer render suite
+  (`python -m pytest tools/report-viewer/tests/`) on every PR that touches the viewer or its deps.
+  It is the **one** non-stdlib CI job, deliberately a separate workflow from the bare-`python3`
+  `spec-lint.yml` jobs — `just ci` is unaffected. Completes
+  [`plans/viewer-e2e-testing-plan.md`](plans/viewer-e2e-testing-plan.md) Phase 3; the viewer is now
+  gated in CI. `docs/users-guide.md` Status block updated.
+
+### Visual Validator Phase 3: end-user register + side-by-side (toolkit fix)
+
+- **`tools/report-viewer/index.html`** now renders a report in **two registers from the same JSON**:
+  the developer (A0) view (Phase 2) and a plain-language **end-user (A1)** view — good / at-risk /
+  how-to-be-safer, organized by Goal, with the liability-safe caveat ("measured against this spec's
+  promises; the app may not be trying to be a PNA"). A segmented **view-mode control** — `end-user` ·
+  `side-by-side` (finding-aligned) · `developer` — persists in `localStorage` and is deep-linkable via
+  `?mode=`. Side-by-side pairs each finding's plain-language and technical cells in one aligned grid
+  row — the educational payoff. Still static / zero-dep / engine-agnostic; DOM built with `textContent`.
+- **e2e:** the Playwright suite grows to **9 tests** covering both registers, the side-by-side
+  alignment, and the live mode toggle (`just test-viewer`); a captured screenshot confirmed the
+  rendering. Implements [`plans/visual-validator-plan.md`](plans/visual-validator-plan.md) Phase 3.
+  `just ci` unchanged (24/24).
+
+### Visual Validator browser-render tests — Playwright (e2e plan Phases 1–2) (toolkit fix)
+
+- **`tools/report-viewer/tests/`** — an opt-in Playwright suite that render-tests the viewer in a real
+  browser (6 tests: the three samples render with the right posture / finding count / `ac_id`s /
+  evidence-source badges / title and no console errors, plus the empty-state and malformed-report
+  error paths). Closes the VV Phase-2 "render unverified" gap; verified load-bearing (making
+  `broken.json` valid turns the error-path test red).
+- **Harness:** a stdlib `http.server` fixture serves `tools/report-viewer/` on port **8791** (distinct
+  from fellows 8765 / PRM 8770); `just setup-test` installs the deps (`requirements-dev.txt`: pytest,
+  playwright, pytest-playwright) + Chromium; `just test-viewer` runs the suite.
+- **Scoped convention exception** (the toolkit's first third-party / pytest dep) recorded in
+  `CLAUDE.md` § Conventions + Worktrees: it runs in its **own** CI job and is **never** part of
+  `just ci`, which stays bare `python3` (24/24, unaffected). `docs/users-guide.md` updated. Implements
+  [`plans/viewer-e2e-testing-plan.md`](plans/viewer-e2e-testing-plan.md) Phases 1–2; Phase 3 (the
+  dedicated CI job) is a follow-up.
+
+### Visual Validator Phase 2: single-report renderer (toolkit fix)
+
+- **`tools/report-viewer/index.html`** — a static, zero-dependency, engine-agnostic vanilla-JS
+  viewer (no build / framework / network / Chromium-only APIs; DOM built with `textContent` so report
+  strings can't inject HTML). Loads a report via drag-drop, file picker, `?report=<path>`, or the
+  bundled-sample buttons, and renders the **developer register**: candidate header + axis picks,
+  summary posture + status counts + leading concerns, and a card per finding (status, goals,
+  requirement, rationale, citations, evidence tagged `deterministic`/`llm`/`human`,
+  `needs_human_review`). Implements [`plans/visual-validator-plan.md`](plans/visual-validator-plan.md)
+  Phase 2; Phase 3 adds the end-user register + the side-by-side view. Drag-drop / file-picker work
+  over `file://`; `?report=` and the sample buttons need `python3 -m http.server`.
+
 ### Visual Validator Phase 1: sample reports + render-contract lint (toolkit fix)
 
 - **`tools/report-viewer/sample-reports/`** — three valid `evaluate-report.schema.json` instances

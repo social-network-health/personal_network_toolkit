@@ -16,6 +16,8 @@ The PNA Toolkit is built to be consumed by AI coding agents, and its users are d
 > - [`tools/attestation-evidence-lint.py`](../tools/attestation-evidence-lint.py) — the deterministic attestation-evidence check (a `conformant` row must cite a live, non-`xfail`/`skip` test or a declared review kind), with clean/dirty fixtures.
 > - [`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json) — the audit-report schema.
 >
+> Plus a separate **`viewer-e2e`** CI job (the one non-stdlib job, path-filtered to viewer PRs): opt-in Playwright render tests for the Visual Validator viewer (`tools/report-viewer/tests/`). Reproduce locally with `just test-viewer` (one-time `just setup-test`) — **not** `just ci`.
+>
 > **Exercised end-to-end:** the **contribute** flow — `fellows_local_db`'s Exceptions, Constraints, and conformance-suite contributions were all authored through it. The **build** and **audit** flows are still being dogfooded against `fellows_local_db`; the agent prompts and output shapes below describe the intended behavior per [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md), and continue to be refined.
 
 ---
@@ -147,7 +149,7 @@ You've built or are operating a PNA against the spec and want to contribute it b
 
 For developers working **on the toolkit itself** (the spec, lints, contracts, skill, docs).
 
-**Commands.** Everything is driven through `just` (a `justfile` at the repo root); run `just` for the menu. No setup or virtualenv is needed — the tools are stdlib-only `python3` (3.10+).
+**Commands.** Everything is driven through `just` (a `justfile` at the repo root); run `just` for the menu. No setup or virtualenv is needed — the tools are stdlib-only `python3` (3.10+). *(The lone exception is the opt-in browser render tests for the Visual Validator viewer — `just setup-test` creates a `.venv` + installs Playwright; they are never part of `just ci`.)*
 
 | Command | What it does |
 |---|---|
@@ -161,10 +163,13 @@ For developers working **on the toolkit itself** (the spec, lints, contracts, sk
 | `just report-lint <path>` | Validate `evaluate-report.json` instance(s) against the render contract the Visual Validator reads — a single file or a reports directory (e.g. a cron drop). |
 | `just swh-save <repo-url> [ref] [clone]` | Request Software Heritage archival of a design's repo and print the SWHID fields to paste into its `design.toml`. |
 | `just test-design <name>` | *(Scaffold, inert)* the planned per-design conformance harness — see [`plans/conformance-suite-plan.md`](../plans/conformance-suite-plan.md) § Phase 4. |
+| `just setup-test` | **(Opt-in, one-time)** Create `.venv` and install the browser-test deps (`pytest` + Playwright + Chromium) from `requirements-dev.txt`. Needed only for `just test-viewer`. |
+| `just test-viewer` | **(Opt-in; NOT in `just ci`)** Render-test the Visual Validator viewer in a real browser (Playwright). See [`plans/viewer-e2e-testing-plan.md`](../plans/viewer-e2e-testing-plan.md). |
+| `just view-reports [dir]` | **(Opt-in)** Serve the Visual Validator and flip through a directory of `evaluate-report.json` files (← / →). No arg flips through the bundled samples. |
 
 **Conventions** (full list in [`CLAUDE.md`](../CLAUDE.md)):
 
-- Tools are **stdlib-only `python3` (3.10+)** — no third-party runtime deps.
+- Tools are **stdlib-only `python3` (3.10+)** — no third-party runtime deps. *(One opt-in exception: the viewer's browser render tests use `pytest` + Playwright via `just setup-test` → `just test-viewer`, in their own CI job, never in `just ci` — see [`plans/viewer-e2e-testing-plan.md`](../plans/viewer-e2e-testing-plan.md).)*
 - **Every lint check needs a fault-injection self-test** in `tools/tests/lint_selftest.py`, added in the same change — a check with no self-test can silently rot.
 - **Keep the docs current:** any change a developer would notice (a `just` recipe, a lint check or message, a skill flow, a contract/AC/manifest field, a contribution step) updates this guide in the **same PR**. Put manual test/QA steps in the PR description.
 
@@ -215,6 +220,7 @@ Working on the toolkit itself: `just` for the command menu, `just ci` before pus
   - [`tools/attestation-evidence-lint.py`](../tools/attestation-evidence-lint.py) — deterministic attestation-evidence check (every `conformant` row cites a live, non-deferred test or a declared review kind)
   - [`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json) — typed schema for the audit report
   - [`tools/report-fixtures-lint.py`](../tools/report-fixtures-lint.py) — deterministic render-contract check for `evaluate-report.json` instances (the Visual Validator's input); samples at [`tools/report-viewer/sample-reports/`](../tools/report-viewer/sample-reports/)
+  - [`tools/report-viewer/`](../tools/report-viewer/) — the Visual Validator viewer (static HTML/JS): open `index.html` and load an `evaluate-report.json` (drag-drop / file picker / `?report=`)
   - [`tools/swh-save.sh`](../tools/swh-save.sh) — Software Heritage archival + SWHID computation
 - [`docs/conformance-scope-and-lifecycle.md`](conformance-scope-and-lifecycle.md) — what the conformance suite covers, the active/archival lifecycle, and the roadmap
 - [`plans/`](../plans/) — live plans tracking the toolkit's own evolution

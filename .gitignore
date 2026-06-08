@@ -14,3 +14,9 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+
+# Opt-in browser-test venv (just setup-test / just test-viewer) — never used by `just ci`
+.venv/
+
+# Transient symlink created by `just view-reports <dir>` (cleaned up on exit)
+tools/report-viewer/_reports
