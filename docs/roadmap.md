@@ -223,12 +223,21 @@ Which in-progress plan each wave advances:
   `archival = "archived"`; **reconcile the README↔manifest SWHID drift** (the README prints a
   computed `swh:1:dir:2fff6ff…` while the manifest still says `pending` with empty fields); confirm
   `just attestation-lint reference_designs/fellows_local_db` is green.
-- **Status:** **~80% done** — the `design.toml` and a substantially complete 412-line
-  `Architecture.md` (full AC attestation + EX-CLOUD-LLM + CST-PWA-* attestations, mostly
-  `conformant` with real test refs) already exist. What remains is archival finalization + the
-  verify entrypoint + the drift reconcile. **Small.**
+- **Status:** **~90% done (updated 2026-06-08).** Landed: Save-Code-Now requested at the post-MVD
+  `bbaf66e` (request 2352383); SWHIDs **recorded** in `design.toml` + README; the **README↔manifest
+  drift is reconciled**; `attestation-lint` green against the fellows repo root; `just ci` green. The
+  evaluate flow was **dogfought against fellows and came back conformant** (25 findings: 23 conformant
+  / 2 N/A) — a real schema-shaped `evaluate-report.json` now exists at
+  `fellows/docs/conformance/evaluate-report.json`, so **the Visual Validator has real content**.
+  `archival` stays **`pending`** (honest): the lint correctly blocks `archived` without a `[verify]`
+  entrypoint, and SH ingest is async. **Remaining (the only blockers to `archived`):** (a) a
+  *reproducible* `[verify].entrypoint` — fellows must emit a schema-shaped report **from a command**
+  (its `just conformance` emits a non-schema format today; the LLM audit produced the artifact but not
+  a re-runnable command) — a small **fellows-side** task; (b) re-sync the toolkit's
+  `reference_designs/fellows_local_db/Architecture.md` copy to the post-MVD `bbaf66e` state (snapshot
+  lag). Also pending: VV `/audit`-style entry UX → toolkit **#55**.
 - **Unblocks:** conformance-suite Phase 4 ([`plans/conformance-suite-plan.md`](../plans/conformance-suite-plan.md));
-  README criteria 1/3/4/6; a real `evaluate-report.json` that becomes the Visual Validator's content.
+  README criteria 1/3/4/6; the real `evaluate-report.json` is now the Visual Validator's content.
 
 ### Tier 1 — PRM as the second reference design + the spec change it carries
 - **What:** take **PRM** ([richbodo/prm](https://github.com/richbodo/prm)) through the contribute
