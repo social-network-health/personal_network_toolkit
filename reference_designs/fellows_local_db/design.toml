@@ -1,21 +1,23 @@
 # Reference-design manifest for fellows_local_db. See
 # reference_designs/templates/design.toml for the field reference.
 #
-# This design is "accepted by definition" (the toolkit was distilled from it),
-# but its Software Heritage archival is still pending (Phase 5 in the repo
-# README), so archival = "pending" and the commit/SWHID/verify fields are
-# honest TODOs the maintainer fills at archival — exactly the in-flight state the
-# lint's honest-deferral rule permits.
+# This design is "accepted by definition" (the toolkit was distilled from it).
+# Software Heritage archival was requested 2026-06-08 (Save Code Now request
+# 2352383) at the post-MVD commit below, and the git-compatible SWHIDs are
+# recorded now. archival stays "pending" until SH ingest completes (async) AND a
+# [verify] entrypoint lands — the latter awaits a schema-shaped evaluate-report.json
+# (docs/roadmap.md Tier 0). The lint permits a pending design to carry valid
+# SWHIDs; flip to "archived" once both conditions are met.
 
 name = "fellows_local_db"
 repo = "https://github.com/richbodo/fellows_local_db"
 toolkit_version = "0.1"
 status = "active"
-archival = "pending"
+archival = "pending"   # → "archived" once SH ingest completes AND a [verify] entrypoint lands
 
-commit = ""        # TODO(maintainer): the accepted commit SHA at archival
-swhid_rev = ""     # TODO(maintainer): swh:1:rev:<commit>  (tools/swh-save.sh prints it)
-swhid_dir = ""     # TODO(maintainer): swh:1:dir:<tree>
+commit    = "bbaf66e874ed3b97d0ce5f01f468f9e8fc4193e5"
+swhid_rev = "swh:1:rev:bbaf66e874ed3b97d0ce5f01f468f9e8fc4193e5"
+swhid_dir = "swh:1:dir:a52fa259b71d0b42261a5f3926fffb66a2d0c4ab"
 
 [flavor]
 distribution = "web-bundle-with-magic-link"
