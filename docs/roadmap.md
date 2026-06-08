@@ -8,6 +8,47 @@
 > detail or the normative spec — it links. The *success criteria* live in
 > [`README.md` § Status](../README.md#status); per-phase detail lives in the plans linked below.
 
+## Progress snapshot — 2026-06-08
+
+Where the three repos stand right now (claimed progress confirmed via merged PRs — implementation
+correctness not re-reviewed; no open PRs in any of the three repos as of this snapshot). The detailed
+waves below remain the plan; this is the *state*, written for a context reset.
+
+**Toolkit (this repo) — Visual Validator built; Wave-2 keystone partly started.**
+- **Visual Validator: Phases 1–5 shipped** (merged to `main`): the render-contract lint + 3 sample
+  reports; the static viewer with **developer + end-user registers** and a finding-aligned
+  **side-by-side**; the report-set **← / → flip-through** + `just view-reports`; a **13-test
+  Playwright suite** and the dedicated **`viewer-e2e` CI job**. Good stopping point.
+  **Remaining:** VV **Phase 4** — the thin "generate" seam (not started).
+- **CI hygiene:** GitHub Actions bumped off Node 20 (`checkout`/`setup-python` → v6, `cache` → v5)
+  ahead of the 2026-06-16 cutoff.
+- **Wave 2 keystone (fellows attestation): partly started.** Toolkit PR #54 synced the toolkit's copy
+  of fellows `Architecture.md` (AC-5 ref fix + EAR non-goal). **Remaining:** finalize `design.toml`
+  (SWHID archival via `just swh-save` — maintainer-run — + `[verify].entrypoint` + flip
+  `archival = "archived"`), reconcile the README↔manifest SWHID drift, fold in the #41
+  encrypt-in-transit CST note. *The second gate is closing:* fellows now ships a conformance
+  report + ship-time gate (fellows #249/#262), which is the `evaluate-report.json` emission the
+  `[verify].entrypoint` needs.
+
+**fellows_local_db — Wave 1 COMPLETE; upstream contributions staged.**
+- Wave 1 done & merged: data-layer write-guard (#261), EAR decision recorded (#258), test debt + guard
+  citations (#262); the lock-my-data lineage pruned. The **workspace user-mediation invariant**
+  (fellows #252) is demonstrated **test-first** (#261/#262), and the upstream PNT contributions
+  (exceptions / constraints / **user-mediation**) are **staged** (#263) — ready to ride up to toolkit
+  #40 as the candidate **3rd general mechanism**.
+
+**PRM — v0.1 nearly done; only M6 (attestation) left.**
+- M2→M5 shipped & merged: read-only workspace, **private store + dedup** (M3), **propose-only MCP +
+  workspace apply** (M4, "AI loop closed"), **opt-in non-destructive re-import** (M5).
+  **Remaining: M6 — the AC attestation table**, which makes PRM **submittable as the 2nd reference
+  design** (and carries the distribution-axis split, prm#8 / toolkit#39).
+
+**Next phase (after the context reset):** (1) **toolkit** — VV Phase 4, and finalize the Wave-2
+keystone now that fellows emits a conformance report; (2) **PRM** — M6 attestation → submit as the 2nd
+reference design; (3) **fellows → toolkit** — land the staged user-mediation contribution (#263 →
+toolkit #40) as the 3rd general mechanism. (Also tracked, lower priority: VV's `?dir=` registry idea,
+and reconciling SKILL ↔ report-schema EX-*/CST- keying.)
+
 ## Operating rule (decided 2026-06-07)
 
 **Knock out dependencies first.** Sequence by the dependency graph, not by calendar. The
