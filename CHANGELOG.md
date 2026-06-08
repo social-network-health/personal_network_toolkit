@@ -2,6 +2,16 @@
 
 ## v0.1 draft (in progress)
 
+### Visual Validator e2e CI job — `viewer-e2e` (e2e plan Phase 3) (toolkit fix)
+
+- **`.github/workflows/viewer-e2e.yml`** — a dedicated GitHub Actions job that installs Playwright +
+  Chromium (browser cache keyed on `requirements-dev.txt`) and runs the viewer render suite
+  (`python -m pytest tools/report-viewer/tests/`) on every PR that touches the viewer or its deps.
+  It is the **one** non-stdlib CI job, deliberately a separate workflow from the bare-`python3`
+  `spec-lint.yml` jobs — `just ci` is unaffected. Completes
+  [`plans/viewer-e2e-testing-plan.md`](plans/viewer-e2e-testing-plan.md) Phase 3; the viewer is now
+  gated in CI. `docs/users-guide.md` Status block updated.
+
 ### Visual Validator Phase 3: end-user register + side-by-side (toolkit fix)
 
 - **`tools/report-viewer/index.html`** now renders a report in **two registers from the same JSON**:

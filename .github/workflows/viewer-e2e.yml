@@ -1,0 +1,42 @@
+name: viewer-e2e
+
+# The ONE non-stdlib CI job: opt-in browser render tests for the Visual Validator
+# viewer (Playwright). Deliberately a SEPARATE workflow from spec-lint.yml, whose jobs
+# run bare `python3` with zero deps — `just ci` stays stdlib-only and is never affected
+# by this. See plans/viewer-e2e-testing-plan.md and CLAUDE.md § Conventions.
+#
+# Path-filtered so it only runs on PRs that touch the viewer or its deps.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/report-viewer/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/viewer-e2e.yml"
+  pull_request:
+    paths:
+      - "tools/report-viewer/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/viewer-e2e.yml"
+
+jobs:
+  viewer-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dev deps (pytest + Playwright)
+        run: pip install -r requirements-dev.txt
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ms-playwright-${{ runner.os }}-${{ hashFiles('requirements-dev.txt') }}
+          restore-keys: ms-playwright-${{ runner.os }}-
+      - name: Install Chromium (+ OS deps)
+        run: python -m playwright install --with-deps chromium
+      - name: Render tests
+        run: python -m pytest tools/report-viewer/tests/ -v
