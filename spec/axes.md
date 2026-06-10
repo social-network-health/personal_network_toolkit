@@ -104,6 +104,7 @@ Which outreach mechanisms the workspace offers — what shows up in the user's "
 
 ### Picks
 
+- **`none`** — No outreach surface: the workspace offers no "reach out" picker. A contacts-consolidation or directory PNA whose loop stops at *recording* relationship data (no *gathering*-by-outreach). Attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md) (v0.1 consolidates + dedups; outreach is a later version). The outreach comms ACs — AC-16, AC-18, AC-19, AC-MCP-B — are vacuous; AC-PRM-A (LLM-as-transport) still applies via the MCP surface.
 - **`mailto-only`** — Just `mailto:` (plus `tel:` for phone). Attested in [fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md); Signal planned.
 - **`mailto-plus-signal`** — Adds Signal protocol (encrypted-in-protocol; passes AC-18).
 - **`mailto-plus-matrix`** — Adds Matrix (encrypted-room mode; passes AC-18).
