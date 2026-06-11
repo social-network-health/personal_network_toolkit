@@ -21,8 +21,11 @@ Toolkit side: **#61** accepted `reference_designs/prm/`, **#65** recorded the So
 (`swh:1:rev:a70d35b…` / `swh:1:dir:9d73887…`) and flipped `archival = "archived"`, **#66** fixed
 `swh-save.sh`'s annotated-tag bug (+ an offline regression self-test). The **PRM use case is realized**
 (its "draft" label dropped), and `comms:none` + AC-PRM-B/C landed. *Posture: 12 conformant / 2 partial
-(AC-PRM-A, AC-MCP-A — an MCP server can't identify the consuming LLM) / 4 N/A.* **README criterion 3
-(a contributor submits end-to-end) is met.** Added after acceptance: PRM **export** (relates to PR-6 /
+(AC-PRM-A, AC-MCP-A — an MCP server can't identify the consuming LLM) / 4 N/A.* This is the **2nd
+successful end-to-end pass through the contribute flow** (after fellows) — strong **dogfood** evidence
+for README **criterion 3**, though its literal bar (a *new/external* contributor submitting *without
+maintainer hand-holding*) isn't cleared yet: both designs so far are the maintainer's own, and the
+archival step here was hand-held. Added after acceptance: PRM **export** (relates to PR-6 /
 Goal-4 portability) — a low-priority attestation re-sync, tracked in Tier 2.
 
 **The riders PRM *demonstrates* were deferred, not landed → toolkit #64 (now the top priority).** PR #61
@@ -178,7 +181,7 @@ low-cost, high-reversibility moves.
         └──► evaluate flow runs on fellows ──► a REAL evaluate-report.json
                                                    └──► Visual Validator has real content (not synthetic samples)
 
-[T1] PRM  ✓ DONE 2026-06-11 (prm#35 M6 → toolkit #61 accepted → #65 archived @ a70d35b → #66 swh-save fix). 2nd reference design; "draft" dropped; README criterion 3 met.
+[T1] PRM  ✓ DONE 2026-06-11 (prm#35 M6 → toolkit #61 accepted → #65 archived @ a70d35b → #66 swh-save fix). 2nd reference design; "draft" dropped; contribute flow dogfooded twice (criterion 3 ~shown; an external contributor is still the open gap).
         │   M6 landed the CORE attestation + comms:none + AC-PRM-B/C ONLY; the riders PRM demonstrates were DEFERRED ↓
         ├──► unblocked AC-PRM-* validation + community-care use case (next-steps item 5)
         └──► pulls in multi-source ingestion ──► Contact Data Format Atlas (Phase 1)
@@ -353,7 +356,9 @@ Which in-progress plan each wave advances:
 - **Status:** **✓ DONE (2026-06-11).** PRM is the accepted, archived 2nd reference design: prm **#35**
   (M6 attestation) merged → toolkit **#61** accepted `reference_designs/prm/` → **#65** recorded the
   SWHIDs (`a70d35b`) and flipped `archival = "archived"` → **#66** fixed the `swh-save.sh` annotated-tag
-  bug. The **PRM use case is realized** and **README criterion 3 is met**. **But M6 landed only the core
+  bug. The **PRM use case is realized**, and the contribute flow is now **dogfooded end-to-end twice**
+(fellows + PRM) — strong evidence for **criterion 3**, with its literal bar (a *new/external* contributor
+without maintainer hand-holding beyond review) still the open gap. **But M6 landed only the core
   attestation + `comms:none` + AC-PRM-B/C** — riders **2 (distribution split), 4 (EX-H7 was already
   shipped server-side), and 5 (AC-PRM-E/F)** above, plus the user-mediation mechanism, were **deferred to
   toolkit #64** and are the live work (see **[T1b]** and the next-priority note). **Criterion 5 is NOT yet
@@ -455,8 +460,11 @@ new data-layer-guard citations.
 
 ## Fit with README success criteria
 
-Tier 0 satisfies criteria **1, 4, 6**; Tier 1 (PRM accepted + archived) **now satisfies criterion 3**
-(a contributor submits a reference design end-to-end). **Criterion 5** (the spec evolves ≥1 minor version
+Tier 0 satisfies criteria **1, 4, 6**; Tier 1 (PRM accepted + archived) is the **2nd end-to-end run of
+the contribute flow** and so **substantially demonstrates criterion 3** (the flow works submit-to-archive)
+— but criterion 3's literal bar (a *new/external* contributor, *without maintainer hand-holding* beyond
+review) is **not yet cleared**, since both designs to date are the maintainer's own. **Criterion 5** (the
+spec evolves ≥1 minor version
 from a contributed design's findings) is **not yet met** — it lands when **[T1b]/#64** folds in PRM's
 deferred riders and the **v0.2 (Minor)** bump is cut *(decided 2026-06-11)*; the user-mediation mechanism
 (Tier 1.5 Step C), as a third reference-driven spec evolution across two designs/substrates, is the
