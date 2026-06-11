@@ -17,6 +17,7 @@
   the archive. `just ci` green (25/25).
 - **`docs/users-guide.md`** notes that annotated and lightweight tags both pin the commit.
 - No spec/AC/contract change; no new obligation on any design.
+
 ### PRM: archival completed — Software Heritage SWHIDs recorded (reference design)
 
 - `reference_designs/prm/` flips `archival = "pending"` → `"archived"` now that prm

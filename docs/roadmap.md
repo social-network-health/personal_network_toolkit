@@ -8,6 +8,49 @@
 > detail or the normative spec — it links. The *success criteria* live in
 > [`README.md` § Status](../README.md#status); per-phase detail lives in the plans linked below.
 
+## Progress snapshot — 2026-06-11
+
+**Headline: the critical path is COMPLETE — both T0 (fellows keystone) and T1 (PRM as the 2nd
+reference design) are done.** The toolkit now has **two archived reference designs** with `[verify]`
+entrypoints. The live work shifts from *landing the designs* to **evolving the spec from what they
+demonstrated** (toolkit **#64**) and **cutting v0.2**.
+
+**PRM — 2nd reference design DONE & archived.** prm **#35** (M6 attestation) squash-merged to prm
+`main` (accepted commit `a70d35b`, tag `pnt-ref-0.1`); gate `just conformance` → 131 passed / 1 skipped.
+Toolkit side: **#61** accepted `reference_designs/prm/`, **#65** recorded the Software Heritage SWHIDs
+(`swh:1:rev:a70d35b…` / `swh:1:dir:9d73887…`) and flipped `archival = "archived"`, **#66** fixed
+`swh-save.sh`'s annotated-tag bug (+ an offline regression self-test). The **PRM use case is realized**
+(its "draft" label dropped), and `comms:none` + AC-PRM-B/C landed. *Posture: 12 conformant / 2 partial
+(AC-PRM-A, AC-MCP-A — an MCP server can't identify the consuming LLM) / 4 N/A.* **README criterion 3
+(a contributor submits end-to-end) is met.** Added after acceptance: PRM **export** (relates to PR-6 /
+Goal-4 portability) — a low-priority attestation re-sync, tracked in Tier 2.
+
+**The riders PRM *demonstrates* were deferred, not landed → toolkit #64 (now the top priority).** PR #61
+deliberately landed only the core attestation + `comms:none` + AC-PRM-B/C. The **distribution-axis
+verifiability split (#39)**, **AC-PRM-E/F** (tiered safe-AI-write), and the **user-mediation mechanism
+(#40)** are deferred to **#64**; `spec/axes.md` / `PNA_Spec.md` do **not** yet carry them. Folding in
+#64's three riders is the contributed-design-driven spec evolution, and **cutting v0.2 (Minor) when they
+land** is what formally satisfies README **criterion 5** *(decided 2026-06-11)*. **VERSION stays
+`0.1.0-draft` until then.**
+
+**fellows — shipping to production (~2026-06-11).** Bug-fixed, tested, in full deployment.
+**Decision (2026-06-11): keep the reference-design archive pinned at `dc3e0cf`** — the archive is a
+point-in-time attestation, re-pinned only when the *attestation itself* materially changes, not on
+every production ship.
+
+**User-mediation (Tier 1.5) — Steps A & B both DONE.** fellows MVD (#265) + PRM's merged mutation-side
+propose→review→apply loop now give **two designs / two substrates**. **Step C — the toolkit
+`spec/user_mediation.md` mechanism (#40) — is fully unblocked** and is one of #64's three riders.
+
+**Visual Validator — shipped (Phases 1–5 + the Playwright e2e job).** Open items are polish:
+end-user-register readability (**#62**) and the optional Phase-4 "generate" seam; the deterministic
+`/pna-evaluate` audit-UX command (**#55**) is a related toolkit-UX item.
+
+**Still async (not blockers):** Software Heritage ingest for fellows (req `2352911`, toolkit **#56**) and
+PRM (req `2354495`, no toolkit issue yet) — the SWHIDs are git-content-addressed, so valid regardless.
+
+---
+
 ## Progress snapshot — 2026-06-09
 
 One day past the 2026-06-08 snapshot below; every delta pushes the **same** critical path forward.
@@ -135,18 +178,21 @@ low-cost, high-reversibility moves.
         └──► evaluate flow runs on fellows ──► a REAL evaluate-report.json
                                                    └──► Visual Validator has real content (not synthetic samples)
 
-[T1] PRM (M2–M5 MERGED; EX-H7 handshake prm#28; only M6 attestation left) ──► full attestation at its M6 ──► 2nd reference design (drops "draft"; criteria 3 & 5)
-        ├──► demonstrator for the distribution-axis split (#39 ⇄ prm#8)
-        ├──► carries a user-mediation boundary list (mutation side) ──► [T1.5] Step B
-        ├──► 2nd EX-H7 demonstrator (prm#28 server-side handshake) + AC-PRM-E/F safe-AI-write demonstrator
-        ├──► unblocks AC-PRM-* validation + community-care use case (next-steps item 5)
+[T1] PRM  ✓ DONE 2026-06-11 (prm#35 M6 → toolkit #61 accepted → #65 archived @ a70d35b → #66 swh-save fix). 2nd reference design; "draft" dropped; README criterion 3 met.
+        │   M6 landed the CORE attestation + comms:none + AC-PRM-B/C ONLY; the riders PRM demonstrates were DEFERRED ↓
+        ├──► unblocked AC-PRM-* validation + community-care use case (next-steps item 5)
         └──► pulls in multi-source ingestion ──► Contact Data Format Atlas (Phase 1)
 
-[T1.5] User-mediation = 3rd general mechanism (MVD-primary, demonstrate-now)   [parallelizes with T0/T1]
-        A) fellows MVD prep — DONE (#265 merged 2026-06-08): UM-1/2/3 green + #259 gap attested as honest frontier + workspace-AI proposer stance pinned
-        B) PRM M6 carries the mutation-side boundary list ──► two designs, two substrates
-        C) PNT spec draft (after T0 frees the toolkit instance; test-first; cites fellows + PRM) ──► toolkit #40 ──► criterion 5 (spec evolves ≥1 minor) reinforced
-        └──► builds on merged Exceptions + Constraints (done); files only on maintainer go-ahead
+[T1b] Fold in PRM's deferred spec riders (toolkit #64)   ◄══ NOW THE TOP TOOLKIT PRIORITY
+        ├──► distribution-axis verifiability split (#39 ⇄ prm#8) ──► spec/axes.md
+        ├──► AC-PRM-E/F tiered safe-AI-write ──► spec/PNA_Spec.md / axes.md
+        ├──► user-mediation mechanism (#40) ──► spec/user_mediation.md   [≡ T1.5 Step C]
+        └──► all three land ──► cut v0.2 (Minor bump) ──► README criterion 5 satisfied (decided 2026-06-11)
+
+[T1.5] User-mediation = 3rd general mechanism (MVD-primary, demonstrate-now)
+        A) fellows MVD prep — ✓ DONE (#265, 2026-06-08): UM-1/2/3 green + #259 gap attested as honest frontier + proposer stance pinned
+        B) PRM M6 mutation-side boundary list — ✓ DONE (prm#35, 2026-06-11) ──► two designs, two substrates
+        C) toolkit #40 spec draft — UNBLOCKED (both demonstrators merged); now one of #64's three riders (test-first; cites fellows + PRM; files only on maintainer go-ahead)
 
 [T3] remaining findings mature in their demonstrators (fellows test-first) ──► ride up to the toolkit later
 ```
@@ -304,11 +350,14 @@ Which in-progress plan each wave advances:
 - **Why:** drops the toolkit's **"draft"** label; validates README criteria **3** (a contributor
   submits end-to-end) and **5** (the spec evolves ≥1 minor version from a contributed design's
   findings); second dogfood of the contribute flow. R2–R3 value (PRM is the relationship-memory app).
-- **Status:** **M0–M5 merged; only M6 left.** The M-chain is done (M3 private store + dedup, M4 MCP
-  propose + workspace apply, M5 re-import all merged), and prm#28 closes the v0.1 EX-H7 cloud-LLM surface
-  (awaiting its manual-QA merge). M6 (attestation + full test pass + conformance review + the deferred
-  AC-7 debug substrate) is the remaining milestone — **much closer than the earlier "weeks" estimate**.
-  Runs parallel to Tiers 0/1.5/2.
+- **Status:** **✓ DONE (2026-06-11).** PRM is the accepted, archived 2nd reference design: prm **#35**
+  (M6 attestation) merged → toolkit **#61** accepted `reference_designs/prm/` → **#65** recorded the
+  SWHIDs (`a70d35b`) and flipped `archival = "archived"` → **#66** fixed the `swh-save.sh` annotated-tag
+  bug. The **PRM use case is realized** and **README criterion 3 is met**. **But M6 landed only the core
+  attestation + `comms:none` + AC-PRM-B/C** — riders **2 (distribution split), 4 (EX-H7 was already
+  shipped server-side), and 5 (AC-PRM-E/F)** above, plus the user-mediation mechanism, were **deferred to
+  toolkit #64** and are the live work (see **[T1b]** and the next-priority note). **Criterion 5 is NOT yet
+  met** — it lands with #64's v0.2 bump.
 - **Unblocks:** AC-PRM-* validation; the **community-care / mutual-aid use case**
   ([`plans/pnt-next-steps-plan.md`](../plans/pnt-next-steps-plan.md) item 5) if PRM hosts it; multi-source
   ingestion → the Atlas (Tier 2).
@@ -331,19 +380,27 @@ Which in-progress plan each wave advances:
   *after* the keystone frees the toolkit instance, written to match what A/B proved, citing fellows + PRM;
   **Minor** bump; files only on maintainer go-ahead. **D)** the fellows AI-writes feature is an optional
   later richer demonstrator.
-- **Status:** **MVD-ready.** Step A is unblocked and parallel-safe today; the one open issue it touches —
-  **fellows #259** (off-folder durability / Restore-affordance) — is handled by *honest attestation of the
-  restore legibility gap*, not by completion. No hard dependency on Tiers 0/1/2.
+- **Status:** **Steps A & B DONE; Step C is the live work.** Step A (fellows MVD, #265) and Step B (PRM's
+  mutation-side propose→review→apply at its merged M6, prm#35) are both complete — **two designs, two
+  substrates**. **Step C — the toolkit `spec/user_mediation.md` mechanism (#40) — is now fully unblocked**
+  and is one of the three deferred PRM riders in **#64**; it lands test-first against what A/B proved, on
+  maintainer go-ahead, as part of the v0.2 evolution. (fellows **#259** restore-legibility gap stays an
+  honestly-attested frontier, not a blocker.)
 - **Unblocks:** completes the matched trio (user-raised / platform-imposed / actuation-boundary); reinforces
   README criterion **5** (the spec evolves ≥1 minor version from a contributed design's findings).
 
 ### Tier 2 — Toolkit surfaces riding on the now-proven flows *(value-driven, no deadline)*
-- **Visual Validator** (Phases 1–3) — [`plans/visual-validator-plan.md`](../plans/visual-validator-plan.md).
-  Renders the real fellows/PRM `evaluate-report.json` from Tiers 0–1; the **toggle + side-by-side
-  educational view** is the payoff. Artifact/recruiting value; no longer deadline-gated.
+- **Visual Validator** — **shipped (Phases 1–5 + the Playwright e2e job)**, renders the real fellows/PRM
+  `evaluate-report.json`. Open polish: end-user-register readability (**#62**), the optional Phase-4
+  "generate" seam, and the deterministic `/pna-evaluate` audit-UX command (**#55**).
+  [`plans/visual-validator-plan.md`](../plans/visual-validator-plan.md).
 - **Contact Data Format Atlas** (Phase 1: Google + Apple) —
   [`plans/contact-data-formats-research-plan.md`](../plans/contact-data-formats-research-plan.md). Feeds PRM's
   multi-source ingestion (AC-PRM-B). Start when PRM needs multi-source.
+- **PRM PR-6 export attestation (low priority, follow-up).** PRM gained a human-readable **export** after
+  acceptance. PR-6 is a SHOULD, so it's not a conformance gap — but a future PRM attestation re-sync can
+  add a PR-6 row (Realization + a `just export-lint` tool-free-readable Verification) and re-sync the
+  toolkit's `reference_designs/prm/Architecture.md` copy. *(Decided 2026-06-11: track, don't prioritize.)*
 
 ### Tier 3 — Inbound findings maturing in their demonstrators *(tracked, not scheduled)*
 See the registry below. fellows writes the demonstrating work **test-first**; each finding rides up
@@ -367,8 +424,8 @@ is accepted only with a demonstrating design — so each row names its demonstra
 
 | Finding | Source | Toolkit track | Demonstrator | Gate | Target artifact | Status |
 |---|---|---|---|---|---|---|
-| Distribution = verifiability spectrum (not binary); + code-only vs. code+data | prm#8 | **#39** | PRM | lands with PRM's M6 attestation (weeks); break the installer↔decision circular dep by writing the spectrum first | `spec/axes.md` Distribution split + new dimension | Write-up pending → Tier 1 (Wave 4) |
-| Workspace user-mediation invariant ("human is the actuator; workspace is ground truth") | fellows#252 | **#40** | **fellows_local_db + PRM** (two substrates) | fellows MVD (UM-1/2/3 green) + PRM mutation-side at M6 — test-first | new mechanism doc, sibling to `exceptions.md`/`constraints.md` | **MVD-ready → Tier 1.5 (scheduled).** UM-1 proven (#261 merged); demonstrate-now decided 2026-06-08, fellows AI-writes feature deferred |
+| Distribution = verifiability spectrum (not binary); + code-only vs. code+data | prm#8 | **#39** | PRM (**merged demonstrator**, prm#35) | **deferred from PR #61** → fold-in via **#64** | `spec/axes.md` Distribution split + new dimension | **Demonstrator landed; spec change deferred → [T1b]/#64** (one of three riders; rides the v0.2 bump) |
+| Workspace user-mediation invariant ("human is the actuator; workspace is ground truth") | fellows#252 | **#40** | **fellows_local_db + PRM** (two substrates) | both demonstrators **MERGED** (fellows #265 + prm#35) — Step C test-first | new mechanism doc, sibling to `exceptions.md`/`constraints.md` | **Demonstrators DONE; spec mechanism UNBLOCKED → [T1b]/#64** (Tier 1.5 Step C; the load-bearing piece of the v0.2 bump) |
 | EAR rejected for live store; encrypt the portable export instead | fellows#256 | **#41** | fellows_local_db | decision recorded | non-normative frontier note on `CST-PWA-NO-SYNC` / `-PRIVATE-SNAPSHOT` | **Decision locked** (fellows PR #258); toolkit note pending (folds in via a toolkit-fix PR; no AC) |
 | Cross-device private data over commodity channels (4 candidates) | fellows#257 | **#42** | fellows_local_db | fellows prototype + local-AI | axis picks / CST frontier resolution / a skill | Exploratory |
 
@@ -398,8 +455,10 @@ new data-layer-guard citations.
 
 ## Fit with README success criteria
 
-Tier 0 satisfies criteria **1, 4, 6** and is the precondition for **3**; Tier 1 (PRM) satisfies **3**
-and **5**. Tier 1.5 (user-mediation) **reinforces criterion 5** — a third minor-version spec evolution
-driven by reference-design findings, demonstrated across two designs/substrates. Criterion **2** (a user
-audits a candidate and gets an AC-keyed report) is exercised by the evaluate flow throughout and surfaced
-visually by the Tier-2 Visual Validator.
+Tier 0 satisfies criteria **1, 4, 6**; Tier 1 (PRM accepted + archived) **now satisfies criterion 3**
+(a contributor submits a reference design end-to-end). **Criterion 5** (the spec evolves ≥1 minor version
+from a contributed design's findings) is **not yet met** — it lands when **[T1b]/#64** folds in PRM's
+deferred riders and the **v0.2 (Minor)** bump is cut *(decided 2026-06-11)*; the user-mediation mechanism
+(Tier 1.5 Step C), as a third reference-driven spec evolution across two designs/substrates, is the
+load-bearing piece of that bump. Criterion **2** (a user audits a candidate and gets an AC-keyed report)
+is exercised by the evaluate flow throughout and surfaced visually by the Tier-2 Visual Validator.
