@@ -2,6 +2,29 @@
 
 ## v0.1 draft (in progress)
 
+### `just validate <candidate>` — one-command deterministic-baseline evaluate-report (toolkit fix)
+
+- **`tools/validate.py` (new) + `just validate <dir>`** — the assembly layer from
+  [`docs/design-notes/2026-06-validate-command-and-strength-tiers.md`](docs/design-notes/2026-06-validate-command-and-strength-tiers.md):
+  runs the **Tier-S deterministic lints** (`egress-lint` → AC-1; `attestation-evidence-lint`
+  when the candidate self-attests; `export-readable-lint` with `--export`) against a candidate and
+  folds them into one typed `evaluate-report.json` (the Visual Validator's render contract),
+  detecting — and reporting, not running — a cooperating design's Tier-F `[verify].entrypoint`.
+  Stdlib-only; shells out to the existing lints' `--json` mode.
+- **Honesty is enforced, not hoped:** a deterministic check that *finds* a violation →
+  `non-conformant`; a *clean* check → `unable-to-determine` (necessary, not sufficient). The tool
+  **never** emits a green `conformant` verdict on its own, so a clean run is an honest triage
+  baseline, not a trust certificate (the design note's "lite-as-full" guardrail, closed in code).
+- **`tools/tests/lint_selftest.py`** — six new assertions pin the contract on the egress fixtures:
+  exit code (dirty → 1, clean → 0), the emitted report passes the render contract, and the
+  clean→`unable-to-determine` / dirty→`non-conformant` AC-1 mapping. `just ci` green (31/31).
+- **`docs/users-guide.md`** — new `just validate` row, audit-flow usage, and tool listings;
+  `tools/validate.py` added to the version-stamped artifact set.
+- No new obligation on any design — this is evaluative *tooling* (it consumes the spec, realizes
+  no AC). `/pna-evaluate` (#55) becomes a thin wrapper over this baseline + the LLM pass.
+- **`docs/PriorArt.md` § Design notes** — pointer recorded; the `just validate` design note's
+  status flips to "Tier-S landed".
+
 ### Harden flow added to the skill — the advisory 4th flow (toolkit fix)
 
 - **`pna-build-eval-contrib/SKILL.md`** — adds **Harden** as the fourth flow the skill packages

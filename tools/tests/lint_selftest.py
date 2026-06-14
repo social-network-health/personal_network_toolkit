@@ -20,6 +20,7 @@ Exit: 0 if every case behaves as expected, 1 otherwise.
 """
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
@@ -210,6 +211,34 @@ def case_fixture_lint(results: list, script: str, clean: str, dirty: str) -> Non
             "" if d.returncode != 0 else "dirty fixture was not flagged")
 
 
+def case_validate(results: list) -> None:
+    """tools/validate.py (the `just validate` assembler) must (a) emit a report that
+    passes the render contract, (b) exit 1 only when a deterministic check found a
+    violation, and (c) honor the honesty contract from the validate design note: a
+    CLEAN scan maps AC-1 to `unable-to-determine` (never `conformant`), a DIRTY scan
+    to `non-conformant`. Reuses the egress fixtures as candidate inputs."""
+    with tempfile.TemporaryDirectory() as td:
+        for kind, fixture, want_status, want_code in (
+            ("clean", "tools/egress-lint-fixtures/clean", "unable-to-determine", 0),
+            ("dirty", "tools/egress-lint-fixtures/dirty", "non-conformant", 1),
+        ):
+            out = Path(td) / f"{kind}.json"
+            cp = _run(REPO, "tools/validate.py", str(REPO / fixture), "--out", str(out))
+            _record(results, f"validate: {kind} fixture exits {want_code}",
+                    cp.returncode == want_code,
+                    "" if cp.returncode == want_code else f"exit={cp.returncode}\n{cp.stdout}{cp.stderr}")
+            rl = _run(REPO, "tools/report-fixtures-lint.py", str(out))
+            _record(results, f"validate: {kind} report passes the render contract",
+                    rl.returncode == 0, "" if rl.returncode == 0 else rl.stdout + rl.stderr)
+            status = None
+            if out.exists():
+                acs = [f for f in json.loads(out.read_text())["findings"] if f["ac_id"] == "AC-1"]
+                status = acs[0]["status"] if acs else None
+            _record(results, f"validate: {kind} fixture -> AC-1 {want_status}",
+                    status == want_status,
+                    "" if status == want_status else f"got AC-1 status {status!r}")
+
+
 def case_attestation_marker_message(results: list) -> None:
     """Pin the marker-state behavior specifically: the dirty fixture must fail
     *because* a conformant row cites an xfail test (not just exit non-zero for
@@ -308,6 +337,7 @@ def main() -> int:
     case_fixture_lint(results, "tools/report-fixtures-lint.py",
                       "tools/report-viewer/sample-reports",
                       "tools/report-fixtures-lint-fixtures/dirty")
+    case_validate(results)
     case_attestation_marker_message(results)
     case_attestation_pytestmark(results)
     case_swh_save_annotated_tag(results)
