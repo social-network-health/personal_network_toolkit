@@ -2,6 +2,25 @@
 
 ## v0.1 draft (in progress)
 
+### Harden flow added to the skill — the advisory 4th flow (toolkit fix)
+
+- **`pna-build-eval-contrib/SKILL.md`** — adds **Harden** as the fourth flow the skill packages
+  (`build · evaluate · contribute · harden`), writing the advisor procedure whose *concept* landed
+  earlier with the Countermeasure library. Harden secures the *operating environment* a PNA runs in —
+  runtime adversaries the app's own code can't reach (an OS-level AI agent or another local process) —
+  maps each hazard to the **environmental** rows of the Countermeasure library ([`spec/exceptions.md`](spec/exceptions.md))
+  with their strength classes, and reports an honest Protect / Detect / Respond posture. It is
+  **advisory**: it recommends, adds no AC, and awards no pass/fail.
+- **`README.md` / `docs/users-guide.md` / `spec/PNA_Spec.md` § Composition** — the "three flows / three
+  modes" descriptions become four: a Harden mode bullet (README), a Harden how-to + Quick-reference row
+  (users-guide), and a Harden reference in § Composition. Per `CLAUDE.md`, the skill-flow change updates
+  the User's Guide in the same change.
+- **`README.md` § Status refresh** (same pass) — corrects stale notes surfaced while auditing the README
+  against the 2026-06-14 direction work: `prm` is now *realized* (not "draft") and archived, `tools/swh-save.sh`
+  ships, both reference designs carry Architecture docs with AC attestation tables; retired the old
+  "Phase 5 / 7" framing in the success criteria.
+- **No new obligation on any design** — Harden is advisory; no AC, Exception, or Constraint added.
+
 ### Goals restructured 5 → 4, app-framed at outcome altitude (toolkit fix)
 
 - **`spec/PNA_Spec.md`** — the goal layer is re-pitched as **four** outcome-altitude goals, each with a

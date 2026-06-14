@@ -18,7 +18,7 @@ The PNA Toolkit is built to be consumed by AI coding agents, and its users are d
 >
 > Plus a separate **`viewer-e2e`** CI job (the one non-stdlib job, path-filtered to viewer PRs): opt-in Playwright render tests for the Visual Validator viewer (`tools/report-viewer/tests/`). Reproduce locally with `just test-viewer` (one-time `just setup-test`) — **not** `just ci`.
 >
-> **Exercised end-to-end:** the **contribute** flow — `fellows_local_db`'s Exceptions, Constraints, and conformance-suite contributions were all authored through it. The **build** and **audit** flows are still being dogfooded against `fellows_local_db`; the agent prompts and output shapes below describe the intended behavior per [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md), and continue to be refined.
+> **Exercised end-to-end:** the **contribute** flow — `fellows_local_db`'s Exceptions, Constraints, and conformance-suite contributions were all authored through it. The **build** and **audit** flows are still being dogfooded against `fellows_local_db`; the agent prompts and output shapes below describe the intended behavior per [`pna-build-eval-contrib/SKILL.md`](../pna-build-eval-contrib/SKILL.md), and continue to be refined. The **harden** flow is the newest and is **advisory** — it recommends environmental countermeasures rather than checking ACs; its catalog lives in [`spec/exceptions.md`](../spec/exceptions.md).
 
 ---
 
@@ -71,7 +71,7 @@ Pick the symlink for local iteration; pick the vendored copy when the design rep
 
 ## Using the skill
 
-The skill packages three flows. Each is a numbered sequence below; run whichever fits your task.
+The skill packages four flows. Each is a numbered sequence below; run whichever fits your task.
 
 ### Build a conformant PNA
 
@@ -142,6 +142,20 @@ You've built or are operating a PNA against the spec and want to contribute it b
    - **The maintainer archives your source to Software Heritage** at the accepted commit — a post-merge maintainer step (you MAY pre-compute the SWHIDs and include them in the PR). The exact command and its one gotcha live in [Working in this repo → Archive a reference design](#archive-a-reference-design-to-the-software-heritage-archive); the maintainer records the printed `commit` / `swhid_rev` / `swhid_dir` into your `design.toml` (flipping `archival = "archived"`) and design record, so your source survives even if your upstream repo is deleted. For high-signal designs they may also mirror to a `pnt-archive` fork; the SWHID alone is sufficient for the archival promise.
    - The Toolkit-Version is bumped per [`CONTRIBUTING.md` § Versioning](../CONTRIBUTING.md#versioning) (Patch for clarifications, Minor for additive changes, Major for breaking ones; an axis carries its own version too).
    - Run preflight once more against the merged state — it should come out clean.
+
+### Harden the environment your PNA runs in
+
+The first three flows check the *app*; **Harden** advises on the *environment* around it — the runtime where an OS-level AI agent, another local process, or a shared machine could reach your data outside the app's control. It is **advisory**: you get a posture report and recommended countermeasures, not a pass/fail or an AC status. (Concept and catalog: [`spec/exceptions.md` § Environmental threats and the Harden flow](../spec/exceptions.md).)
+
+1. **Describe your environment to the agent.** Open Claude Code in the PNA Toolkit repo and tell it where the PNA runs and what could reach it:
+
+   > "Use the toolkit skill to harden the environment my PNA runs in — I run OS-level AI agents that can read my files."
+
+   The agent identifies the *environmental threats* your setup exposes (an automation agent with filesystem/MCP reach, another process opening the DB, a shared machine) — hazards the app's own code can't defend against.
+
+2. **Read the posture report.** For each hazard the agent maps the applicable **environmental countermeasures** from the [Countermeasure library](../spec/exceptions.md) — sandbox the agent / `denyRead`, a separate OS user, an MCP access broker with just-in-time grants, a honeytoken + watchdog, human-presence gating — and reports which are **in place**, which **apply but aren't**, and what is **still exposed**, each tagged with its strength class so "best-effort" isn't read as "solved."
+
+3. **Apply the countermeasures you choose — in your environment.** The toolkit advises; you actuate. Where a hazard already has a PNA-intrinsic guard (e.g. AC-MCP-A's per-call consent is the in-app analog of an external MCP broker) the agent says so, so you don't double-pay. If a countermeasure ought to become a built-in AC, that's a [contribute](#contribute-your-design-back-as-a-reference-design)-flow proposal, not a Harden output.
 
 ---
 
@@ -215,6 +229,7 @@ If you find a spec gap, ambiguity, or contradiction, your PR includes a spec dif
 | Audit someone's PNA before installing | PNA Toolkit (with candidate at known path) | "Use the toolkit skill to audit `<path>` for PNA-spec conformance." |
 | Preflight your design for submission | your design's repo | "Use the toolkit skill to validate this design for submission to the toolkit." |
 | Open the contribution PR | PNA Toolkit | "Use the toolkit skill's contribute flow to open a PR adding this design." |
+| Harden the environment your PNA runs in | PNA Toolkit (with your environment described) | "Use the toolkit skill to harden the environment my PNA runs in." |
 
 Working on the toolkit itself: `just` for the command menu, `just ci` before pushing.
 
