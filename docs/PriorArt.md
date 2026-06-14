@@ -193,6 +193,28 @@ not a trust certificate (the note's "lite-as-full risk", now closed in code). Ti
 and F (the design's entrypoint) enrich the same report afterwards; the deterministic `/pna-evaluate` UX (#55)
 becomes a thin wrapper over this baseline. A six-assertion self-test pins the exit-code contract, the report's
 schema-validity, and the clean→`unable-to-determine` / dirty→`non-conformant` mapping on the egress fixtures.
+### 2026-06 — The mitigation side of Exceptions: a countermeasure library + the Harden sibling
+
+The Exceptions mechanism made *declaring* a deviation honest; it said little about *defending* against
+the hazards a deviation (or an adversarial runtime) exposes. This reframe gives that mitigation side a
+home. **EX-H6's "recommended solution" becomes a reusable [countermeasure library](../spec/exceptions.md#countermeasure-library)**
+— a hazard-keyed catalog reusing the EX-H8 strength vocabulary (so the existing strength lint covers it),
+each row tagged **PNA-intrinsic vs environmental** and pointing at a demonstrator. The split is
+load-bearing: intrinsic countermeasures are the PNA's own code (tied to an AC, demonstrable), while
+environmental ones (sandbox the OS-automation agent, a separate OS user, an MCP access broker, a
+honeytoken+watchdog) live in the user's environment, where the toolkit can only **advise** — which names
+a **fourth, advisory flow, Harden**, the sibling of Exceptions for *detected* (not user-raised) hazards.
+It completes a four-source taxonomy of pressure on the guarantees — **Constraints** (platform ceiling) ·
+**Exceptions** (user relaxation) · **Environmental threats** (adversary in the runtime) ·
+**User-mediation** (actuation boundary) — and draws the line *app-security = build/evaluate/contribute;
+environment-security = harden/advise*. Seeded by the data-protection-vs-OS-automation research (R3),
+which **re-confirmed at-rest encryption stays deprecated**: the catalog deliberately favors mediating the
+access path and detect-then-respond over encrypting the store away from its owner (tool-readability is a
+PNA value; see [`constraints.md`](../spec/constraints.md), `CST-PWA-SANDBOX-SEALED`). Additive and
+advisory — no new obligation; the RFC predicate-split / EX-H7 fail-closed / un-relaxable-floor proposals
+are untouched and still demonstrator-gated (promotion tracked as a separate follow-up). A
+fault-injection self-test now pins the strength-class lint against the new catalog (it previously had
+none — the PR #18 dead-check pattern). Worked out in the 2026-06-14 direction session.
 
 ### 2026-06 — Data-floor: bound *what* an exception can disclose (proposal → PRM v0.2)
 
