@@ -179,6 +179,21 @@ These references inform the toolkit's design without constraining it to any of t
 
 A running log of toolkit-shaping decisions and their rationale — most often a mapping of the toolkit against the prior art above driving a spec change (or a deliberate decision *not* to make one), but also discipline and tooling decisions distilled from a real finding in a reference design. This is where the *why* of a toolkit fix lives when it isn't itself a reference design. Newest first; each entry is dated and names what it changed.
 
+### 2026-06 — `just validate <path>`: the deterministic-baseline spine landed
+
+The [`just validate` design note](design-notes/2026-06-validate-command-and-strength-tiers.md) sketched a
+one-command audit with an S/L/F strength gradient; its **Tier-S spine is now built**
+(`tools/validate.py`, `just validate <candidate>`). It runs the existing deterministic lints and folds them
+into one `evaluate-report.json` — the same typed artifact the Visual Validator renders and a contribution
+commits — detecting (not running) a cooperating design's Tier-F `[verify]` entrypoint. The load-bearing
+decision is **honesty over a green light**: the assembler downgrades a *clean* deterministic scan to
+`unable-to-determine` (necessary, not sufficient) and reserves `non-conformant` for a check that actually
+finds a violation, so it never confers a `conformant` verdict on its own — a clean run is a triage baseline,
+not a trust certificate (the note's "lite-as-full risk", now closed in code). Tiers L (the LLM evaluate flow)
+and F (the design's entrypoint) enrich the same report afterwards; the deterministic `/pna-evaluate` UX (#55)
+becomes a thin wrapper over this baseline. A six-assertion self-test pins the exit-code contract, the report's
+schema-validity, and the clean→`unable-to-determine` / dirty→`non-conformant` mapping on the egress fixtures.
+
 ### 2026-06 — Data-floor: bound *what* an exception can disclose (proposal → PRM v0.2)
 
 *Full stub: [`design-notes/2026-06-data-floor-disclosure-tiers.md`](design-notes/2026-06-data-floor-disclosure-tiers.md). Companion to [PR #32](https://github.com/richbodo/personal_network_toolkit/pull/32); came out of the [existential review](design-notes/2026-06-exceptions-existential-review.md)'s tournament of alternate solutions.*

@@ -41,6 +41,11 @@ lint-selftest:
 
 # ---- evaluate ------------------------------------------------------------
 
+# Deterministic-baseline evaluate-report.json for a candidate PNA — runs the Tier-S lints and folds them into one typed report (args pass through).
+[group('evaluate')]
+validate target *args:
+    {{python}} tools/validate.py {{target}} {{args}}
+
 # Egress-scan a candidate PNA dir for off-device vectors, AC-1 (args pass through).
 [group('evaluate')]
 egress-lint target *args:
