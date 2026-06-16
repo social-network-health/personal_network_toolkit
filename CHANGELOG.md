@@ -2,6 +2,20 @@
 
 ## v0.1 draft (in progress)
 
+### Same-UID research folds into the Harden countermeasure rows (toolkit fix)
+
+- **`spec/exceptions.md` § Countermeasure library** — deep research into the desktop sandbox/encryption
+  primitives (Linux · macOS · Windows, with the mobile contrast) refined the **environmental** rows:
+  **"Run the PNA under a separate OS user" is elevated as the cleanest convenient desktop answer** — a
+  distinct UID denies a same-user agent at the file-permission / `/proc` / `ptrace` checks at once
+  (recreating mobile's per-app-UID isolation) — and **"Sandbox the automation agent" is annotated** with
+  the same-UID insufficiency (a mount-namespace alone is defeated by the `/proc/<pid>/root` wormhole + a
+  filesystem-wide encryption unlock + `ptrace`; it needs `PR_SET_DUMPABLE=0` + `ptrace_scope` + a
+  per-process MAC). A new note records that **confining a same-UID agent is an access-control, not an
+  encryption, problem** — reinforcing the at-rest deprecation.
+- Advisory / environmental only — no AC, Exception, Constraint, or obligation added; the strength classes
+  are unchanged (`best-effort`, bounded by adoption).
+
 ### `just validate <candidate>` — one-command deterministic-baseline evaluate-report (toolkit fix)
 
 - **`tools/validate.py` (new) + `just validate <dir>`** — the assembly layer from

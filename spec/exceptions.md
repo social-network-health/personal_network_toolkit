@@ -259,8 +259,8 @@ A countermeasure is described by four fields, three of which reuse machinery thi
 | **Surface minimization** — the cloud-facing private surface exposes only the tools a use needs; the most sensitive (notes, comms history) are simply not on it | A connected client reads more of the Private DB than the task needs | verifiable | PNA-intrinsic (AC-MCP-A) | `fellows_local_db` (`private_data_ops` = groups only) |
 | **Data-floor — sealed-by-default disclosure tiers** — most-sensitive fields are unreachable by any cloud-facing surface *by construction*, even with consent | Over-broad disclosure once consent is given | enforced | PNA-intrinsic (AC-MCP-C / PR-7, *proposed*) | PRM v0.2 (proposed; [data-floor note](../docs/design-notes/2026-06-data-floor-disclosure-tiers.md)) |
 | **Human-presence gating** — a fresh human-presence signal is required before private rows are returned | A headless / automated agent drains the Private DB with no human present | best-effort | PNA-intrinsic | none yet (proposed) |
-| **Sandbox the automation agent / `denyRead` the store** — the user confines an OS-automation agent so it cannot read the PNA's data files | An OS-level AI agent with broad filesystem access reads the store out-of-band | best-effort | environmental (Harden) | advisory — Harden flow |
-| **Run the PNA under a separate OS user** — file-permission isolation so an agent running as the primary user cannot read the store | An OS-automation agent reading the store as the primary user | best-effort | environmental (Harden) | advisory — Harden flow |
+| **Sandbox the automation agent / `denyRead` the store** — the user confines an OS-automation agent so it cannot read the PNA's data files (against a *same-UID* agent a namespace alone is **insufficient** — see *On confining a same-UID agent* below) | An OS-level AI agent with broad filesystem access reads the store out-of-band | best-effort | environmental (Harden) | advisory — Harden flow |
+| **Run the PNA under a separate OS user** — file-permission isolation so an agent running as the primary user cannot read the store; **the cleanest convenient desktop answer** — a distinct UID denies the agent at the file-permission, `/proc`, and `ptrace` checks at once (see the note below) | An OS-automation agent reading the store as the primary user | best-effort | environmental (Harden) | advisory — Harden flow |
 | **MCP access broker with per-request / JIT grants** — an intermediary mediates each tool call with a just-in-time, scoped grant the user approves | A connected client over-pulls across a long-lived session | best-effort | environmental (Harden); intrinsic analog AC-MCP-A | advisory — Harden flow |
 | **Honeytoken + watchdog ("claw trap")** — a canary record plus a monitor that detects an unexpected read and raises an alert / triggers a response | An intrusion or rogue process reading the store goes unnoticed | recoverable-only | environmental (Harden) | advisory — Harden + watchdog-advisor skill |
 
@@ -272,6 +272,31 @@ it contradicts the **tool-readability** the PNA promises (the user can open thei
 ordinary SQLite tools; see [`constraints.md`](constraints.md), `CST-PWA-SANDBOX-SEALED`). Every
 countermeasure above was chosen because it **mediates the access path or detects the intrusion while
 preserving readability**, rather than encrypting the data away from its owner.
+
+**On confining a *same-UID* agent — why "separate OS user" leads.** The hardest case for the environmental
+rows is an OS-automation agent running under the **same user** as the PNA. Deep research into the desktop
+primitives (Linux · macOS · Windows, with the mobile contrast) found that confining a same-UID reader is
+an **access-control problem, not an encryption one**: at-rest encryption keyed to the login (Linux
+`fscrypt`, Windows EFS, DPAPI) releases the key to the logon session, so a same-user process is already
+inside the trust boundary — the kernel itself defers to "file mode bits, ACLs, LSMs, or namespaces." Two
+consequences for the rows above:
+
+- A **mount-namespace sandbox alone is insufficient** against a same-UID agent: it reaches the decrypted
+  view through the `/proc/<pid>/root` "wormhole" (gated only by same-UID `PTRACE_MODE_READ_FSCREDS`, which
+  it passes — Yama `ptrace_scope` gates *attach*, not *read*) and can `ptrace` the live process. Hardening
+  it takes `PR_SET_DUMPABLE=0` (closes the wormhole) **+** `ptrace_scope ≥ 1` (blocks live-memory reads)
+  **+** a **per-process MAC** (SELinux/AppArmor; Landlock can only self-restrict the app, never confine a
+  peer agent).
+- **Running the PNA under a separate OS user** sidesteps the whole problem cheaply — a distinct UID fails
+  the agent at the file-permission, `/proc`, and `ptrace` checks at once. It is the **cleanest convenient
+  desktop countermeasure**, and it recreates by hand what **mobile platforms do by construction**: each app
+  gets its own UID/sandbox **+** per-app key by default, so the same-UID-agent threat is largely a *desktop*
+  problem. (On Windows the convenient equivalent is a VM boundary — a WSL2 instance hosting the composite;
+  a same-user *VM* is the isolation a shared-UID desktop otherwise lacks.)
+
+All of this stays **"raise the bar," not hardware-grade**: a determined root, or an agent that *spawns* the
+app (making it a `ptrace` descendant), still wins — consistent with the [Harden flow](#environmental-threats-and-the-harden-flow)'s
+advisory posture. (The at-rest decision this elaborates: [`docs/PriorArt.md` § Design notes](../docs/PriorArt.md).)
 
 ## Environmental threats and the Harden flow
 
