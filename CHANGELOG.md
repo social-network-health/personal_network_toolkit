@@ -15,6 +15,13 @@
   path so every cross-link stays live. `just ci` green (34/34).
 - No new obligation on any design — a rename of the agent-consumption artifact; no AC, contract, or
   version change. `VERSION` stays `0.1`.
+### Recorded the *conditional* at-rest-encryption variants we declined (toolkit fix / docs)
+
+- **`docs/PriorArt.md` § Design notes** — the at-rest scope-decision entry now records the three
+  *conditional* at-rest-encryption variants weighed in the 2026-06-14 direction session
+  (scoped-to-"MCP-on", per-field "encrypt when MCP-accessed", hazard-triggered) and why each was
+  **declined** — so the reasoning isn't lost outside the brainstorm. Detail lives in the design note;
+  no spec, contract, or behavior change.
 
 ### `just validate <candidate>` — one-command deterministic-baseline evaluate-report (toolkit fix)
 
