@@ -2,6 +2,25 @@
 
 ## v0.1 draft (in progress)
 
+### `just rearchive` — one-step reference-design re-archival (toolkit tool)
+
+- **`tools/rearchive.py` (new) + `just rearchive <name> <ref> <clone>`** — re-archiving an accepted design at
+  a new commit (a new release, or a re-pin after upstream spec changes land) was a multi-step, drift-prone
+  chore. The helper does the deterministic part end-to-end: it calls `tools/swh-save.sh` (Save Code Now POST +
+  git-compatible SWHIDs), rewrites the design's `design.toml` pin (`commit`/`swhid_rev`/`swhid_dir` +
+  `archival = "archived"`, comments and alignment preserved), refreshes the bundled `Architecture.md` +
+  `evaluate-report.json` copies from the clone *at the ref* (`git show <ref>:…` — no checkout), and re-runs
+  `tools/lint-spec-ids.py`. It deliberately leaves prose (the README archival bullet, the index line, the
+  CHANGELOG) and cross-repo actions (tagging the design repo, the PR) to the human — printing paste-ready
+  stubs for each — and warns when a bundled report's `candidate.commit` lags the pinned commit (with the exact
+  regenerate recipe). `--no-save` runs it offline.
+- **`tools/tests/lint_selftest.py`** — a new offline case builds a throwaway design clone, re-pins the prm
+  design inside a repo copy, and asserts the manifest pin + the Architecture refresh + the stale-report warning
+  + a lint-clean result (`--no-save` / `SWH_SAVE_NO_REQUEST` keeps `just ci` offline). `tools/rearchive.py`
+  added to the versioned-artifact set in `tools/lint-spec-ids.py`; `CONTRIBUTING.md § acceptance` documents it.
+  `just ci` green (39/39).
+- No spec/AC/contract change; no new obligation on any design (a toolkit fix).
+
 ### Capture-lessons practice: AC-keyed field notes (adopted; dogfooded on AC-PRM-H)
 
 - **`docs/field-notes/` (new)** — the consumable, AC-keyed store for generalizable lessons harvested from reference designs (pitfalls + negative-invariant checklists). First entry **`AC-PRM-H.md`**, dogfooded from the loopback-surface work (PRM #59).
