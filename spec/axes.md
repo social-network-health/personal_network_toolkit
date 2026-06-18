@@ -36,6 +36,8 @@ How the PNA reaches a user's device. The distribution pick shapes whether the PN
 | **Anti-enumeration on auth + abuse-bounded analytics.** Distribution-channel auth endpoints MUST always return neutral payloads. Per-IP rate limits MUST be enforced. The sanitized error sink MAY double as the analytics pipe (`kind=install`, `kind=worker`, …) but MUST NOT widen the privacy boundary. | An auth-gated server **and** a configured error sink. | <a id="ac-8"></a>AC-8 |
 | **Service worker never owns SQLite.** The SW MUST be app-shell + update detection only — SW lifecycle (idle eviction, multi-instance, restart on push) is hostile to data ownership. The Shared store URL MUST be bypassed in the SW fetch handler. | Any PWA (`web-bundle-*`) distribution. | <a id="ac-14"></a>AC-14 |
 
+> **A general rule, two realizations.** AC-2 is the *distribution-server* form of a broader principle: **a server a PNA stands up over its own data must not become an ungoverned tap on it.** AC-2 keeps the delivery server a *channel, not a service* (no per-user RW endpoints, no private-data persistence, no sync); the *loopback-daemon* form — where a local daemon legitimately serves the single user RW — is [`AC-PRM-H`](#ac-prm-h) (§ Workspace shell), which requires that surface be loopback-bound and session-authenticated. The principle generalizes (a future surface type — a local socket, a gRPC endpoint — adds its own flavor-derived AC) while each obligation stays narrowly checkable. They differ on `pna-active`: AC-2 guards *off-device egress*; AC-PRM-H guards *same-host access* and, once authenticated, relaxes no guarantee (so it does not flip the bit).
+
 ---
 
 ## Storage substrate
@@ -83,7 +85,7 @@ How the Shared DB is filled and refreshed — whether from a single export, a si
 
 ## Workspace shell
 
-What the user sees and clicks — the surface that renders the data and accepts user input. The workspace shell pick is the highest-impact axis on user experience but does not trigger flavor-derived ACs in v0.1; universal ACs (AC-19 in particular) apply regardless of shell.
+What the user sees and clicks — the surface that renders the data and accepts user input. The workspace shell pick is the highest-impact axis on user experience; it triggers a flavor-derived AC only for a **server-backed local shell** ([AC-PRM-H](#ac-prm-h), below), and universal ACs (AC-19 in particular) apply regardless of shell.
 
 ### Picks
 
@@ -94,9 +96,18 @@ What the user sees and clicks — the surface that renders the data and accepts 
 - **`native-shell-tauri`** — Tauri (Rust-backed) wrapping a web SPA in a native shell. Bridges browser UI with native OS access.
 - **`native-shell-native`** — Fully native GUI (SwiftUI, Qt, GTK, etc.). No reference design in v0.1.
 
-No flavor-derived ACs are triggered by picks on this axis in v0.1. The universal AC-6 (always-reachable diagnostic escape) takes shell-specific *forms* — URL parameter for SPAs (`?gate=1`), CLI flag for terminal apps (`--reset`), key chord for native — but the contract itself is universal.
+The universal AC-6 (always-reachable diagnostic escape) takes shell-specific *forms* — URL parameter for SPAs (`?gate=1`), CLI flag for terminal apps (`--reset`), key chord for native — but the contract itself is universal.
 
-> **Proposed (RFC).** A flavor-derived AC for a **server-backed local shell** — one that authenticates the app-opened **loopback transport** so it is not an ungoverned data tap for other local processes, generalizing [`AC-2`](#ac-2) ("server is a delivery channel, not a service") from the `web-bundle` server to the non-`web-bundle` local daemon — is on record in [`../docs/design-notes/2026-06-loopback-surface-auth.md`](../docs/design-notes/2026-06-loopback-surface-auth.md) (candidate `AC-PRM-H`; demonstrator: PRM). It lands with its demonstrator, per [`CONTRIBUTING.md`](../CONTRIBUTING.md) § Contribution types; the AC tables here are unchanged until then.
+### Extra commitments these picks add
+
+A workspace shell served over an **HTTP/loopback daemon the PNA stands up itself** (rather than a browser bundle delivered from a distribution origin) opens a surface over its own data that other local processes on the host can reach. That triggers one flavor-derived AC on this axis:
+
+<!-- machine-parsed table — see the EDITING NOTE at the top of this file before changing its columns, headers, or IDs. -->
+| Commitment | Applies when you pick | AC |
+|---|---|---|
+| **Authenticated loopback surface.** A same-host-reachable surface a PNA opens over its own Private/Shared data (a loopback HTTP daemon, a local socket) MUST be **loopback-bound** and **authenticated to the user's own session**, disclosing nothing to an unauthorized same-host reader. A non-loopback bind MUST require an explicit, documented opt-out. This is the loopback-daemon realization of the "no ungoverned data tap" principle (see the note under [§ Distribution](#distribution)); authenticating the transport relaxes no guarantee, so it does **not** flip `pna-active`. Attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md). | A server-backed local workspace shell (e.g. `vanilla-js-spa` / `framework-spa` / `tui-textual` served over a local daemon) **and** a non-`web-bundle` distribution. | <a id="ac-prm-h"></a>AC-PRM-H |
+
+The deterministic half is [`tools/loopback-surface-lint.py`](../tools/loopback-surface-lint.py) (`just loopback-lint`): an L1 non-loopback bind gates; an L2 unauthenticated handler is advisory (`--strict` gates it, as PRM does in its own conformance gate).
 
 ---
 

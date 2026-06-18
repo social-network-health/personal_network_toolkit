@@ -2,6 +2,13 @@
 
 ## v0.1 draft (in progress)
 
+### Loopback-surface auth lands: `AC-PRM-H` + the "no ungoverned data tap" principle (with its demonstrator, PRM #59)
+
+- **`spec/axes.md` § Workspace shell — new flavor-derived `AC-PRM-H`** (replacing the prior RFC pointer): a same-host-reachable surface a PNA opens over its own data (a loopback HTTP daemon, a local socket) MUST be loopback-bound + authenticated to the user's own session. Triggered by a server-backed local shell × a non-`web-bundle` distribution. Authenticating the transport relaxes no guarantee, so it does **not** flip `pna-active`.
+- **Principle prose by [`AC-2`](spec/axes.md#ac-2)** — AC-2 (the web-bundle delivery server) and AC-PRM-H (the loopback daemon) are named as two **realizations of one rule**: a server a PNA stands up must not become an ungoverned tap on its own data. The principle generalizes (future surface types → further flavor-derived ACs) while each obligation stays narrowly checkable.
+- **`docs/design-notes/2026-06-loopback-surface-auth.md`** flipped proposed → **landed**, citing the durable demonstrator commit (PRM `main` `1551896`). **`docs/PriorArt.md` § Design notes** — already indexed.
+- Demonstrator: **PRM [#59](https://github.com/richbodo/prm/pull/59) merged** — daemon session-auth (token + Host/Origin guard + loopback-pin) + the L1/L2 loopback lint run `--strict` in its own gate. The deterministic toolkit lint shipped in #80; the acceptance-process clarification in #79.
+
 ### Loopback-surface lint: deterministic check for an app-opened transport (toolkit tool)
 
 - **`tools/loopback-surface-lint.py` (new)** — the static "checked, not asserted" companion for the one surface a PNA opens over its *own* data (an app-stood-up HTTP daemon; candidate `AC-PRM-H`, RFC). **L1** (a literal non-loopback bind) **gates**; **L2** (a handler module with no recognized auth guard) is **advisory** by default and gates only under `--strict` — so a heuristic can't rot into alarm-fatigued CI noise (the deliberate severity split). `--json` folds into an evaluate report (`source=deterministic`). Clean/dirty/noauth fixtures + `lint_selftest` cases; added to the versioned-artifact set and `just loopback-lint`. A standalone evaluator tool (like `egress-lint`); the `AC-PRM-H` *obligation* lands with its demonstrator (PRM) per CONTRIBUTING.
