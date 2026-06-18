@@ -2,6 +2,22 @@
 
 ## v0.1 draft (in progress)
 
+### PRM: re-archived at `pnt-ref-0.1.1` (`1551896`) — Software Heritage SWHIDs refreshed (reference design)
+
+- `reference_designs/prm/` re-pinned from `a70d35b` (the v0.1 attestation, prm #35) to **`pnt-ref-0.1.1`**
+  (`1551896`) — the prm [#59](https://github.com/richbodo/prm/pull/59) merge to `main` landing the loopback-daemon
+  trust-surface work (`AC-PRM-H`), now that the spec changes it rides are accepted. New annotated tag pushed on the
+  prm side. New SWHIDs `swh:1:rev:1551896025307ac4b08ba621c02f4e0d77eb9391`,
+  `swh:1:dir:39637a1ff96f77e7df47e87ac53a7c6d8fc61b62` (git-compatible, via `tools/swh-save.sh`); Save Code Now
+  re-ingest requested (request id 2367638, accepted — async).
+- Bundled **`Architecture.md`** + **`evaluate-report.json`** copies refreshed from canonical (the
+  `private.db`→`relationships.db` rename + the new AC-PRM-H "no ungoverned data tap" contribution prose). The
+  `evaluate-report.json` was **regenerated at the accepted commit** by prm's deterministic emitter, so its
+  `candidate.commit` pins `1551896` (mirroring the a70d35b re-sync); the 18-AC attestation table is unchanged
+  (12 conformant / 2 partial / 4 not-applicable).
+- `reference_designs/prm/README.md` "Contributions to the spec" gains the **`AC-PRM-H`** bullet (the design now
+  rides five spec changes). `design.toml` + the `reference_designs/` index re-pinned to the tag. `just lint` green.
+
 ### Capture-lessons practice: AC-keyed field notes (adopted; dogfooded on AC-PRM-H)
 
 - **`docs/field-notes/` (new)** — the consumable, AC-keyed store for generalizable lessons harvested from reference designs (pitfalls + negative-invariant checklists). First entry **`AC-PRM-H.md`**, dogfooded from the loopback-surface work (PRM #59).
