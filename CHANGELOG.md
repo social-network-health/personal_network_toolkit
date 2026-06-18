@@ -2,6 +2,12 @@
 
 ## v0.1 draft (in progress)
 
+### Loopback-surface auth: the app's own transport is an intrinsic countermeasure (design note + contributing clarification)
+
+- **`docs/design-notes/2026-06-loopback-surface-auth.md` (new)** — proposes **`AC-PRM-H`** (generalize `AC-2` from the `web-bundle` server to a PNA's *own* loopback daemon: loopback-bound + session-authenticated) + a **loopback-surface lint**, closing the gap between the cloud MCP surface (consent + the data-floor) and same-UID file reads (Harden). An app-opened, unauthenticated `127.0.0.1` API is reachable by any local process — a PNA-**intrinsic** surface the app can close, distinct from the **environmental** same-UID rows. Demonstrated by **PRM [#59](https://github.com/richbodo/prm/pull/59)** (daemon session-auth + the lint — green + attested). A stub, not a normative change; lands **with** its demonstrator per CONTRIBUTING.
+- **`CONTRIBUTING.md` § Acceptance process (toolkit fix / clarification)** — names the **demonstrating-commit vs. acceptance** distinction (two repos, two merges): the demonstrator is a *pushed, working, cited commit*, **not** a design-repo merge; the only gating merge is the toolkit PR ("the merge is the acceptance"); pin the demonstrator at a durable (merged / tagged) commit *before* acceptance, for SWHID / `Toolkit-Version` stability. No new obligation.
+- **`spec/axes.md` § Workspace shell** — a prose RFC pointer (the machine-parsed AC tables are untouched). **`docs/PriorArt.md` § Design notes** — indexed. `VERSION` stays `0.1`.
+
 ### Same-UID research folds into the Harden countermeasure rows (toolkit fix)
 
 - **`spec/exceptions.md` § Countermeasure library** — deep research into the desktop sandbox/encryption

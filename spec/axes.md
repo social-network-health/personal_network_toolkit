@@ -96,6 +96,8 @@ What the user sees and clicks — the surface that renders the data and accepts 
 
 No flavor-derived ACs are triggered by picks on this axis in v0.1. The universal AC-6 (always-reachable diagnostic escape) takes shell-specific *forms* — URL parameter for SPAs (`?gate=1`), CLI flag for terminal apps (`--reset`), key chord for native — but the contract itself is universal.
 
+> **Proposed (RFC).** A flavor-derived AC for a **server-backed local shell** — one that authenticates the app-opened **loopback transport** so it is not an ungoverned data tap for other local processes, generalizing [`AC-2`](#ac-2) ("server is a delivery channel, not a service") from the `web-bundle` server to the non-`web-bundle` local daemon — is on record in [`../docs/design-notes/2026-06-loopback-surface-auth.md`](../docs/design-notes/2026-06-loopback-surface-auth.md) (candidate `AC-PRM-H`; demonstrator: PRM). It lands with its demonstrator, per [`CONTRIBUTING.md`](../CONTRIBUTING.md) § Contribution types; the AC tables here are unchanged until then.
+
 ---
 
 ## Comms transport set
