@@ -2,6 +2,12 @@
 
 ## v0.1 draft (in progress)
 
+### Both reference designs re-archived at 100% realization-pointer coverage
+
+- **fellows_local_db re-pinned `dc3e0cf` → `98b283f`** (fellows [#289](https://github.com/richbodo/fellows_local_db/pull/289)) and **prm re-pinned `1551896` → `7bd4a28`** (`pnt-ref-0.1.2`, prm [#60](https://github.com/richbodo/prm/pull/60)) — each adds `path:symbol` realization pointers + full `path::test` verifications to its `Architecture.md`, taking the [realization index](docs/realization-index.md) to **23/23** and **14/14** (100%/100%). Re-synced into the bundled copies via `just rearchive`; index regenerated; `just ci` green (43/43, drift gate included).
+- **Honest residual:** the two coverage commits were re-pinned **offline** (`just rearchive … --no-save`), so their Software Heritage *Save Code Now* submission is **pending** — the recorded SWHIDs are git-computed/content-addressed (they resolve once submitted). The design.toml `archival` comments and the per-design README archival bullets state this. Submit via `tools/swh-save.sh` (or `just rearchive` without `--no-save`) to complete archival.
+- Closes the open goal in [`docs/roadmap.md`](docs/roadmap.md) § Inbound-findings registry and [`docs/design-notes/2026-06-harvesting-reusable-code.md`](docs/design-notes/2026-06-harvesting-reusable-code.md). No spec/AC/contract change.
+
 ### Realization index — a derived, cross-design map of *who realizes each AC, where* (toolkit tool)
 
 - **`tools/realization-index.py` (new) + `just realization-index` → [`docs/realization-index.md`](docs/realization-index.md)** — the

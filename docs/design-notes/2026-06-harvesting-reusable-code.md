@@ -1,10 +1,10 @@
 # Harvesting reusable code from reference designs
 
-*Design note · 2026-06 · status: **Tier-0 adopted (2026-06-19)** — `tools/realization-index.py`
-emits [`../realization-index.md`](../realization-index.md), drift-gated in `just ci` with a
-self-test; the `path:symbol` attestation-determinism nudge landed in the Architecture template.
-**Open goal: 100% realization-pointer coverage** in both reference designs (cross-repo follow-on).
-Tiers 1–2 remain proposals.
+*Design note · 2026-06 · status: **Tier-0 adopted + goal reached (2026-06-19)** —
+`tools/realization-index.py` emits [`../realization-index.md`](../realization-index.md),
+drift-gated in `just ci` with a self-test; the `path:symbol` attestation-determinism nudge
+landed in the Architecture template; **both reference designs are at 100% realization-pointer
+coverage** (fellows #289, PRM #60, re-synced via `just rearchive`). Tiers 1–2 remain proposals.
 Checkpoints a 2026-06-19 discussion (Rich + Claude Code) prompted by the toolkit's
 `just rearchive` helper ([PR #83](https://github.com/richbodo/personal_network_toolkit/pull/83)) —
 a convenience tool for re-archiving an accepted reference design — about how tested,
@@ -190,13 +190,15 @@ determinism nudge landed in `ARCHITECTURE_TEMPLATE.md`). The coverage metric is 
 index — and it immediately earned its keep: PRM's `AC-PRM-A` realization cited only a doc link,
 so the metric correctly shows it uncovered (PRM 11/14, not 12/14).
 
-**The open goal — full realization-pointer coverage.** Today fellows_local_db is at **13/23**
-and PRM at **11/14**. Getting both to **100%** is the live follow-on: it means editing each
-design's `Architecture.md` (in `../fellows_local_db` and `../prm`) to cite realizations as
-`path:symbol`, then re-syncing the bundled copies via `just rearchive` and regenerating the
-index. That is cross-repo work, tracked in [`../roadmap.md`](../roadmap.md) § Inbound-findings
-registry; the tooling + convention to make it mechanical are now in place. Tiers 1–2
-(harvest/portability mark, cookbook notes) still accrete only as N grows.
+**The goal — full realization-pointer coverage — reached (2026-06-19).** Both reference designs
+are now at **100%**: fellows_local_db 23/23 (PR [#289](https://github.com/richbodo/fellows_local_db/pull/289))
+and PRM 14/14 (PR [#60](https://github.com/richbodo/prm/pull/60)), each editing its `Architecture.md`
+to cite realizations as `path:symbol` and verifications as full `path::test`, then re-synced into
+the bundled copies via `just rearchive` with the index regenerated and drift-gate-clean. The one
+residual: the two coverage commits were re-pinned offline (`--no-save`), so their Software Heritage
+*Save Code Now* submission is still pending (the recorded SWHIDs are git-computed/content-addressed
+and resolve once submitted) — see the design.toml archival comments. Tiers 1–2 (harvest/portability
+mark, cookbook notes) still accrete only as N grows.
 
 *Endgame worth naming, not building (v0.3+):* record when design X *harvested* pattern Y.
 That citation graph tells you which patterns are load-bearing across the ecosystem — the
