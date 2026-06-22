@@ -130,6 +130,18 @@ principle/realization fusion (AC-MCP-A/B) for follow-on.
 
 ## Worm 3 — resolved scope + drafts
 
+**Status: worm 3a landed (this branch), `just ci` green.** 3a = the ID-namespace surgery: AC-22 added;
+AC-3/12/13/14/PRM-C → RZ-1..RZ-5 (dual-anchored for redirect; Retired-IDs table in `axes.md`);
+AC-PRM-A/D → AC-20/21; both contract `Realizes:` headers + their prose updated; `PNA_Spec.md` /
+`axes.md` / `use_cases.md` cross-refs updated. The lint reports **22 AC IDs** (was 26: −5 realizations,
++1 AC-22). Reference-design attestations + the realization index are **left for the v0.2 re-sync** (they
+are 0.1-pinned and the lint does not cross-check them; the Retired-IDs table bridges the gap).
+
+**Worm 3b (remaining):** retag the conditional ACs by *behavioral property* (rule 2) and consolidate them
+into a new `PNA_Spec.md` **§ Conditional architectural commitments**; add the `RZ-*` traceability lint
+check (+ its fault-injection self-test); fix the external `axes.md#ac-*` links that point at the
+conditional anchors once they move. Then worm 4 (verifiability AC) / worm 5 (sub-contracts).
+
 ### ID disposition
 
 | Disposition | IDs |

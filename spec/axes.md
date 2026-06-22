@@ -20,9 +20,9 @@ How the PNA reaches a user's device. The distribution pick shapes whether the PN
 
 ### Picks
 
-- **`web-bundle-with-magic-link`** *(server-backed, auth-gated, PWA)* — An HTTP origin serves the bundle behind email-allowlist auth. The user receives an unlock link, exchanges it for a session, and installs the PWA. Multiple users install from the same source. Attested in [fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md). Triggers AC-2, AC-5, AC-8, AC-14; combines with `storage:opfs-sqlite-wasm` to trigger AC-13. **Inherits constraints** `CST-PWA-NO-BACKGROUND`, `CST-PWA-SERVER-FLOOR` — and, combined with `storage:opfs-sqlite-wasm`, `CST-PWA-PRIVATE-SNAPSHOT` and `CST-PWA-NO-SYNC` (see [constraints.md](constraints.md)).
+- **`web-bundle-with-magic-link`** *(server-backed, auth-gated, PWA)* — An HTTP origin serves the bundle behind email-allowlist auth. The user receives an unlock link, exchanges it for a session, and installs the PWA. Multiple users install from the same source. Attested in [fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md). Triggers AC-2, AC-5, AC-8; brings realization RZ-4 (and, combined with `storage:opfs-sqlite-wasm`, RZ-3). **Inherits constraints** `CST-PWA-NO-BACKGROUND`, `CST-PWA-SERVER-FLOOR` — and, combined with `storage:opfs-sqlite-wasm`, `CST-PWA-PRIVATE-SNAPSHOT` and `CST-PWA-NO-SYNC` (see [constraints.md](constraints.md)).
 - **`never-distributed-single-user`** — The PNA is built or installed by the user themselves; no per-user delivery story. No server, no auth, no service worker. PRT-inspired. Triggers no flavor-derived ACs on this axis.
-- **`web-bundle-open`** *(server-backed, no auth, PWA)* — Same delivery shape as magic-link but with no auth gate; anyone with the URL can install. Triggers AC-2 and AC-14; combines with `storage:opfs-sqlite-wasm` to trigger AC-13. **Inherits constraints** `CST-PWA-NO-BACKGROUND`, `CST-PWA-SERVER-FLOOR` — and, combined with `storage:opfs-sqlite-wasm`, `CST-PWA-PRIVATE-SNAPSHOT` and `CST-PWA-NO-SYNC` (see [constraints.md](constraints.md)).
+- **`web-bundle-open`** *(server-backed, no auth, PWA)* — Same delivery shape as magic-link but with no auth gate; anyone with the URL can install. Triggers AC-2; brings realization RZ-4 (and, combined with `storage:opfs-sqlite-wasm`, RZ-3). **Inherits constraints** `CST-PWA-NO-BACKGROUND`, `CST-PWA-SERVER-FLOOR` — and, combined with `storage:opfs-sqlite-wasm`, `CST-PWA-PRIVATE-SNAPSHOT` and `CST-PWA-NO-SYNC` (see [constraints.md](constraints.md)).
 - **`app-store-native`** — Packaged native app distributed via a platform store (Mac App Store, Google Play, etc.). The store is the install path; no PNA-operated server. None of this axis's flavor-derived ACs fire.
 - **`sideloaded-native`** — Packaged native app distributed directly (download a binary, install). Same: no PNA-operated server; none of this axis's flavor-derived ACs fire.
 
@@ -34,7 +34,7 @@ How the PNA reaches a user's device. The distribution pick shapes whether the PN
 | **No SaaS surface.** The server, when present, MUST be a delivery channel, not a service. The server MUST NOT expose per-user RW endpoints, MUST NOT persist private data, MUST NOT host an admin console, and MUST NOT operate cross-device sync. | Any server-backed (`web-bundle-*`) distribution. | <a id="ac-2"></a>AC-2 |
 | **Stale session never locks users out of cached data.** A 401/403 from any shared-side fetch MUST fall through to the local cache. Fresh data MUST require explicit user action. | Auth-gated distribution (`web-bundle-with-magic-link`). | <a id="ac-5"></a>AC-5 |
 | **Anti-enumeration on auth + abuse-bounded analytics.** Distribution-channel auth endpoints MUST always return neutral payloads. Per-IP rate limits MUST be enforced. The sanitized error sink MAY double as the analytics pipe (`kind=install`, `kind=worker`, …) but MUST NOT widen the privacy boundary. | An auth-gated server **and** a configured error sink. | <a id="ac-8"></a>AC-8 |
-| **Service worker never owns SQLite.** The SW MUST be app-shell + update detection only — SW lifecycle (idle eviction, multi-instance, restart on push) is hostile to data ownership. The Shared store URL MUST be bypassed in the SW fetch handler. | Any PWA (`web-bundle-*`) distribution. | <a id="ac-14"></a>AC-14 |
+| **Service worker never owns SQLite.** The SW MUST be app-shell + update detection only — SW lifecycle (idle eviction, multi-instance, restart on push) is hostile to data ownership. The Shared store URL MUST be bypassed in the SW fetch handler. *Realizes AC-1 for this substrate.* | Any PWA (`web-bundle-*`) distribution. | <a id="rz-4"></a><a id="ac-14"></a>RZ-4 |
 
 > **A general rule, two realizations.** AC-2 is the *distribution-server* form of a broader principle: **a server a PNA stands up over its own data must not become an ungoverned tap on it.** AC-2 keeps the delivery server a *channel, not a service* (no per-user RW endpoints, no private-data persistence, no sync); the *loopback-daemon* form — where a local daemon legitimately serves the single user RW — is [`AC-PRM-H`](#ac-prm-h) (§ Workspace shell), which requires that surface be loopback-bound and session-authenticated. The principle generalizes (a future surface type — a local socket, a gRPC endpoint — adds its own flavor-derived AC) while each obligation stays narrowly checkable. They differ on `pna-active`: AC-2 guards *off-device egress*; AC-PRM-H guards *same-host access* and, once authenticated, relaxes no guarantee (so it does not flip the bit).
 
@@ -46,20 +46,20 @@ What backs the data layer — the bytes on disk or in OPFS that hold the Shared 
 
 ### Picks
 
-- **`opfs-sqlite-wasm`** — sqlite-wasm running in a dedicated worker, with OPFS-SAH-Pool VFS as the underlying storage. Browser-only. Attested in [fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md). Triggers AC-3, AC-12; combines with `dist:web-served` to trigger AC-13. **Inherits constraints** `CST-PWA-SANDBOX-SEALED`, `CST-PWA-STORAGE-EVICTABLE`, `CST-PWA-SINGLE-OWNER` — and, combined with a `web-bundle` distribution, `CST-PWA-PRIVATE-SNAPSHOT` and `CST-PWA-NO-SYNC` (see [constraints.md](constraints.md)). (The forced worker-owned single-connection architecture is captured directly in AC-3 above.)
-- **`native-sqlite-via-filesystem`** — Native SQLite library (libsqlite3) opens database files directly via OS filesystem APIs. WAL mode + advisory file locks recommended. CLI / native PNAs only. PRT-inspired; attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md). Triggers AC-PRM-C.
+- **`opfs-sqlite-wasm`** — sqlite-wasm running in a dedicated worker, with OPFS-SAH-Pool VFS as the underlying storage. Browser-only. Attested in [fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md). Brings realizations RZ-1, RZ-2; combined with `dist:web-served`, brings RZ-3. **Inherits constraints** `CST-PWA-SANDBOX-SEALED`, `CST-PWA-STORAGE-EVICTABLE`, `CST-PWA-SINGLE-OWNER` — and, combined with a `web-bundle` distribution, `CST-PWA-PRIVATE-SNAPSHOT` and `CST-PWA-NO-SYNC` (see [constraints.md](constraints.md)). (The forced worker-owned single-connection architecture is captured directly in RZ-1 above.)
+- **`native-sqlite-via-filesystem`** — Native SQLite library (libsqlite3) opens database files directly via OS filesystem APIs. WAL mode + advisory file locks recommended. CLI / native PNAs only. PRT-inspired; attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md). Brings realization RZ-5.
 - **`idb-only-browser`** — IndexedDB without SQLite. Less expressive (no SQL); mostly hypothetical for PNA. No flavor-derived ACs in v0.1 (the relevant ACs assume sqlite); a future toolkit version may add IDB-specific ACs if a reference design picks this.
-- **`native-sqlcipher`** — Encrypted-at-rest variant of `native-sqlite-via-filesystem`. Inherits AC-PRM-C plus additional commitments about key storage and rotation that v0.1 doesn't yet name. Those deferred key-management ACs land when a SQLCipher-flavored reference design is built.
+- **`native-sqlcipher`** — Encrypted-at-rest variant of `native-sqlite-via-filesystem`. Inherits RZ-5 plus additional commitments about key storage and rotation that v0.1 doesn't yet name. Those deferred key-management ACs land when a SQLCipher-flavored reference design is built.
 
 ### Extra commitments these picks add
 
 <!-- machine-parsed table — see the EDITING NOTE at the top of this file before changing its columns, headers, or IDs. -->
 | Commitment | Applies when you pick | AC |
 |---|---|---|
-| **Single OPFS owner.** All OPFS handles and SQLite-WASM instances MUST live in one dedicated worker. The workspace MUST act as an RPC client. Parallel main-thread OPFS MUST NOT exist. *Realizes AC-1 + AC-11 for this substrate.* This worker-owned, single-writer architecture is **forced by the substrate**, not a stylistic choice: durable SQL in a browser (sqlite-wasm + OPFS-SAH-Pool) requires `crossOriginIsolated`, one worker owning every OPFS handle, and a single writer connection — a multi-connection or main-thread design is not available. Builders must know this up front; it is a property of the medium, not a defect to fix. | `storage:opfs-sqlite-wasm`. | <a id="ac-3"></a>AC-3 |
-| **Capability detection inside the worker, UA-parsing for messaging only.** Browsers lie about main-thread OPFS support; the worker MUST be the only context that performs capability detection. UA strings MAY inform error messages but MUST NOT gate. | `storage:opfs-sqlite-wasm`. | <a id="ac-12"></a>AC-12 |
-| **COOP/COEP required.** OPFS-SAH-Pool needs `crossOriginIsolated`; both dev server and prod reverse proxy MUST send `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`. Without this the storage substrate silently fails to install. | `storage:opfs-sqlite-wasm` **and** a web-served distribution. | <a id="ac-13"></a>AC-13 |
-| **Single-instance file-lock.** Native SQLite demands one writer; a second process MUST refuse cleanly with a specific message naming the holding process. *Realizes AC-11 for this substrate.* Attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md). | `storage:native-sqlite-via-filesystem`. | <a id="ac-prm-c"></a>AC-PRM-C |
+| **Single OPFS owner.** All OPFS handles and SQLite-WASM instances MUST live in one dedicated worker. The workspace MUST act as an RPC client. Parallel main-thread OPFS MUST NOT exist. *Realizes AC-1 + AC-11 for this substrate.* This worker-owned, single-writer architecture is **forced by the substrate**, not a stylistic choice: durable SQL in a browser (sqlite-wasm + OPFS-SAH-Pool) requires `crossOriginIsolated`, one worker owning every OPFS handle, and a single writer connection — a multi-connection or main-thread design is not available. Builders must know this up front; it is a property of the medium, not a defect to fix. | `storage:opfs-sqlite-wasm`. | <a id="rz-1"></a><a id="ac-3"></a>RZ-1 |
+| **Capability detection inside the worker, UA-parsing for messaging only.** Browsers lie about main-thread OPFS support; the worker MUST be the only context that performs capability detection. UA strings MAY inform error messages but MUST NOT gate. *Realizes AC-22 for this substrate.* | `storage:opfs-sqlite-wasm`. | <a id="rz-2"></a><a id="ac-12"></a>RZ-2 |
+| **COOP/COEP required.** OPFS-SAH-Pool needs `crossOriginIsolated`; both dev server and prod reverse proxy MUST send `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`. Without this the storage substrate silently fails to install. *Realizes AC-1 for this substrate.* | `storage:opfs-sqlite-wasm` **and** a web-served distribution. | <a id="rz-3"></a><a id="ac-13"></a>RZ-3 |
+| **Single-instance file-lock.** Native SQLite demands one writer; a second process MUST refuse cleanly with a specific message naming the holding process. *Realizes AC-11 for this substrate.* Attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md). | `storage:native-sqlite-via-filesystem`. | <a id="rz-5"></a><a id="ac-prm-c"></a>RZ-5 |
 
 ---
 
@@ -117,13 +117,13 @@ Which outreach mechanisms the workspace offers — what shows up in the user's "
 
 ### Picks
 
-- **`none`** — No outreach surface: the workspace offers no "reach out" picker. A contacts-consolidation or directory PNA whose loop stops at *recording* relationship data (no *gathering*-by-outreach). Attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md) (v0.1 consolidates + dedups; outreach is a later version). The outreach comms ACs — AC-16, AC-18, AC-19, AC-MCP-B — are vacuous; AC-PRM-A (LLM-as-transport) still applies via the MCP surface.
+- **`none`** — No outreach surface: the workspace offers no "reach out" picker. A contacts-consolidation or directory PNA whose loop stops at *recording* relationship data (no *gathering*-by-outreach). Attested in [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md) (v0.1 consolidates + dedups; outreach is a later version). The outreach comms ACs — AC-16, AC-18, AC-19, AC-MCP-B — are vacuous; AC-20 (LLM-as-transport) still applies via the MCP surface.
 - **`mailto-only`** — Just `mailto:` (plus `tel:` for phone). Attested in [fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md); Signal planned.
 - **`mailto-plus-signal`** — Adds Signal protocol (encrypted-in-protocol; passes AC-18).
 - **`mailto-plus-matrix`** — Adds Matrix (encrypted-room mode; passes AC-18).
 - **`shell-out-to-cli-clients`** — CLI / native PNAs that invoke `signal-cli`, IMAP libraries, or other transports via subprocess. PRT-inspired (not yet against this spec).
 
-No flavor-derived ACs are triggered by picks on this axis in v0.1. The universal comms ACs — AC-16 (user-driven selection), AC-18 (mechanism cannot read content), AC-19 (user-visible payload before send), AC-PRM-A (LLM-as-transport), AC-MCP-B (MCP comms stage; workspace launches) — apply regardless of pick.
+No flavor-derived ACs are triggered by picks on this axis in v0.1. The universal comms ACs — AC-16 (user-driven selection), AC-18 (mechanism cannot read content), AC-19 (user-visible payload before send), AC-20 (LLM-as-transport), AC-MCP-B (MCP comms stage; workspace launches) — apply regardless of pick.
 
 ---
 
@@ -142,3 +142,22 @@ The picks are structured as a progression: each adds one canonical server to the
 - **`full`** — All five canonical servers exposed: Shared Data Ops, Private Data Ops, Ingestion, Communications, Diagnostics. Maximum AI-client reachability. All MCP ACs apply.
 
 No axis-specific flavor-derived ACs are introduced here. The MCP-related ACs are universal — AC-MCP-A and AC-MCP-B in [`PNA_Spec.md` § Universal architectural commitments](PNA_Spec.md#universal-architectural-commitments) — and apply whenever the pick includes a server that triggers them.
+
+---
+
+## Retired IDs (redirects)
+<a id="retired-ids"></a>
+
+The [L1/L2 layering pass](../plans/l1-l2-layering-pass.md) factored two kinds of ID out of the `AC-*` namespace: **realizations** (Layer-2 — how a commitment is met on a specific stack — recategorized to the `RZ-*` family, since [a realization is never an AC](PNA_Spec.md#how-the-pieces-fit-together)) and two **de-branded universals** (a universal AC should not carry the design that first surfaced it in its ID; provenance lives in the [realization index](../docs/realization-index.md) + each design's attestation). Every retired ID keeps a working deep-link anchor on its new row, so existing links still resolve.
+
+| Retired ID | New home | Why |
+|---|---|---|
+| AC-3 | RZ-1 (this file) | realization of AC-1 + AC-11 on `opfs-sqlite-wasm` |
+| AC-12 | RZ-2 (this file) | realization of AC-22 on `opfs-sqlite-wasm` |
+| AC-13 | RZ-3 (this file) | realization of AC-1 on web-served OPFS |
+| AC-14 | RZ-4 (this file) | realization of AC-1 on a `web-bundle` PWA |
+| AC-PRM-C | RZ-5 (this file) | realization of AC-11 on `native-sqlite-via-filesystem` |
+| AC-PRM-A | [AC-20](PNA_Spec.md#ac-20) | de-branded universal (LLM calls over user data are transports) |
+| AC-PRM-D | [AC-21](PNA_Spec.md#ac-21) | de-branded universal (re-ingestion is always user-initiated) |
+
+The two **accepted reference designs are pinned to Toolkit-Version 0.1** and still attest the retired IDs in their bundled `Architecture.md`; their attestations re-sync to these new IDs at the v0.2 cut (see the [v0.2 cut plan](../plans/v0.2-spec-cut-plan.md)). The realization index is derived from those 0.1-pinned attestations, so it likewise still shows the old IDs until that re-sync.
