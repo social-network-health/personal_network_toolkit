@@ -360,7 +360,7 @@ The spec defines **five slots** (positions filled by code) and **three interface
 
 Each slot has a code-level contract. The typed contracts — JSON Schema for RPC + handshake, OpenAPI fragments for distribution, SQL DDL (Data Definition Language) for schemas, TypeScript declaration for the Communications transport interface, JSON Schema for each canonical MCP server's tool surface — live in [`contracts/`](../contracts/).
 
-Many Universal ACs (see [§ Universal architectural commitments](#universal-architectural-commitments)) cite specific slots in their wording. The slots and interfaces are the architectural skeleton; the ACs are the load-bearing constraints over it. Each slot decomposes further into named sub-contracts — see [§ Sub-contracts per slot](#sub-contracts-per-slot) below — so a builder can target each piece individually.
+Many Universal ACs (see [§ Universal architectural commitments](#universal-architectural-commitments)) cite specific slots in their wording. The slots and interfaces are the architectural skeleton — the named roles every PNA fills, which survive a [total technology swap](#how-the-pieces-fit-together) — and the Layer-1 ACs are the load-bearing constraints over them. Each slot decomposes further into named sub-contracts — see [§ Sub-contracts per slot](#sub-contracts-per-slot) below — which are **Layer 2** (how a slot is realized on a specific stack); a builder targets each piece individually, keeping the Layer-1 AC and adapting the Layer-2 realization to their stack.
 
 ### Slots
 
@@ -385,6 +385,8 @@ Many Universal ACs (see [§ Universal architectural commitments](#universal-arch
 Each slot's contract decomposes into named sub-contracts so an AI building or rewriting a PNA can target each piece individually. Naming convention: two-letter prefix per slot (`WS-`, `ST-`, `IN-`, `CO-`, `DI-`) and per interface (`SH-`, `PR-`, `DB-`), then dash, then monotonic integer. New sub-contracts get the next integer; numbers don't get reused.
 
 Sub-contracts cite the universal ACs they realize where appropriate; the AC table above remains the single source of truth for the architectural commitments themselves.
+
+**These sub-contracts are Layer 2** (see [§ How the pieces fit together](#how-the-pieces-fit-together)). They decompose *how* each slot is realized on a concrete stack, not *what* the PNA must promise — that is the [Layer-1 ACs](#universal-architectural-commitments) they cite. Most are generalized from `fellows_local_db`'s browser implementation (the toolkit's first reference design) and carry "or substrate-equivalent" hedges for non-browser flavors; a few still name browser specifics outright (e.g. ST-1's OPFS-SAH-Pool VFS, ST-3's exact `{id, op, args}` RPC envelope, WS-7's literal `fellows_authenticated_once` localStorage key). Read them as a builder's checklist *for that lineage* — adapt per stack, do not treat them as universal contracts. As reference designs on other substrates land, the genuinely-universal pieces factor up into ACs and the stack-specific ones stay realizations. (The `RZ-*` family in [`axes.md`](axes.md) is the other half of Layer 2 — realizations a specific *axis pick* brings; these sub-contracts are the per-slot decomposition of the same lineage.)
 
 #### Workspace (`WS-`)
 

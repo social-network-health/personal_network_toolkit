@@ -54,11 +54,22 @@ Vocabulary: **conditional AC** (replaces "flavor-derived AC"), **realization** (
   AC-23, orthogonal to the pick. Demonstrators: PRM (build-from-source) + fellows (source-available bundle);
   their AC-23 attestation rows re-sync at the v0.2 cut. Supersedes the old "split the distribution pick"
   framing of [#39](https://github.com/richbodo/personal_network_toolkit/issues/39)/[#64](https://github.com/richbodo/personal_network_toolkit/issues/64) rider 1. Lint now: **23 AC IDs**.
-- **Worm 5 — sub-contracts.** Relocate / clearly mark the `WS-*`/`ST-*`/… slot map as L2 realizations
-  (largely fellows-derived; e.g. `WS-7` names a literal localStorage key).
-- **Then:** the riders land clean (UM is already pure L1 — [#40](https://github.com/richbodo/personal_network_toolkit/issues/40)/[#64](https://github.com/richbodo/personal_network_toolkit/issues/64) rider 3;
-  AC-PRM-E/F stays deferred to PRM v0.2 — see the recomposition finding), then the
-  [v0.2 cut](v0.2-spec-cut-plan.md) proceeds onto a structure worth stamping.
+- **Worm 5 — sub-contracts — DONE (this branch), `just ci` green.** Chose the plan's *"clearly mark"*
+  (not move/renumber — proportionate for a section already cordoned "skip unless implementing"): the
+  slot-map section now frames the slots/interfaces as the **Layer-1 architectural skeleton** and the
+  `WS-*`/`ST-*`/… sub-contracts as **Layer 2** — largely generalized from `fellows_local_db`'s browser
+  implementation, with the worst stack-specific offenders named honestly (ST-1 OPFS-SAH-Pool, ST-3 RPC
+  envelope, WS-7's literal `fellows_authenticated_once` key) + the adapt-the-realization-keep-the-AC rule.
+  A physical move to its own file is a future doc-reorg, not this pass.
+
+**✅ Structural layering pass (worms 1–5) COMPLETE** — all three rules hold; Goals/ACs/realizations are
+cleanly separated; the lint enforces the AC and RZ namespaces. Branch `docs/l1-l2-layering-pass`.
+
+- **Then (remaining, not part of the structural pass):** the non-spec-doc `flavor-derived` terminology
+  sweep; the riders (UM is already pure L1 — [#40](https://github.com/richbodo/personal_network_toolkit/issues/40)/[#64](https://github.com/richbodo/personal_network_toolkit/issues/64) rider 3;
+  AC-PRM-E/F stays deferred to PRM v0.2 — see the recomposition finding); then the
+  [v0.2 cut](v0.2-spec-cut-plan.md) (which also re-syncs the 0.1-pinned reference-design attestations +
+  the realization index to the new IDs — AC-20/21/22/23, RZ-1..5) onto a structure worth stamping.
 
 ---
 
