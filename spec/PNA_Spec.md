@@ -126,7 +126,7 @@ A PNA brings the **root of your personal network** — your contact data and the
 
 > **Why it matters:** your contacts live in someone else's system — scattered across Google, Apple, Facebook, a fellowship's directory — surveilled and outside your control. Pull that root onto your own device and you can finally build on it; leave it where it is and you can't. Every other Goal assumes you own the root first.
 
-*Constraints it requires:* the two-store split that *is* the local root ([AC-1](#ac-1) — which also seals the private layer for Goal 3); the platform cannot silently own or evict the store ([RZ-4](axes.md#rz-4)); a rejected server session still serves the local copy ([AC-5](axes.md#ac-5)); and the store is built and refreshed only on an explicit user action, never by background polling ([AC-21](#ac-21)).
+*Constraints it requires:* the two-store split that *is* the local root ([AC-1](#ac-1) — which also seals the private layer for Goal 3); the platform cannot silently own or evict the store ([RZ-4](axes.md#rz-4)); a rejected server session still serves the local copy ([AC-5](#ac-5)); and the store is built and refreshed only on an explicit user action, never by background polling ([AC-21](#ac-21)).
 
 ### Goal 2 — Protect the root's integrity, by validation
 
@@ -136,7 +136,7 @@ You can **verify** that a PNA does what it claims — that its protections are r
 
 > **Why it matters:** a privacy-sovereign user's threshold for trust is "show me," not "promise me" — this is the toolkit's own identity (it *validates behaviors, it does not certify*). Integrity has two halves, both checkable locally: **code-validation** (does the app behave as claimed?) and **data-validation** (is the contact data authentic to the source it names?).
 
-*Constraints it requires:* an always-reachable diagnostic escape ([AC-6](#ac-6)) and a field-debug substrate ([AC-7](#ac-7)); a build label tied to the source revision so you can verify what is running ([AC-15](#ac-15)); honest capability assessment that never claims more than the platform delivers ([AC-22](#ac-22)); and **provenance** — every shared record traces to a source the user approved ([AC-17](#ac-17)), with stable IDs and per-field provenance under multi-source merge ([AC-PRM-B](axes.md#ac-prm-b)).
+*Constraints it requires:* an always-reachable diagnostic escape ([AC-6](#ac-6)) and a field-debug substrate ([AC-7](#ac-7)); a build label tied to the source revision so you can verify what is running ([AC-15](#ac-15)); honest capability assessment that never claims more than the platform delivers ([AC-22](#ac-22)); and **provenance** — every shared record traces to a source the user approved ([AC-17](#ac-17)), with stable IDs and per-field provenance under multi-source merge ([AC-PRM-B](#ac-prm-b)).
 
 > **Why it matters (the diagnostic surface):** A privacy-sovereign user's threshold for what diagnostic data flows anywhere is the same as for the rest of their data. The diagnostic surface is part of the privacy surface, not an exception to it. Many eventual PNAs will be single-user installations with no maintainer at all; the debug substrate has to work in that mode without sending anything anywhere by default. When a sink *is* configured (fellows_local_db sends to a maintainer mailbox), it has to be sanitized and rate-limited so the user trusts using it.
 
@@ -148,7 +148,7 @@ Nothing about your personal network leaves your systems without you **choosing h
 
 > **Why it matters:** this absorbs two threats that look different but are the same act — *control what leaves the root*. Unauthorized disclosure (a leak; a cloud model quietly fed your notes) and authorized outreach (you emailing a contact) are both data leaving the root, and the user who holds their local data to a high bar holds the same bar for how it travels. Privacy here is something you can *achieve* by plugging in a secure channel — and that the PNA promises never to undermine.
 
-*Constraints it requires:* the two-store split seals private data ([AC-1](#ac-1), shared with Goal 1); no server holds, persists, or syncs the private store ([AC-2](axes.md#ac-2)); cross-origin isolation ([RZ-3](axes.md#rz-3)) and anti-enumeration with bounded analytics ([AC-8](axes.md#ac-8)); the user picks the transport per outreach ([AC-16](#ac-16)), transports cannot read message contents ([AC-18](#ac-18)), and the full payload is visible before send ([AC-19](#ac-19)); an LLM call over user data is a transport ([AC-20](#ac-20)); and at the MCP surface a cloud client needs per-call consent for private rows ([AC-MCP-A](#ac-mcp-a)) and the workspace — not the AI — launches the send ([AC-MCP-B](#ac-mcp-b)).
+*Constraints it requires:* the two-store split seals private data ([AC-1](#ac-1), shared with Goal 1); no server holds, persists, or syncs the private store ([AC-2](#ac-2)); cross-origin isolation ([RZ-3](axes.md#rz-3)) and anti-enumeration with bounded analytics ([AC-8](#ac-8)); the user picks the transport per outreach ([AC-16](#ac-16)), transports cannot read message contents ([AC-18](#ac-18)), and the full payload is visible before send ([AC-19](#ac-19)); an LLM call over user data is a transport ([AC-20](#ac-20)); and at the MCP surface a cloud client needs per-call consent for private rows ([AC-MCP-A](#ac-mcp-a)) and the workspace — not the AI — launches the send ([AC-MCP-B](#ac-mcp-b)).
 
 ### Goal 4 — Protect the root from entropy and accidents
 
@@ -187,8 +187,6 @@ The line this draws: *the source being available so you — or your tools — ca
 1. **The `AC-*` namespace is Layer 1 only.** Every AC passes the swap test. A commitment that names a technology is mis-filed: its technology-independent core is the AC; its stack-specific form is a realization.
 2. **Conditional ACs are Layer 1, but tagged.** Each conditional AC is tagged with the *behavioral property* that triggers it, so "applies only to multi-source PNAs" reads differently from "applies to every PNA."
 3. **A realization is never an AC.** Realizations are Layer 2, carry no `AC-*` ID (not even a conditional one), and live with the axis pick that brings them. A conditional AC is triggered by a *behavioral property*; a technology pick may *entail* a property (picking multi-source ingestion entails "mirrors more than one source"), and that property triggers the AC — but the pick itself brings only realizations and constraints.
-
-*Transitional note: realizations now carry `RZ-*` IDs in [`axes.md`](axes.md) (rules 1 + 3 hold). Still in progress (the [layering pass](../plans/l1-l2-layering-pass.md), worm 3b): the conditional ACs are catalogued in `axes.md` tagged by axis pick rather than by behavioral property (rule 2), and consolidate into this document's § Conditional architectural commitments.*
 
 ### Cardinalities
 
@@ -304,7 +302,7 @@ Universal ACs are the architectural commitments derived from the goals alone. Th
 
 Recall that an AC is a **Layer 1** commitment — it survives a total technology swap (see [§ How the pieces fit together](#how-the-pieces-fit-together)). **Conditional ACs** apply only when the PNA has a particular **behavioral property** (it reaches out to contacts; it mirrors more than one source; it exposes a programmatic surface over private data). Because the picks that *entail* those properties are catalogued in [`axes.md`](axes.md), the conditional ACs live there too, grouped near them.
 
-Universal ACs (in this file) and conditional ACs (in `axes.md`) share a single stable numbering sequence, so cross-references work regardless of which file the AC ended up in. The conditional ACs you won't see in the table below (AC-2, AC-5, AC-8, AC-PRM-B, AC-PRM-H) live in [`axes.md`](axes.md); the Layer-2 **realizations** that were formerly AC-3 / AC-12 / AC-13 / AC-14 / AC-PRM-C now carry `RZ-*` IDs there (see the [Retired IDs](axes.md) table). Realizations are the Layer-2 *forms* of universal contracts and are not themselves ACs.
+Universal and conditional ACs share a single stable numbering sequence. The universal set is the table immediately below; the conditional ACs (AC-2, AC-5, AC-8, AC-PRM-B, AC-PRM-H) are in [§ Conditional architectural commitments](#conditional-architectural-commitments) that follows it. The Layer-2 **realizations** that were formerly AC-3 / AC-12 / AC-13 / AC-14 / AC-PRM-C now carry `RZ-*` IDs in [`axes.md`](axes.md) (see its [Retired IDs](axes.md#retired-ids) table); realizations are the Layer-2 *forms* of these contracts and are not themselves ACs.
 
 The wording in the universal table below is substrate-neutral; specific *forms* (URL parameter vs CLI flag, OPFS vs native filesystem) are the Layer-2 **realizations** of these universal contracts.
 
@@ -330,6 +328,23 @@ The wording in the universal table below is substrate-neutral; specific *forms* 
 | **Cloud AI clients require per-call consent for Private DB access via MCP.** Any MCP tool that returns Private DB rows MUST either refuse, or MUST require explicit per-session opt-in, when the consuming MCP client is not locally hosted. Local clients (Claude Desktop with a local model, Cursor + local Ollama) are the default green path; cloud clients (Claude API direct, OpenAI API, etc.) are opt-in per call. In practice this targets the Private Data Ops server; the Shared / Private split at the MCP surface lets a user wire a cloud client to Shared Data Ops alone without triggering this AC. Concrete realization of AC-20 at the MCP surface. | Goal 2, Goal 3 | <a id="ac-mcp-a"></a>AC-MCP-A |
 | **MCP Communications tools stage outreach; the workspace launches.** A Communications MCP tool call MUST NOT directly fire a transport. It MUST return a staging ID with the full payload preview; the user MUST confirm via the workspace before the transport launches. The MCP server proposes; the workspace disposes. AC-19 is enforced at the workspace boundary and MUST NOT be bypassable by AI clients. | Goal 3 | <a id="ac-mcp-b"></a>AC-MCP-B |
 | **Honest capability assessment.** A PNA MUST establish the runtime-substrate capabilities that bear on its commitments by *sound* means — probing the substrate, not trusting an unverified self-report (a feature-presence flag, a platform / UA string) — and MUST report the outcome truthfully, including an explicit *undetermined* where a capability cannot be established. It MUST NOT claim or rely on a capability it has not verified the substrate delivers. (Substrate-specific probes are realizations — e.g. RZ-2's worker-side OPFS detection in `axes.md`; a CLI's "is FTS5 compiled into this `sqlite3`" check.) | Goal 2 | <a id="ac-22"></a>AC-22 |
+
+---
+
+## Conditional architectural commitments
+
+Conditional ACs are **Layer 1** — they survive a total technology swap (see [§ How the pieces fit together](#how-the-pieces-fit-together)) — but apply only when the PNA has a particular **behavioral property**, not when it picks a particular technology. Each is tagged below with the property that triggers it; the axis picks that *entail* each property are catalogued in [`axes.md`](axes.md), which links back here.
+
+<!-- machine-parsed table — see the EDITING NOTE at the top of this file before changing its columns, headers, or IDs. -->
+| Commitment | Serves | Applies when (behavioral property) | ID |
+|---|---|---|---|
+| **No SaaS surface.** A server a PNA stands up MUST be a delivery channel, not a service: it MUST NOT expose per-user RW endpoints, persist private data, host an admin console, or operate cross-device sync. | Goal 3 | the PNA **operates a server** over its data | <a id="ac-2"></a>AC-2 |
+| **Stale session never locks users out of cached data.** A rejected shared-side fetch (e.g. 401/403) MUST fall through to the local cache; fresh data MUST require an explicit user action. | Goal 1 | the PNA **gates data behind an authenticated refresh** | <a id="ac-5"></a>AC-5 |
+| **Anti-enumeration + abuse-bounded analytics.** Authentication endpoints MUST return neutral payloads and enforce per-IP rate limits; a sanitized error sink MAY double as the analytics pipe but MUST NOT widen the privacy boundary. | Goal 3 | the PNA **operates an authentication server** (with a configured error sink) | <a id="ac-8"></a>AC-8 |
+| **Multi-source dedup contract.** A stable `record_id` MUST survive merge across sources; the dedup flow MUST surface conflicts; per-source provenance MUST be recorded *per field*, not just per record. | Goal 2 | the PNA **mirrors more than one source** | <a id="ac-prm-b"></a>AC-PRM-B |
+| **Authenticated same-host surface.** A same-host-reachable surface a PNA opens over its own Private/Shared data (a loopback HTTP daemon, a local socket) MUST be loopback-bound and authenticated to the user's own session, disclosing nothing to an unauthorized same-host reader; a non-loopback bind MUST require an explicit, documented opt-out. | Goal 3 | the PNA **exposes a same-host surface** over its data | <a id="ac-prm-h"></a>AC-PRM-H |
+
+The two `AC-PRM-*` IDs here are frozen legacy identifiers (the suffix records that PRM first demonstrated them — provenance now lives in the [realization index](../docs/realization-index.md), not the ID). The Layer-2 *realizations* of these contracts on specific substrates (and of the universal ACs) live in [`axes.md`](axes.md) as the `RZ-*` family, beside the axis pick that brings them.
 
 ---
 

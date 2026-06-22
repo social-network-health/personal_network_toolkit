@@ -137,10 +137,19 @@ AC-PRM-A/D → AC-20/21; both contract `Realizes:` headers + their prose updated
 +1 AC-22). Reference-design attestations + the realization index are **left for the v0.2 re-sync** (they
 are 0.1-pinned and the lint does not cross-check them; the Retired-IDs table bridges the gap).
 
-**Worm 3b (remaining):** retag the conditional ACs by *behavioral property* (rule 2) and consolidate them
-into a new `PNA_Spec.md` **§ Conditional architectural commitments**; add the `RZ-*` traceability lint
-check (+ its fault-injection self-test); fix the external `axes.md#ac-*` links that point at the
-conditional anchors once they move. Then worm 4 (verifiability AC) / worm 5 (sub-contracts).
+**Worm 3b — DONE (this branch), `just ci` green.** All three layering rules now hold and *all* ACs live
+in `PNA_Spec.md`. The 5 conditional ACs (AC-2, AC-5, AC-8, AC-PRM-B, AC-PRM-H) moved into a new
+`PNA_Spec.md` **§ Conditional architectural commitments**, retagged by *behavioral property* (rule 2);
+`axes.md` is now pure Layer 2 (per pick → *conditional ACs entailed* [links up] + *realizations brought*
+[`RZ-*` tables with an explicit Realizes column] + *constraints inherited*); a new **`RZ-*` traceability
+lint check** (check 10 in `lint-spec-ids.py`) + its fault-injection self-test; redirect anchors kept in
+`axes.md` so old `axes.md#ac-*` links still resolve. Lint: **22 AC IDs + 5 RZ realizations**; **44/44**
+self-tests. The `flavor-derived` term is retired across the three core spec files.
+
+**Remaining:** worm 4 (verifiability AC / the B1 reframe) and worm 5 (sub-contracts). The
+reference-design attestations + the derived realization index still re-sync at the v0.2 cut. A repo-wide
+`flavor-derived` → conditional/realization terminology sweep across the non-spec docs (users-guide,
+SKILL, CHANGELOG, papers, templates) is also outstanding.
 
 ### ID disposition
 
