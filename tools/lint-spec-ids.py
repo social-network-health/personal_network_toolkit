@@ -40,6 +40,11 @@ Checks:
      heading in PNA_Spec.md), checked on the AC table's 'Serves' column, constraints'
      'Bounds:', and exceptions' 'Stresses:'; and no AC's 'Serves' names more than two
      goals (the primary + at-most-one-cross-cut cardinality cap).
+  10. Every RZ-* realization in spec/axes.md (a row in a table with an 'RZ' ID
+     column) names the AC(s) it realizes in a 'Realizes' column, and each named AC
+     is a defined AC — the realization-layer analog of the contract 'Realizes:'
+     check. A realization is Layer 2 and is never itself an AC (it carries no AC-*
+     ID); it must point up at the Layer-1 commitment it realizes.
 
 The lint validates the *shape* of declarations (presence + ID/vocabulary/
 version resolution), not their behavioral correctness — that is the LLM
@@ -73,6 +78,12 @@ REALIZES_RE = re.compile(r"Realizes:\s*((?:AC-[A-Z0-9-]+(?:\s*,\s*)?)+)", re.IGN
 AC_ID_HEADERS = {"id", "ac"}
 EX_ID_HEADERS = {"ex"}
 CST_ID_HEADERS = {"cst"}
+# Realizations (Layer 2) carry their own RZ-* family in axes.md, in tables headed
+# with an "RZ" ID column + a "Realizes" column. They are deliberately NOT collected
+# as ACs (RZ-* does not match AC_ID_RE), so the AC collector skips them; the RZ
+# traceability check (collect_realization_violations) validates them instead.
+RZ_ID_RE = re.compile(r"RZ-[0-9]+")
+RZ_ID_HEADERS = {"rz"}
 # Inverse of REALIZES_RE. Tokens may be AC-*, EX-*, or the PNA-DEFINITION
 # sentinel (the PNA definition is prose in vocab-pna, not an `| AC-X |` row).
 RELAXES_RE = re.compile(
@@ -239,6 +250,42 @@ def collect_contract_realizes() -> dict[Path, list[str]]:
         m = REALIZES_RE.search(head)
         out[f] = [s.strip() for s in m.group(1).split(",")] if m else []
     return out
+
+
+def collect_realization_violations(spec_ac_ids: set[str]) -> tuple[int, list[str]]:
+    """The realization-layer analog of the contract 'Realizes:' check. Every RZ-*
+    row in spec/axes.md (a table with an 'RZ' ID column) MUST name the AC(s) it
+    realizes in a 'Realizes' column, and each named AC MUST be defined in the spec.
+    A realization is Layer 2 and never an AC, so it points *up* at the Layer-1
+    commitment it realizes. Returns (count, violations). Absent axes.md → (0, [])."""
+    if not AXES_PATH.exists():
+        return 0, []
+    text = AXES_PATH.read_text()
+    violations: list[str] = []
+    count = 0
+    for headers, rows in iter_tables(text):
+        rz_col = next((k for k, h in enumerate(headers) if h in RZ_ID_HEADERS), None)
+        if rz_col is None:
+            continue
+        realizes_col = next((k for k, h in enumerate(headers) if h == "realizes"), None)
+        for cells in rows:
+            if rz_col >= len(cells):
+                continue
+            m = RZ_ID_RE.match(ANCHOR_PREFIX.sub("", cells[rz_col]))
+            if not m:
+                continue
+            rz = m.group(0)
+            count += 1
+            if realizes_col is None or realizes_col >= len(cells):
+                violations.append(f"axes.md: {rz} has no 'Realizes' column naming the AC it realizes.")
+                continue
+            realized = AC_ID_RE.findall(cells[realizes_col])
+            if not realized:
+                violations.append(f"axes.md: {rz} 'Realizes' names no AC.")
+            for ac in realized:
+                if ac not in spec_ac_ids:
+                    violations.append(f"axes.md: {rz} realizes {ac}, which is not a defined AC.")
+    return count, violations
 
 
 def collect_exception_ids() -> set[str]:
@@ -678,6 +725,10 @@ def main() -> int:
             if ac not in spec_ids:
                 failures.append(f"{rel}: claims to realize {ac}, but {ac} is not defined in spec/.")
 
+    # --- Realizations (the RZ-* family in spec/axes.md) ---
+    n_realizations, realization_failures = collect_realization_violations(spec_ids)
+    failures.extend(realization_failures)
+
     # --- Exceptions (spec/exceptions.md) ---
     exception_ids = collect_exception_ids()
     known = spec_ids | exception_ids | {"PNA-DEFINITION"}
@@ -725,6 +776,7 @@ def main() -> int:
     print(f"  toolkit version {toolkit_minor} (/VERSION: {VERSION_PATH.read_text().strip()})")
     print(f"  spec defines {len(defined_goals)} goal(s) and {len(spec_ids)} AC IDs")
     print(f"  {n_realizing}/{len(contract_realizes)} contract files declare a 'Realizes:' header")
+    print(f"  axes.md defines {n_realizations} realization (RZ-*) ID(s)")
     print(f"  exceptions.md defines {len(exception_ids)} exception ID(s)")
     print(f"  constraints.md defines {len(constraint_ids)} constraint ID(s)")
     print(f"  reference designs: {n_manifests} design.toml manifest(s)")

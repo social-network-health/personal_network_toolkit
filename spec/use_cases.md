@@ -39,7 +39,7 @@ A snapshot of some external organization's roster (a fellowship, a school, a coh
 
 The use case doesn't *determine* these picks — a hypothetical Directory Archive could ship with a Tauri shell + native SQLite + sideloaded distribution. The picks above are what fellows_local_db chose; another Directory Archive reference design might choose differently. See [`axes.md`](axes.md) for the full pick catalog per Axis.
 
-**Triggered flavor-derived ACs:** Via fellows_local_db's picks — AC-2, AC-5, AC-8, AC-14 (distribution-derived); AC-3, AC-12, AC-13 (storage-derived). The `mcp-exposure:shared+private+comms` pick doesn't trigger flavor-derived ACs but activates AC-MCP-A (Private Data Ops returns Private DB rows) and AC-MCP-B (Comms stages outreach for workspace launch). Full per-pick triggers in [`axes.md`](axes.md).
+**Triggered conditional ACs + realizations:** Via fellows_local_db's picks — conditional AC-2, AC-5, AC-8 (distribution-entailed) plus realization RZ-4; realizations RZ-1, RZ-2, RZ-3 (storage). The `mcp-exposure:shared+private+comms` pick triggers no conditional AC but activates AC-MCP-A (Private Data Ops returns Private DB rows) and AC-MCP-B (Comms stages outreach for workspace launch). Full per-pick triggers in [`axes.md`](axes.md).
 
 **Reference design:** [fellows_local_db](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md).
 
@@ -55,11 +55,11 @@ The user's *own* contact databases (Google + Apple + Facebook + LinkedIn + organ
 
 prm is [PRT](https://github.com/richbodo/prt)-inspired (PRT, the predecessor "Personal Relationship Toolkit" project, is the graveyard codebase from which this toolkit and fellows_local_db grew) but built fresh against Toolkit-Version 0.1. It picked a hand-written JS SPA over PRT's TUI direction, and for v0.1 ships a propose-only `shared-only` MCP surface with no outreach (`comms:none`); a TUI, a Tauri-wrapped GUI, richer comms, or `mcp-exposure:full` remain equally valid PRM flavors a later design may pick.
 
-**Triggered flavor-derived ACs (via likely picks):** AC-PRM-B (ingestion-derived), AC-PRM-C (storage-derived) — both now attested by [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md). MCP-related universal ACs (AC-MCP-A, AC-MCP-B) apply when `mcp-exposure` is non-`none`.
+**Triggered conditional ACs + realizations (via likely picks):** AC-PRM-B (conditional, ingestion-entailed), RZ-5 (storage realization, formerly AC-PRM-C) — both now attested by [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md). MCP-related universal ACs (AC-MCP-A, AC-MCP-B) apply when `mcp-exposure` is non-`none`.
 
 **Reference design:** [prm](https://github.com/richbodo/prm/blob/main/docs/Architecture.md) (Toolkit-Version 0.1). PRT (`../../prt/`, a sibling repo) is the predecessor inspiration but pre-dates this spec.
 
-**Why a second realized use case matters.** PRM stress-tests the universal-vs-flavor partition. An AC that fires for both Directory Archive *and* PRM is genuinely universal; an AC that fires for only one is flavor-derived and gets axis-pick triggers. With only one use case every AC would look universal; the second forces the right partition — and PRM is the design that promoted AC-PRM-B / AC-PRM-C from draft into attested flavor-derived ACs.
+**Why a second realized use case matters.** PRM stress-tests the universal-vs-conditional partition. An AC that fires for both Directory Archive *and* PRM is genuinely universal; an AC that fires for only one is conditional (triggered by a behavioral property a pick entails). With only one use case every AC would look universal; the second forces the right partition — and PRM is the design that promoted AC-PRM-B (a conditional AC) and RZ-5 (a realization, formerly AC-PRM-C) from draft into attested commitments.
 
 ---
 

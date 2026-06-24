@@ -168,6 +168,16 @@ SPEC_ID_FAULTS = [
         new='| Goal 1, Goal 2, Goal 3 | <a id="ac-1"></a>AC-1 |',
         expect="cardinality cap",
     ),
+    dict(
+        # The RZ traceability check (collect_realization_violations, check 10): a Layer-2
+        # realization that realizes a nonexistent AC must fail loudly — the realization-layer
+        # analog of the contract 'Realizes:' check. Mutates RZ-2's 'Realizes' cell.
+        name="axes: an RZ realization realizes an AC the spec doesn't define",
+        file="spec/axes.md",
+        old='| AC-22 | `storage:opfs-sqlite-wasm`. | <a id="rz-2"></a>',
+        new='| AC-999 | `storage:opfs-sqlite-wasm`. | <a id="rz-2"></a>',
+        expect="not a defined AC",
+    ),
 ]
 
 
