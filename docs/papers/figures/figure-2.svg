@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1364" height="475" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="14" fill="#202124">
+<rect x="0" y="0" width="1364" height="475" fill="white"/>
+<path d="M 644 88 C 682 88, 682 238, 720 238" fill="none" stroke="#9aa0a6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<path d="M 644 238 C 682 238, 682 238, 720 238" fill="none" stroke="#9aa0a6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<path d="M 644 388 C 682 388, 682 238, 720 238" fill="none" stroke="#9aa0a6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<rect x="24" y="24" width="620" height="127" rx="10" fill="#d1ecf1" stroke="#0c5460" stroke-width="1.5"/>
+<text x="40" y="51" text-anchor="start"><tspan font-weight="700">Group: </tspan>Personal-network apps</text>
+<text x="40" y="74" text-anchor="start"><tspan font-weight="700">Behaviors: </tspan>Substrate, Sovereignty, Verification</text>
+<text x="40" y="97" text-anchor="start"><tspan font-weight="700">Tools: </tspan>Matrix · Nostr · DXOS · Solid · Monica</text>
+<text x="40" y="120" text-anchor="start"><tspan font-weight="700">Domain: </tspan>personal-network</text>
+<rect x="24" y="174" width="620" height="127" rx="10" fill="#e2e3e5" stroke="#6c757d" stroke-width="1.5"/>
+<text x="40" y="201" text-anchor="start"><tspan font-weight="700">Group: </tspan>Machine-checkable conformance</text>
+<text x="40" y="224" text-anchor="start"><tspan font-weight="700">Behaviors: </tspan>Verification</text>
+<text x="40" y="247" text-anchor="start"><tspan font-weight="700">Tools: </tspan>Spec Kit · AgentRFC · LoRe · BDD</text>
+<text x="40" y="270" text-anchor="start"><tspan font-weight="700">Domain: </tspan>general</text>
+<rect x="24" y="324" width="620" height="127" rx="10" fill="#fff3cd" stroke="#d39e00" stroke-width="1.5"/>
+<text x="40" y="351" text-anchor="start"><tspan font-weight="700">Group: </tspan>Egress governance</text>
+<text x="40" y="374" text-anchor="start"><tspan font-weight="700">Behaviors: </tspan>Disclosure (+ Threat modeling)</text>
+<text x="40" y="397" text-anchor="start"><tspan font-weight="700">Tools: </tspan>MCP · OWASP AISVS · ISO 31700-1</text>
+<text x="40" y="420" text-anchor="start"><tspan font-weight="700">Domain: </tspan>general / adjacent</text>
+<rect x="720" y="174" width="620" height="127" rx="10" fill="#d4edda" stroke="#155724" stroke-width="1.5"/>
+<text x="736" y="201" text-anchor="start"><tspan font-weight="700">Group: </tspan>Composite group — all four families</text>
+<text x="736" y="224" text-anchor="start"><tspan font-weight="700">Members: </tspan>PNA · EUDI Wallet · IDS-RAM · Inrupt ESS</text>
+<text x="736" y="247" text-anchor="start"><tspan font-weight="700">Split: </tspan>personal-data trio (PNA/EUDI/Inrupt) + IDS-RAM (B2B contrast)</text>
+<text x="736" y="270" text-anchor="start"><tspan font-weight="700">PNA's corner: </tspan>outbound egress · downstream-mirror · checked · AI-native</text>
+</svg>

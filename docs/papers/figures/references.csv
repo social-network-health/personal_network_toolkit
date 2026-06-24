@@ -1,0 +1,97 @@
+name,url,domain_proximity,conformance_model,Substrate,Sovereignty,Verification,Disclosure,Adversary_xcut,n_strong_peers
+DIF Decentralized Web Node (DWN),https://identity.foundation/decentralized-web-node/spec/,adjacent-personal-data,checked,strong,strong,strong,none,none,3
+DXOS Contacts example app on ECHO/Automerge + HALO identity,https://dxos.org/docs/additional-resources/samples/,direct-personal-network,none,strong,strong,strong,none,none,3
+European Digital Identity (EUDI) Wallet ARF,https://eu-digital-identity-wallet.github.io/eudi-doc-architecture-and-reference-framework/,adjacent-personal-data,checked,partial,strong,strong,strong,partial,3
+Inrupt Enterprise Solid Server / Data Wallet (Access Grants),https://docs.inrupt.com/wallet/architecture-and-flows/,adjacent-personal-data,none,strong,strong,strong,partial,none,3
+International Data Spaces RAM 4.0 (IDSA),https://docs.internationaldataspaces.org/ids-knowledgebase/ids-ram-4,general,checked,partial,strong,strong,strong,partial,3
+Matrix Specification,https://spec.matrix.org/latest/,direct-personal-network,checked,strong,strong,strong,none,none,3
+Nostr protocol (NIPs),https://github.com/nostr-protocol/nips,direct-personal-network,checked,strong,strong,strong,none,none,3
+AT Protocol (Bluesky),https://atproto.com/guides/overview,adjacent-personal-data,checked,strong,partial,strong,none,none,2
+Cozy Cloud (self-hosted personal cloud),https://docs.cozy.io/en/,adjacent-personal-data,mixed,strong,strong,none,partial,none,2
+DSNP (Decentralized Social Networking Protocol),https://spec.dsnp.org/,direct-personal-network,none,strong,partial,strong,none,none,2
+DXOS ECHO,https://docs.dxos.org/echo/introduction/,general,aspirational,strong,strong,none,none,none,2
+Evolu,https://www.evolu.dev/,general,checked,strong,strong,partial,none,none,2
+Fireproof,https://fireproof.storage/posts/why-verifiable-crdts-are-the-future-of-web-data/,general,aspirational,strong,none,strong,none,none,2
+ISO 31700-1:2023 Privacy by Design for consumer goods and services — Part 1,https://www.iso.org/standard/84977.html,adjacent-personal-data,awarded,partial,strong,none,strong,strong,2
+Jazz / CoJSON,https://jazz.tools/docs/concepts/how-sync-works,general,checked,strong,strong,partial,none,none,2
+"Local-first software: You own your data (Ink & Switch / Kleppmann et al., 2019)",https://www.inkandswitch.com/essay/local-first/,general,aspirational,strong,strong,none,none,partial,2
+"LoRe: A Programming Model for Verifiably Safe Local-First Software (Haas, Mogk, Yanakieva, Bieniusa, Mezini)",https://arxiv.org/abs/2304.07133,general,checked,strong,none,strong,none,none,2
+Monica (open-source Personal Relationship Manager),https://github.com/monicahq/monica,direct-personal-network,none,strong,strong,none,none,none,2
+MyData Operators framework / Operator Award,https://www.mydata.org/wp-content/uploads/2022/07/Understanding-MyData-Operators-2022-1.pdf,adjacent-personal-data,awarded,partial,strong,none,strong,none,2
+OpenID for Verifiable Credentials (OID4VCI/OID4VP),https://openid.net/sg/openid4vc/specifications/,adjacent-personal-data,checked,none,partial,strong,strong,none,2
+Personal Data Stores: A Review (academic survey),https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9921726/,adjacent-personal-data,aspirational,strong,strong,none,partial,none,2
+"ProjectVRM principles (Doc Searls, Berkman Klein)",https://cyber.harvard.edu/projectvrm/Main_Page,adjacent-personal-data,aspirational,strong,strong,none,partial,none,2
+Solid Application Interoperability Specification,https://solid.github.io/data-interoperability-panel/specification/,adjacent-personal-data,none,strong,strong,partial,partial,none,2
+Solid Protocol (core + App-Interop + Solid-OIDC),https://solidproject.org/TR/protocol,adjacent-personal-data,checked,strong,strong,none,none,none,2
+UCAN (User Controlled Authorization Network),https://ucan.xyz/specification/,adjacent-personal-data,checked,none,strong,strong,partial,none,2
+"User Data Manifesto 2.0 (Karlitschek, Roy, Borchardt)",https://userdatamanifesto.org/,adjacent-personal-data,aspirational,strong,strong,none,partial,none,2
+W3C Decentralized Identifiers (DID Core / 1.1),https://www.w3.org/TR/did-core/,adjacent-personal-data,checked,partial,strong,strong,partial,none,2
+W3C Verifiable Credentials Data Model 2.0,https://www.w3.org/TR/vc-data-model-2.0/,adjacent-personal-data,checked,partial,partial,strong,strong,none,2
+"A 'Nutrition Label' for Privacy (Kelley et al., SOUPS 2009)",https://cups.cs.cmu.edu/soups/2009/proceedings/a4-kelley.pdf,adjacent-personal-data,aspirational,none,partial,partial,strong,none,1
+ActivityPub (W3C Rec),https://www.w3.org/TR/activitypub/,direct-personal-network,checked,strong,partial,partial,partial,none,1
+Agentic Software Engineering: SE 3.0 / SASE,https://arxiv.org/abs/2509.06216,distant,aspirational,none,none,strong,partial,partial,1
+"AgentRFC: Security Design Principles and Conformance Testing for Agent Protocols (Zheng, Zhang) — tool: AgentConform",https://arxiv.org/abs/2603.23801,distant,checked,none,partial,strong,partial,strong,1
+AIUC-1 (AI Agent Security/Safety/Reliability Standard),https://fin.ai/glossary/aiuc-1,general,awarded,none,partial,partial,strong,strong,1
+Apple App Privacy Labels / Google Play Data Safety,https://developer.apple.com/app-store/app-privacy-details/,adjacent-personal-data,awarded,none,partial,partial,strong,none,1
+Article 29 WP Guidelines on data portability (WP242),https://gtclawgroup.com/wp-content/uploads/2017/03/WP242_Guidelines-on-the-right-to-data-portability.pdf,adjacent-personal-data,none,strong,partial,none,partial,none,1
+Automerge,https://automerge.org/docs/hello/,general,checked,strong,none,partial,none,none,1
+AWS Kiro — Specs,https://kiro.dev/docs/specs/,general,checked,none,none,strong,partial,none,1
+BMAD-METHOD,https://github.com/bmad-code-org/BMAD-METHOD,general,checked,none,none,strong,partial,none,1
+CardDAV (RFC 6352),https://www.rfc-editor.org/rfc/rfc6352,direct-personal-network,none,strong,partial,none,none,none,1
+Clay / Mesh (personal CRM),https://library.me.sh/hc/en-us/articles/7485741581339-Security-and-Privacy,direct-personal-network,none,partial,strong,none,none,partial,1
+CodeSpecBench (executable behavioral spec generation),https://arxiv.org/html/2604.12268v1,distant,checked,none,none,strong,none,partial,1
+"Conflict-free Replicated Data Types (Shapiro et al., 2011)",https://inria.hal.science/inria-00609399v1,distant,checked,strong,none,partial,none,none,1
+crdt.tech (community resource hub),https://crdt.tech/,distant,none,strong,none,partial,none,none,1
+Cucumber / Gherkin (BDD),https://cucumber.io/docs/bdd/,general,checked,none,none,strong,partial,none,1
+Data Transfer Project / Data Transfer Initiative,https://dtinit.org/docs/dtp-what-is-it,adjacent-personal-data,none,strong,partial,partial,none,none,1
+"Datasheets for Datasets (Gebru et al., CACM 2021)",https://cacm.acm.org/research/datasheets-for-datasets/,distant,aspirational,none,partial,strong,partial,partial,1
+Dex (personal CRM / rolodex),https://getdex.com/security/,direct-personal-network,none,partial,strong,none,none,partial,1
+Digital Markets Act Article 6(9) — end-user data portability,https://www.eu-digital-markets-act.com/Digital_Markets_Act_Article_6.html,adjacent-personal-data,none,strong,partial,none,none,none,1
+Ditto (edge/P2P sync SDK),https://ditto.live/blog/dittos-delta-state-crdts,general,checked,strong,partial,partial,none,none,1
+ElectricSQL 'electric-next' read-path-only pivot (writes guide + 2024 blog posts),https://electric.ax/docs/guides/writes,general,none,strong,partial,partial,none,none,1
+ElectricSQL / Electric,https://electric.ax/docs/guides/writes,general,checked,strong,partial,partial,none,none,1
+"Ethical Design Manifesto (Balkan & Kalbag, Ind.ie)",https://2017.ind.ie/ethical-design/,general,aspirational,partial,strong,none,none,partial,1
+EU Data Governance Act (DGA),https://digital-strategy.ec.europa.eu/en/policies/data-governance-act-explained,adjacent-personal-data,aspirational,partial,partial,none,strong,none,1
+Evaluation-Driven Development of LLM Agents (EDDOps),https://arxiv.org/html/2411.13768v3,distant,checked,none,none,strong,partial,partial,1
+Folk / Cloze (relationship-intelligence personal CRMs),https://help.folk.app/en/articles/5007534-security-privacy,direct-personal-network,awarded,partial,strong,none,partial,partial,1
+Gaia-X Trust Framework / Compliance Document,https://gaia-x.eu/wp-content/uploads/2024/09/Compliance-Document_24.06.pdf,general,checked,partial,partial,strong,none,none,1
+GDPR Article 20 — Right to data portability,https://gdpr-info.eu/art-20-gdpr/,adjacent-personal-data,none,strong,partial,none,none,none,1
+GitHub Spec Kit (constitution.md),https://github.com/github/spec-kit,general,checked,none,none,strong,partial,none,1
+Google Antigravity,https://antigravity.google/,general,mixed,none,none,partial,strong,none,1
+IndieWeb Principles (own your data; POSSE),https://indieweb.org/principles,direct-personal-network,none,strong,partial,partial,partial,none,1
+ISO/IEC TS 27560 Consent Record Structure (and Kantara Consent Receipt v1.1),https://www.iso.org/standard/80392.html,adjacent-personal-data,none,partial,partial,partial,strong,none,1
+JMAP for Contacts (RFC 9610),https://www.rfc-editor.org/rfc/rfc9610.html,direct-personal-network,none,strong,partial,partial,none,none,1
+JSContact (RFC 9553 / RFC 9555),https://www.rfc-editor.org/rfc/rfc9555.html,direct-personal-network,none,strong,none,partial,none,none,1
+"Model Cards for Model Reporting (Mitchell et al., FAT* 2019)",https://arxiv.org/pdf/1810.03993,distant,aspirational,none,none,strong,partial,partial,1
+Model Context Protocol (MCP) Specification,https://modelcontextprotocol.io/specification/2025-11-25,general,mixed,partial,partial,partial,strong,none,1
+MyData Declaration & Principles,https://mydata.org/declaration/,adjacent-personal-data,aspirational,partial,strong,none,partial,none,1
+NIST SP 800-53 Rev.5 — Security and Privacy Controls,https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final,general,checked,none,strong,partial,partial,partial,1
+Object-capability model / Capability-based security (incl. Capability Myths Demolished),https://en.wikipedia.org/wiki/Object-capability_model,general,none,none,strong,none,partial,partial,1
+OpenPort Protocol (AI agent tool-access governance),https://arxiv.org/abs/2602.20196,distant,none,partial,partial,none,strong,partial,1
+OpenSpec (Fission-AI),https://github.com/Fission-AI/OpenSpec,general,checked,none,none,strong,partial,none,1
+OWASP AISVS (AI Security Verification Standard) 1.0,https://github.com/OWASP/AISVS,general,checked,none,partial,partial,strong,strong,1
+OWASP Application Security Verification Standard (ASVS),https://owasp.org/www-project-application-security-verification-standard/,general,checked,none,partial,strong,partial,partial,1
+"OWASP Mobile ASVS (MASVS, incl. MASVS-PRIVACY)",https://mas.owasp.org/MASVS/,general,checked,none,partial,strong,partial,partial,1
+"P3P — Platform for Privacy Preferences (W3C Rec, 2002)",https://www.w3.org/P3P/,general,checked,partial,partial,partial,strong,none,1
+PowerSync,https://docs.powersync.com/handling-writes/custom-conflict-resolution,general,checked,strong,partial,partial,none,none,1
+Privacy by Design — 7 Foundational Principles (Cavoukian),https://www.ipc.on.ca/wp-content/uploads/resources/7foundationalprinciples.pdf,adjacent-personal-data,aspirational,none,strong,none,partial,partial,1
+Replicache (Rocicorp),https://doc.replicache.dev/concepts/how-it-works,general,checked,strong,none,partial,none,none,1
+SCIM Protocol (RFC 7644),https://www.rfc-editor.org/rfc/rfc7644.html,adjacent-personal-data,none,strong,partial,partial,none,none,1
+Solid-OIDC authentication spec,https://solidproject.org/TR/oidc,adjacent-personal-data,checked,partial,strong,partial,partial,none,1
+"Specifications: the missing link (Stoica, Zaharia et al.)",https://arxiv.org/abs/2412.05299,distant,aspirational,none,none,strong,none,partial,1
+Tessl Framework (spec-centric),https://tessl.io/blog/how-tessls-products-pioneer-spec-driven-development/,general,checked,none,none,strong,none,none,1
+The Path to Self-Sovereign Identity — Ten Principles (Christopher Allen),https://www.lifewithalacrity.com/article/the-path-to-self-soverereign-identity/,adjacent-personal-data,aspirational,partial,strong,partial,partial,none,1
+Towards Formal Verification of LLM-Generated Code (Astrogator),https://arxiv.org/abs/2507.13290,distant,checked,none,none,strong,none,partial,1
+Triplit,https://www.triplit.dev/docs/faq,general,checked,strong,partial,partial,none,none,1
+User-Managed Access (UMA) 2.0 (Kantara),https://docs.kantarainitiative.org/uma/wg/rec-oauth-uma-grant-2.0.html,adjacent-personal-data,none,none,strong,partial,partial,none,1
+vCard Format Specification (RFC 6350),https://www.rfc-editor.org/rfc/rfc6350.html,direct-personal-network,none,strong,none,partial,none,none,1
+Yjs,https://docs.yjs.dev/,general,checked,strong,none,partial,none,none,1
+Zero (Rocicorp),https://zero.rocicorp.dev/docs/offline,general,checked,strong,partial,partial,none,none,1
+LINDDUN privacy threat modeling,https://linddun.org/,general,aspirational,none,partial,none,partial,strong,0
+MITRE D3FEND (top tactic literally named 'Harden'),https://d3fend.mitre.org/,distant,none,none,partial,partial,partial,strong,0
+NIST AI RMF Generative AI Profile (NIST AI 600-1),https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence,distant,aspirational,none,none,partial,partial,strong,0
+NIST Cybersecurity Framework (CSF) 2.0,https://csf.tools/reference/nist-cybersecurity-framework/v2-0/,general,aspirational,none,partial,none,partial,strong,0
+NIST Privacy Framework 1.0,https://www.nist.gov/privacy-framework,general,aspirational,none,partial,none,partial,strong,0
+Principles of Humane Technology / Humane by Design,https://humanebydesign.com/principles,general,aspirational,none,partial,none,partial,partial,0
+STRIDE threat model (Microsoft),https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats,general,none,none,partial,partial,partial,strong,0
+The 2025 AI Agent Index (Casper et al.),https://arxiv.org/abs/2502.01635,distant,none,none,none,partial,partial,partial,0
