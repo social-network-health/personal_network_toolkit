@@ -39,6 +39,19 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
   snapshots (+ the report schema's `ac_source` enum) — these travel with the design re-evaluation, not
   ahead of it.
 
+### Spec preamble: the "evolutionary stance" + a Scope connector (positioning reconciliation)
+
+- **`spec/PNA_Spec.md` § Preamble + § Scope and versioning** — folds the now-merged Paper 1 positioning
+  ([`docs/papers/paper1-pna-positioning.md`](docs/papers/paper1-pna-positioning.md), PR #91) into the spec:
+  an *"Earning complexity — an evolutionary stance"* paragraph (the PNA is deliberately partial/opinionated —
+  it forgoes live multi-device sync because the rules that would keep the private layer safe across every sync
+  scenario aren't known yet, and earns complexity only once simpler systems are proven usable + safe), plus a
+  § Scope connector reframing the deferrals (cross-device sync, federation, richer substrate) as deliberate
+  staging rather than omission.
+- Positioning/motivation prose only — no new obligation on any design, no AC/contract/flow change (a toolkit
+  fix); the rationale is preserved in Paper 1 (linked), so no separate `docs/PriorArt.md` design note. No
+  `docs/users-guide.md` change required. `just ci` green (44/44 after the RZ-* self-test above).
+
 ### Both reference designs re-archived at 100% realization-pointer coverage
 
 - **fellows_local_db re-pinned `dc3e0cf` → `98b283f`** (fellows [#289](https://github.com/richbodo/fellows_local_db/pull/289)) and **prm re-pinned `1551896` → `7bd4a28`** (`pnt-ref-0.1.2`, prm [#60](https://github.com/richbodo/prm/pull/60)) — each adds `path:symbol` realization pointers + full `path::test` verifications to its `Architecture.md`, taking the [realization index](docs/realization-index.md) to **23/23** and **14/14** (100%/100%). Re-synced into the bundled copies via `just rearchive`; index regenerated; `just ci` green (43/43, drift gate included).
