@@ -73,10 +73,37 @@ whole thing mechanical.
   guided path; lint green.
 
 ### Phase 4 — Build-and-test harness *(scaffold now; activates with first design)*
+
+**Purpose — this is the step that turns "exists" into "passes."** The
+[`attestation-evidence-lint`](../tools/attestation-evidence-lint.py) proves a cited
+test *exists and is live*; only *running* it proves it *passes* — the gap
+[`SKILL.md`](../pna-toolkit/SKILL.md) names ("a static lint cannot prove the test
+passes … Confirm passing by running the design's suite"). Phase 4 is that runner. A
+working reference implementation of exactly this shape — fetch the artifact, run its
+evidence read-only, fold the result into one typed report — is CLI Printing Press's
+`verify`/`shipcheck`; the borrows below (and several of the hard parts) trace to that
+study: [`docs/design-notes/2026-06-printing-press-build-validation-flows.md`](../docs/design-notes/2026-06-printing-press-build-validation-flows.md)
+(R1, R5, R7).
+
 - `just test-design <name>` / `just test-designs`: read the manifest, fetch
   (`git clone --depth 1 <repo>` + checkout `commit`; SH vault as fallback),
   verify `git rev-parse HEAD^{tree} == swhid_dir`, run `[verify].entrypoint`
   inside its container, emit an `evaluate-report.json` instance.
+- **Re-validate against the *pinned* source, never a contributor's saved report
+  (design-note R5 gate).** At acceptance *and* on every sweep, regenerate the report
+  from the SWHID-pinned commit rather than trusting the `evaluate-report.json` a
+  contributor committed — a stale saved proof MUST NOT be able to pass. The
+  reusable-workflow seam below is what makes "green at submit" and "green on
+  re-validate" mean the same thing (design-side CI and the toolkit-side gate run
+  identical logic).
+- **Diff each emitted report against a committed golden baseline (design-note R7).**
+  A report nobody compares wastes the typed, diffable artifact. Each active design
+  carries a golden `evaluate-report.json`; the sweep diffs the fresh report against it
+  and a **per-finding status flip is the regression signal** ("did anything quietly
+  stop conforming?"). An intentional change is reviewed and the golden updated —
+  exactly the discipline of the realization-index drift gate and CLI Printing Press's
+  golden tests. (Depends on the harness above producing a report; sequenced right
+  after it.)
 - `.github/workflows/conformance.yml` — `workflow_dispatch` + `schedule:` matrix
   over **active** designs; structured to also be a **reusable workflow** a design
   repo can call so design-side CI and toolkit-side sweep run identical logic.
@@ -88,6 +115,11 @@ whole thing mechanical.
   (`human-review`/inspection) → reported `not-executed`, never counted as passed;
   flakiness → infra-failure vs conformance-failure distinction; SH ingest is
   async → verify-by-recompute locally, verify-retrievable on a slow cadence.
+  *Precedent worth mining (design note, R1):* CLI Printing Press's `verify` already
+  solves several of these for its one tool-class — read-only least-privilege live
+  execution (GET-only, `--limit 1`, short timeout, stop-on-401), a typed
+  infra-failure-vs-conformance-failure exit-code distinction, and mock-vs-live modes
+  for evidence that can't be run live.
 
 ## Decisions (locked for this pass)
 - **Manifest format:** TOML (`tomllib`, py3.11 stdlib; human-friendly; comments).

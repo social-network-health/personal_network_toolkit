@@ -94,6 +94,32 @@ which is why continuous testing is reserved for a small *active reference set*
 read-and-reason (cheap); reference-design regression is build-and-run
 (expensive, curated).** Keep the two lanes separate.
 
+## The verification-mechanism floor: which ACs a machine can gate
+
+A question the suite must answer honestly: **for each AC, what kind of evidence can
+actually verify it** — a deterministic probe, an LLM architectural read, or human
+judgment? The three layers are not interchangeable, and the suite over-promises if it
+implies the deterministic tier reaches further than it does. The discipline — borrowed
+from CLI Printing Press's *"a deterministic probe for every mechanizable property; the
+LLM only does what rules can't"* (see
+[`design-notes/2026-06-printing-press-build-validation-flows.md`](design-notes/2026-06-printing-press-build-validation-flows.md),
+the design note's R2) — is to keep a **per-AC coverage map**:
+
+> each AC tagged `deterministic-probe` · `llm-architectural` · `human-judgment`
+> (an AC MAY carry more than one; the *strongest available* sets what the suite can
+> gate, and what the Phase-4 harness reports as `passed` vs `not-executed`).
+
+Today only a handful of ACs have a deterministic probe (AC-1 egress, PR-6 export,
+candidate AC-PRM-H loopback); most are LLM- or human-verified. That is fine and
+honest — but the map makes it **visible**: it tells a builder which rows a lint can
+self-check vs. which need the architectural read, and it tells the build-and-run lane
+which verifications are `not-executed` rather than `passed` (the same honesty the
+Phase-4 "hard parts" list demands). Growing the `deterministic-probe` column — one
+fault-injection-self-tested lint at a time (the existing `lint_selftest.py` rule) — is
+the standing program; the map is how we track it without claiming coverage we lack. The
+program itself is roadmap-tracked; this note only fixes *where the line is* and *how we
+stay honest about it*.
+
 ## The lifecycle line: active vs. archival reference designs
 
 You cannot keep every accepted design runnable forever — the browsers, phones,
