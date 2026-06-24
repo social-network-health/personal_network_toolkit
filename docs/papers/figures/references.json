@@ -1,0 +1,4205 @@
+{
+ "emergent_families": [
+  {
+   "name": "Substrate",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B13"
+   ],
+   "gloss": "Where the data lives and how it moves: local-primary residence, offline use, conflict-free background sync, lock-in-free migration, portable export, and federation over a published wire contract — the local-first storage/replication/interop layer."
+  },
+  {
+   "name": "Sovereignty",
+   "behaviour_ids": [
+    "B06",
+    "B07",
+    "B08",
+    "B14",
+    "B15",
+    "B16",
+    "B17"
+   ],
+   "gloss": "Who controls access and identity: owner-controlled access authority, privacy-by-default, confidentiality/encryption, explicit least-authority grants, self-controlled identity, authentication, and public/private visibility — the user's standing as the authority over their data."
+  },
+  {
+   "name": "Assurance",
+   "behaviour_ids": [
+    "B09",
+    "B10",
+    "B11"
+   ],
+   "gloss": "How the system proves its own behaviour as built: typed/declarative contracts, code-verified conformance, and a layered derive-and-extend spec — machine-checkable guarantees about the application itself."
+  },
+  {
+   "name": "Verification",
+   "behaviour_ids": [
+    "B12"
+   ],
+   "gloss": "How a relying party independently confirms data has not been altered: tamper-evident integrity via signing/hash-chaining — trust without trusting the holder."
+  },
+  {
+   "name": "Disclosure",
+   "behaviour_ids": [
+    "B18",
+    "B19",
+    "B20",
+    "B21",
+    "B22",
+    "B23",
+    "B24",
+    "B26"
+   ],
+   "gloss": "Governance of the live act of sharing/egress: user-chosen channel, runtime capability negotiation, pre-send payload preview, informed consent, priority-ordered policy, auditable consent receipts, least-privilege/human-in-the-loop guards, and governed LLM/agent egress — runtime mediation of every outbound disclosure."
+  },
+  {
+   "name": "Adversary-modelling",
+   "behaviour_ids": [
+    "B25"
+   ],
+   "gloss": "Reasoning about who the system must defend against: explicit threat-modelling of the design — the prerequisite stance that scopes the guards in the other families."
+  }
+ ],
+ "canonical_behaviours": [
+  {
+   "id": "B01",
+   "name": "Local-primary data residence",
+   "definition": "The authoritative copy of the data lives on the user's own device/store, owned and controlled by the user.",
+   "merged_from": [
+    "keeps a local-primary copy of the data on the user's device",
+    "keeps a user-owned data store the owner controls"
+   ]
+  },
+  {
+   "id": "B02",
+   "name": "Offline operation",
+   "definition": "The application reads and works without a network connection.",
+   "merged_from": [
+    "reads / works while offline"
+   ]
+  },
+  {
+   "id": "B03",
+   "name": "Background sync with conflict-free convergence",
+   "definition": "Changes replicate in the background and concurrent edits converge without a central authority.",
+   "merged_from": [
+    "changes sync in the background",
+    "concurrent edits converge without a central authority"
+   ]
+  },
+  {
+   "id": "B04",
+   "name": "Provider migration without lock-in",
+   "definition": "The user can move to another provider/host while keeping their identity and data intact.",
+   "merged_from": [
+    "user can migrate to another provider without losing identity / data"
+   ]
+  },
+  {
+   "id": "B05",
+   "name": "Portable, machine-readable export",
+   "definition": "Data can be exported in a portable, machine-readable format and is portable across applications.",
+   "merged_from": [
+    "data can be exported in a portable, machine-readable format",
+    "data is portable across applications"
+   ]
+  },
+  {
+   "id": "B06",
+   "name": "Owner-controlled access authority",
+   "definition": "The data owner is the authority deciding who may access the data.",
+   "merged_from": [
+    "the data owner decides who may access the data"
+   ]
+  },
+  {
+   "id": "B07",
+   "name": "Privacy as default posture",
+   "definition": "Privacy is the default; data is not exposed unless deliberately shared.",
+   "merged_from": [
+    "privacy is the default posture"
+   ]
+  },
+  {
+   "id": "B08",
+   "name": "Confidentiality / encryption at rest and in transit",
+   "definition": "Data is kept confidential, e.g. encrypted, and the transport cannot read message contents.",
+   "merged_from": [
+    "data is kept confidential (e.g. encrypted)",
+    "the transport mechanism cannot read message contents"
+   ]
+  },
+  {
+   "id": "B09",
+   "name": "Typed / declarative contract for behaviour",
+   "definition": "Behaviour is expressed as a typed or declarative contract rather than implicit code.",
+   "merged_from": [
+    "behaviour is expressed as a typed / declarative contract"
+   ]
+  },
+  {
+   "id": "B10",
+   "name": "Conformance verified by code, not prose",
+   "definition": "Conformance is established by executable checks/tests rather than asserted in prose.",
+   "merged_from": [
+    "conformance is verified by code rather than asserted in prose",
+    "behaviour is checked by an executable test"
+   ]
+  },
+  {
+   "id": "B11",
+   "name": "Layered, derive-and-extend spec",
+   "definition": "The specification is layered so others can derive from and extend it.",
+   "merged_from": [
+    "the spec is layered so others derive-and-extend it"
+   ]
+  },
+  {
+   "id": "B12",
+   "name": "Tamper-evident integrity",
+   "definition": "Data carries tamper-evident integrity via signing or hash-chaining.",
+   "merged_from": [
+    "data carries tamper-evident integrity (signed / hash-chained)"
+   ]
+  },
+  {
+   "id": "B13",
+   "name": "Federation via published wire contract",
+   "definition": "Systems interoperate through a published wire contract / federation protocol.",
+   "merged_from": [
+    "systems interoperate via a published wire contract / federation",
+    "systems interoperate via a published wire contract"
+   ]
+  },
+  {
+   "id": "B14",
+   "name": "Explicit least-authority grants",
+   "definition": "Access requires an explicit grant scoped to least authority.",
+   "merged_from": [
+    "access requires an explicit grant (least authority)"
+   ]
+  },
+  {
+   "id": "B15",
+   "name": "Self-controlled, host-independent identity",
+   "definition": "The user holds a self-sovereign identity independent of any host.",
+   "merged_from": [
+    "user holds a self-controlled identity independent of any host"
+   ]
+  },
+  {
+   "id": "B16",
+   "name": "Authentication required for access",
+   "definition": "Access requires authenticating the requester.",
+   "merged_from": [
+    "access requires authentication"
+   ]
+  },
+  {
+   "id": "B17",
+   "name": "Public/private visibility distinction",
+   "definition": "Data distinguishes public from private visibility states.",
+   "merged_from": [
+    "data distinguishes public vs private visibility"
+   ]
+  },
+  {
+   "id": "B18",
+   "name": "User-chosen outbound channel",
+   "definition": "The user chooses the channel used for outbound sharing.",
+   "merged_from": [
+    "the user chooses the channel for outbound sharing"
+   ]
+  },
+  {
+   "id": "B19",
+   "name": "Runtime capability negotiation/discovery",
+   "definition": "Capabilities are negotiated or discovered at runtime.",
+   "merged_from": [
+    "capabilities are negotiated / discovered at runtime"
+   ]
+  },
+  {
+   "id": "B20",
+   "name": "Pre-send payload preview",
+   "definition": "The user previews the exact payload before it is sent.",
+   "merged_from": [
+    "the user previews the exact payload before it is sent"
+   ]
+  },
+  {
+   "id": "B21",
+   "name": "Informed consent before disclosure",
+   "definition": "The user is shown what is disclosed and consents before any disclosure.",
+   "merged_from": [
+    "the user is shown what is disclosed and consents before disclosure"
+   ]
+  },
+  {
+   "id": "B22",
+   "name": "Priority-ordered policy",
+   "definition": "Policy rules are evaluated in an explicit priority order.",
+   "merged_from": [
+    "policy is priority-ordered"
+   ]
+  },
+  {
+   "id": "B23",
+   "name": "Auditable record / consent receipt",
+   "definition": "The system keeps an auditable record or consent receipt of disclosures and actions.",
+   "merged_from": [
+    "the system keeps an auditable record / consent receipt"
+   ]
+  },
+  {
+   "id": "B24",
+   "name": "Runtime least-privilege / human-in-the-loop guards",
+   "definition": "Runtime guards enforce least-privilege and require a human in the loop.",
+   "merged_from": [
+    "runtime guards enforce least-privilege / human-in-the-loop"
+   ]
+  },
+  {
+   "id": "B25",
+   "name": "Threat-modelled design",
+   "definition": "The design is explicitly threat-modelled.",
+   "merged_from": [
+    "the design is threat-modelled"
+   ]
+  },
+  {
+   "id": "B26",
+   "name": "Governed LLM/agent egress",
+   "definition": "An LLM or agent call over the data is governed like any other egress.",
+   "merged_from": [
+    "an LLM / agent call over the data is governed like any other egress"
+   ]
+  }
+ ],
+ "references": [
+  {
+   "name": "Local-first software: You own your data (Ink & Switch / Kleppmann et al., 2019)",
+   "url": "https://www.inkandswitch.com/essay/local-first/",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B06",
+    "B07",
+    "B08"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Conflict-free Replicated Data Types (Shapiro et al., 2011)",
+   "url": "https://inria.hal.science/inria-00609399v1",
+   "behaviour_ids": [
+    "B03",
+    "B02",
+    "B01"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "crdt.tech (community resource hub)",
+   "url": "https://crdt.tech/",
+   "behaviour_ids": [
+    "B03",
+    "B02",
+    "B11"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "Automerge",
+   "url": "https://automerge.org/docs/hello/",
+   "behaviour_ids": [
+    "B03",
+    "B01",
+    "B02",
+    "B05",
+    "B12",
+    "B09"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Yjs",
+   "url": "https://docs.yjs.dev/",
+   "behaviour_ids": [
+    "B03",
+    "B01",
+    "B02",
+    "B13",
+    "B09",
+    "B05"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Zero (Rocicorp)",
+   "url": "https://zero.rocicorp.dev/docs/offline",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B09",
+    "B06",
+    "B14"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Replicache (Rocicorp)",
+   "url": "https://doc.replicache.dev/concepts/how-it-works",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B09",
+    "B12"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "PowerSync",
+   "url": "https://docs.powersync.com/handling-writes/custom-conflict-resolution",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B06",
+    "B14",
+    "B09"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "ElectricSQL / Electric",
+   "url": "https://electric.ax/docs/guides/writes",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B06",
+    "B14",
+    "B09"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Ditto (edge/P2P sync SDK)",
+   "url": "https://ditto.live/blog/dittos-delta-state-crdts",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B12",
+    "B13",
+    "B08"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Triplit",
+   "url": "https://www.triplit.dev/docs/faq",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B09",
+    "B06",
+    "B14"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Jazz / CoJSON",
+   "url": "https://jazz.tools/docs/concepts/how-sync-works",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B08",
+    "B12",
+    "B15",
+    "B06",
+    "B16"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Evolu",
+   "url": "https://www.evolu.dev/",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B08",
+    "B15",
+    "B04",
+    "B09"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Fireproof",
+   "url": "https://fireproof.storage/posts/why-verifiable-crdts-are-the-future-of-web-data/",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B12",
+    "B05",
+    "B10"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "DXOS ECHO",
+   "url": "https://docs.dxos.org/echo/introduction/",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B15",
+    "B06",
+    "B16",
+    "B13"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Solid Protocol (core + App-Interop + Solid-OIDC)",
+   "url": "https://solidproject.org/TR/protocol",
+   "behaviour_ids": [
+    "B15",
+    "B01",
+    "B06",
+    "B14",
+    "B16",
+    "B05",
+    "B04",
+    "B13",
+    "B17"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "DIF Decentralized Web Node (DWN)",
+   "url": "https://identity.foundation/decentralized-web-node/spec/",
+   "behaviour_ids": [
+    "B01",
+    "B15",
+    "B06",
+    "B14",
+    "B12",
+    "B16",
+    "B17",
+    "B08",
+    "B03",
+    "B13"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "AT Protocol (Bluesky)",
+   "url": "https://atproto.com/guides/overview",
+   "behaviour_ids": [
+    "B15",
+    "B04",
+    "B01",
+    "B12",
+    "B05",
+    "B09",
+    "B13",
+    "B16"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Nostr protocol (NIPs)",
+   "url": "https://github.com/nostr-protocol/nips",
+   "behaviour_ids": [
+    "B15",
+    "B12",
+    "B04",
+    "B13",
+    "B05",
+    "B08",
+    "B09"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "Matrix Specification",
+   "url": "https://spec.matrix.org/latest/",
+   "behaviour_ids": [
+    "B13",
+    "B03",
+    "B04",
+    "B08",
+    "B16",
+    "B12",
+    "B17"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "ActivityPub (W3C Rec)",
+   "url": "https://www.w3.org/TR/activitypub/",
+   "behaviour_ids": [
+    "B13",
+    "B05",
+    "B17",
+    "B06",
+    "B16",
+    "B09",
+    "B18"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "W3C Decentralized Identifiers (DID Core / 1.1)",
+   "url": "https://www.w3.org/TR/did-core/",
+   "behaviour_ids": [
+    "B15",
+    "B04",
+    "B12",
+    "B05",
+    "B16",
+    "B19",
+    "B13"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "W3C Verifiable Credentials Data Model 2.0",
+   "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+   "behaviour_ids": [
+    "B12",
+    "B10",
+    "B20",
+    "B15",
+    "B05",
+    "B09",
+    "B21"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Solid-OIDC authentication spec",
+   "url": "https://solidproject.org/TR/oidc",
+   "behaviour_ids": [
+    "B16",
+    "B15",
+    "B04",
+    "B12",
+    "B14",
+    "B19"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "UCAN (User Controlled Authorization Network)",
+   "url": "https://ucan.xyz/specification/",
+   "behaviour_ids": [
+    "B14",
+    "B06",
+    "B12",
+    "B15",
+    "B10",
+    "B19",
+    "B09"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "OpenID for Verifiable Credentials (OID4VCI/OID4VP)",
+   "url": "https://openid.net/sg/openid4vc/specifications/",
+   "behaviour_ids": [
+    "B16",
+    "B21",
+    "B20",
+    "B12",
+    "B10",
+    "B15",
+    "B19"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "DSNP (Decentralized Social Networking Protocol)",
+   "url": "https://spec.dsnp.org/",
+   "behaviour_ids": [
+    "B15",
+    "B13",
+    "B03",
+    "B12",
+    "B04",
+    "B05",
+    "B17"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "Solid Application Interoperability Specification",
+   "url": "https://solid.github.io/data-interoperability-panel/specification/",
+   "behaviour_ids": [
+    "B06",
+    "B14",
+    "B15",
+    "B09",
+    "B13",
+    "B19",
+    "B05"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "User-Managed Access (UMA) 2.0 (Kantara)",
+   "url": "https://docs.kantarainitiative.org/uma/wg/rec-oauth-uma-grant-2.0.html",
+   "behaviour_ids": [
+    "B06",
+    "B14",
+    "B16",
+    "B22",
+    "B23",
+    "B09",
+    "B19"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "GDPR Article 20 — Right to data portability",
+   "url": "https://gdpr-info.eu/art-20-gdpr/",
+   "behaviour_ids": [
+    "B05",
+    "B04",
+    "B13",
+    "B06",
+    "B16"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Article 29 WP Guidelines on data portability (WP242)",
+   "url": "https://gtclawgroup.com/wp-content/uploads/2017/03/WP242_Guidelines-on-the-right-to-data-portability.pdf",
+   "behaviour_ids": [
+    "B05",
+    "B04",
+    "B13",
+    "B21",
+    "B16",
+    "B06"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Digital Markets Act Article 6(9) — end-user data portability",
+   "url": "https://www.eu-digital-markets-act.com/Digital_Markets_Act_Article_6.html",
+   "behaviour_ids": [
+    "B05",
+    "B03",
+    "B04",
+    "B13",
+    "B06",
+    "B14"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Data Transfer Project / Data Transfer Initiative",
+   "url": "https://dtinit.org/docs/dtp-what-is-it",
+   "behaviour_ids": [
+    "B05",
+    "B04",
+    "B13",
+    "B06",
+    "B16",
+    "B08",
+    "B09"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "MyData Declaration & Principles",
+   "url": "https://mydata.org/declaration/",
+   "behaviour_ids": [
+    "B06",
+    "B14",
+    "B05",
+    "B13",
+    "B21",
+    "B07",
+    "B04"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "MyData Operators framework / Operator Award",
+   "url": "https://www.mydata.org/wp-content/uploads/2022/07/Understanding-MyData-Operators-2022-1.pdf",
+   "behaviour_ids": [
+    "B06",
+    "B14",
+    "B23",
+    "B21",
+    "B13",
+    "B04",
+    "B16"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "awarded",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Gaia-X Trust Framework / Compliance Document",
+   "url": "https://gaia-x.eu/wp-content/uploads/2024/09/Compliance-Document_24.06.pdf",
+   "behaviour_ids": [
+    "B10",
+    "B09",
+    "B12",
+    "B15",
+    "B06",
+    "B13",
+    "B16"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "International Data Spaces RAM 4.0 (IDSA)",
+   "url": "https://docs.internationaldataspaces.org/ids-knowledgebase/ids-ram-4",
+   "behaviour_ids": [
+    "B06",
+    "B09",
+    "B24",
+    "B16",
+    "B12",
+    "B13",
+    "B14",
+    "B23"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "awarded",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Inrupt Enterprise Solid Server / Data Wallet (Access Grants)",
+   "url": "https://docs.inrupt.com/wallet/architecture-and-flows/",
+   "behaviour_ids": [
+    "B06",
+    "B14",
+    "B01",
+    "B15",
+    "B23",
+    "B12",
+    "B16",
+    "B05"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "European Digital Identity (EUDI) Wallet ARF",
+   "url": "https://eu-digital-identity-wallet.github.io/eudi-doc-architecture-and-reference-framework/",
+   "behaviour_ids": [
+    "B15",
+    "B01",
+    "B21",
+    "B14",
+    "B12",
+    "B16",
+    "B23",
+    "B08",
+    "B20"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "awarded",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "vCard Format Specification (RFC 6350)",
+   "url": "https://www.rfc-editor.org/rfc/rfc6350.html",
+   "behaviour_ids": [
+    "B05",
+    "B13",
+    "B09",
+    "B04"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "JSContact (RFC 9553 / RFC 9555)",
+   "url": "https://www.rfc-editor.org/rfc/rfc9555.html",
+   "behaviour_ids": [
+    "B05",
+    "B13",
+    "B09",
+    "B04"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "CardDAV (RFC 6352)",
+   "url": "https://www.rfc-editor.org/rfc/rfc6352",
+   "behaviour_ids": [
+    "B03",
+    "B13",
+    "B16",
+    "B06",
+    "B05"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "JMAP for Contacts (RFC 9610)",
+   "url": "https://www.rfc-editor.org/rfc/rfc9610.html",
+   "behaviour_ids": [
+    "B03",
+    "B13",
+    "B09",
+    "B16",
+    "B06",
+    "B05"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "SCIM Protocol (RFC 7644)",
+   "url": "https://www.rfc-editor.org/rfc/rfc7644.html",
+   "behaviour_ids": [
+    "B13",
+    "B09",
+    "B16",
+    "B03",
+    "B05",
+    "B04"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "EU Data Governance Act (DGA)",
+   "url": "https://digital-strategy.ec.europa.eu/en/policies/data-governance-act-explained",
+   "behaviour_ids": [
+    "B06",
+    "B21",
+    "B23",
+    "B04",
+    "B13"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Cozy Cloud (self-hosted personal cloud)",
+   "url": "https://docs.cozy.io/en/",
+   "behaviour_ids": [
+    "B01",
+    "B06",
+    "B14",
+    "B05",
+    "B16",
+    "B04",
+    "B15"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "mixed",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Personal Data Stores: A Review (academic survey)",
+   "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9921726/",
+   "behaviour_ids": [
+    "B01",
+    "B06",
+    "B21",
+    "B23",
+    "B15",
+    "B05",
+    "B04"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "OWASP Application Security Verification Standard (ASVS)",
+   "url": "https://owasp.org/www-project-application-security-verification-standard/",
+   "behaviour_ids": [
+    "B10",
+    "B16",
+    "B14",
+    "B08",
+    "B23",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "OWASP Mobile ASVS (MASVS, incl. MASVS-PRIVACY)",
+   "url": "https://mas.owasp.org/MASVS/",
+   "behaviour_ids": [
+    "B10",
+    "B08",
+    "B16",
+    "B21",
+    "B07",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "NIST Cybersecurity Framework (CSF) 2.0",
+   "url": "https://csf.tools/reference/nist-cybersecurity-framework/v2-0/",
+   "behaviour_ids": [
+    "B25",
+    "B16",
+    "B14",
+    "B08",
+    "B23",
+    "B22"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "NIST Privacy Framework 1.0",
+   "url": "https://www.nist.gov/privacy-framework",
+   "behaviour_ids": [
+    "B25",
+    "B21",
+    "B07",
+    "B06",
+    "B08",
+    "B23",
+    "B22"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "LINDDUN privacy threat modeling",
+   "url": "https://linddun.org/",
+   "behaviour_ids": [
+    "B25",
+    "B07",
+    "B17",
+    "B21",
+    "B08",
+    "B22"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "STRIDE threat model (Microsoft)",
+   "url": "https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats",
+   "behaviour_ids": [
+    "B25",
+    "B16",
+    "B12",
+    "B23",
+    "B08",
+    "B14",
+    "B22"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Object-capability model / Capability-based security (incl. Capability Myths Demolished)",
+   "url": "https://en.wikipedia.org/wiki/Object-capability_model",
+   "behaviour_ids": [
+    "B14",
+    "B19",
+    "B24",
+    "B06",
+    "B25",
+    "B15"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "ISO/IEC TS 27560 Consent Record Structure (and Kantara Consent Receipt v1.1)",
+   "url": "https://www.iso.org/standard/80392.html",
+   "behaviour_ids": [
+    "B23",
+    "B21",
+    "B05",
+    "B09",
+    "B06"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Privacy by Design — 7 Foundational Principles (Cavoukian)",
+   "url": "https://www.ipc.on.ca/wp-content/uploads/resources/7foundationalprinciples.pdf",
+   "behaviour_ids": [
+    "B07",
+    "B25",
+    "B21",
+    "B08",
+    "B23",
+    "B14"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "NIST SP 800-53 Rev.5 — Security and Privacy Controls",
+   "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+   "behaviour_ids": [
+    "B16",
+    "B14",
+    "B23",
+    "B08",
+    "B12",
+    "B25",
+    "B07",
+    "B22"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Model Context Protocol (MCP) Specification",
+   "url": "https://modelcontextprotocol.io/specification/2025-11-25",
+   "behaviour_ids": [
+    "B13",
+    "B19",
+    "B09",
+    "B21",
+    "B24",
+    "B14",
+    "B26"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "mixed",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "GitHub Spec Kit (constitution.md)",
+   "url": "https://github.com/github/spec-kit",
+   "behaviour_ids": [
+    "B09",
+    "B22",
+    "B11",
+    "B10",
+    "B21"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "AWS Kiro — Specs",
+   "url": "https://kiro.dev/docs/specs/",
+   "behaviour_ids": [
+    "B09",
+    "B11",
+    "B10",
+    "B21",
+    "B24"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "BMAD-METHOD",
+   "url": "https://github.com/bmad-code-org/BMAD-METHOD",
+   "behaviour_ids": [
+    "B09",
+    "B11",
+    "B19",
+    "B21",
+    "B10"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "OpenSpec (Fission-AI)",
+   "url": "https://github.com/Fission-AI/OpenSpec",
+   "behaviour_ids": [
+    "B09",
+    "B11",
+    "B21",
+    "B10",
+    "B23"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Tessl Framework (spec-centric)",
+   "url": "https://tessl.io/blog/how-tessls-products-pioneer-spec-driven-development/",
+   "behaviour_ids": [
+    "B09",
+    "B10",
+    "B11",
+    "B23"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Google Antigravity",
+   "url": "https://antigravity.google/",
+   "behaviour_ids": [
+    "B19",
+    "B24",
+    "B23",
+    "B21",
+    "B10"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "mixed",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Cucumber / Gherkin (BDD)",
+   "url": "https://cucumber.io/docs/bdd/",
+   "behaviour_ids": [
+    "B09",
+    "B10",
+    "B11",
+    "B21"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "OpenPort Protocol (AI agent tool-access governance)",
+   "url": "https://arxiv.org/abs/2602.20196",
+   "behaviour_ids": [
+    "B14",
+    "B26",
+    "B24",
+    "B19",
+    "B16",
+    "B23",
+    "B13",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "Specifications: the missing link (Stoica, Zaharia et al.)",
+   "url": "https://arxiv.org/abs/2412.05299",
+   "behaviour_ids": [
+    "B09",
+    "B10",
+    "B11",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "CodeSpecBench (executable behavioral spec generation)",
+   "url": "https://arxiv.org/html/2604.12268v1",
+   "behaviour_ids": [
+    "B10",
+    "B09",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "Towards Formal Verification of LLM-Generated Code (Astrogator)",
+   "url": "https://arxiv.org/abs/2507.13290",
+   "behaviour_ids": [
+    "B10",
+    "B09",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "Evaluation-Driven Development of LLM Agents (EDDOps)",
+   "url": "https://arxiv.org/html/2411.13768v3",
+   "behaviour_ids": [
+    "B10",
+    "B09",
+    "B24",
+    "B23",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "Agentic Software Engineering: SE 3.0 / SASE",
+   "url": "https://arxiv.org/abs/2509.06216",
+   "behaviour_ids": [
+    "B09",
+    "B10",
+    "B24",
+    "B23",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "AIUC-1 (AI Agent Security/Safety/Reliability Standard)",
+   "url": "https://fin.ai/glossary/aiuc-1",
+   "behaviour_ids": [
+    "B25",
+    "B10",
+    "B23",
+    "B24",
+    "B08",
+    "B16",
+    "B14",
+    "B26"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "awarded",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "OWASP AISVS (AI Security Verification Standard) 1.0",
+   "url": "https://github.com/OWASP/AISVS",
+   "behaviour_ids": [
+    "B25",
+    "B10",
+    "B14",
+    "B16",
+    "B08",
+    "B23",
+    "B24",
+    "B26"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "User Data Manifesto 2.0 (Karlitschek, Roy, Borchardt)",
+   "url": "https://userdatamanifesto.org/",
+   "behaviour_ids": [
+    "B06",
+    "B05",
+    "B04",
+    "B08",
+    "B15",
+    "B21",
+    "B01"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "The Path to Self-Sovereign Identity — Ten Principles (Christopher Allen)",
+   "url": "https://www.lifewithalacrity.com/article/the-path-to-self-soverereign-identity/",
+   "behaviour_ids": [
+    "B15",
+    "B04",
+    "B06",
+    "B21",
+    "B14",
+    "B07",
+    "B13",
+    "B12",
+    "B08"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "partial"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Ethical Design Manifesto (Balkan & Kalbag, Ind.ie)",
+   "url": "https://2017.ind.ie/ethical-design/",
+   "behaviour_ids": [
+    "B07",
+    "B06",
+    "B01",
+    "B08",
+    "B15",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "Principles of Humane Technology / Humane by Design",
+   "url": "https://humanebydesign.com/principles",
+   "behaviour_ids": [
+    "B07",
+    "B21",
+    "B08",
+    "B06",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "ProjectVRM principles (Doc Searls, Berkman Klein)",
+   "url": "https://cyber.harvard.edu/projectvrm/Main_Page",
+   "behaviour_ids": [
+    "B15",
+    "B06",
+    "B04",
+    "B01",
+    "B05",
+    "B13",
+    "B21",
+    "B23"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "IndieWeb Principles (own your data; POSSE)",
+   "url": "https://indieweb.org/principles",
+   "behaviour_ids": [
+    "B01",
+    "B15",
+    "B04",
+    "B05",
+    "B13",
+    "B18",
+    "B17",
+    "B11"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "Monica (open-source Personal Relationship Manager)",
+   "url": "https://github.com/monicahq/monica",
+   "behaviour_ids": [
+    "B01",
+    "B05",
+    "B04",
+    "B16",
+    "B06",
+    "B13",
+    "B08"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "Clay / Mesh (personal CRM)",
+   "url": "https://library.me.sh/hc/en-us/articles/7485741581339-Security-and-Privacy",
+   "behaviour_ids": [
+    "B08",
+    "B16",
+    "B14",
+    "B06",
+    "B05",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "Dex (personal CRM / rolodex)",
+   "url": "https://getdex.com/security/",
+   "behaviour_ids": [
+    "B08",
+    "B16",
+    "B14",
+    "B06",
+    "B05",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "Folk / Cloze (relationship-intelligence personal CRMs)",
+   "url": "https://help.folk.app/en/articles/5007534-security-privacy",
+   "behaviour_ids": [
+    "B08",
+    "B16",
+    "B14",
+    "B06",
+    "B05",
+    "B23",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "awarded",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "Apple App Privacy Labels / Google Play Data Safety",
+   "url": "https://developer.apple.com/app-store/app-privacy-details/",
+   "behaviour_ids": [
+    "B21",
+    "B09",
+    "B17",
+    "B23",
+    "B14"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "awarded",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "A 'Nutrition Label' for Privacy (Kelley et al., SOUPS 2009)",
+   "url": "https://cups.cs.cmu.edu/soups/2009/proceedings/a4-kelley.pdf",
+   "behaviour_ids": [
+    "B21",
+    "B09",
+    "B17",
+    "B23"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "Model Cards for Model Reporting (Mitchell et al., FAT* 2019)",
+   "url": "https://arxiv.org/pdf/1810.03993",
+   "behaviour_ids": [
+    "B09",
+    "B21",
+    "B23",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "Datasheets for Datasets (Gebru et al., CACM 2021)",
+   "url": "https://cacm.acm.org/research/datasheets-for-datasets/",
+   "behaviour_ids": [
+    "B09",
+    "B21",
+    "B23",
+    "B25",
+    "B17"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "P3P — Platform for Privacy Preferences (W3C Rec, 2002)",
+   "url": "https://www.w3.org/P3P/",
+   "behaviour_ids": [
+    "B09",
+    "B19",
+    "B22",
+    "B21",
+    "B13",
+    "B17"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "The 2025 AI Agent Index (Casper et al.)",
+   "url": "https://arxiv.org/abs/2502.01635",
+   "behaviour_ids": [
+    "B09",
+    "B23",
+    "B21",
+    "B25"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "partial"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "NIST AI RMF Generative AI Profile (NIST AI 600-1)",
+   "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+   "behaviour_ids": [
+    "B25",
+    "B22",
+    "B23",
+    "B09",
+    "B26"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "aspirational",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "AgentRFC: Security Design Principles and Conformance Testing for Agent Protocols (Zheng, Zhang) — tool: AgentConform",
+   "url": "https://arxiv.org/abs/2603.23801",
+   "behaviour_ids": [
+    "B09",
+    "B10",
+    "B25",
+    "B14",
+    "B24",
+    "B26"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "LoRe: A Programming Model for Verifiably Safe Local-First Software (Haas, Mogk, Yanakieva, Bieniusa, Mezini)",
+   "url": "https://arxiv.org/abs/2304.07133",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B09",
+    "B10"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "none"
+    },
+    {
+     "family": "Assurance",
+     "strength": "strong"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "checked",
+   "domain_proximity": "general"
+  },
+  {
+   "name": "ISO 31700-1:2023 Privacy by Design for consumer goods and services — Part 1",
+   "url": "https://www.iso.org/standard/84977.html",
+   "behaviour_ids": [
+    "B07",
+    "B21",
+    "B06",
+    "B23",
+    "B25",
+    "B05",
+    "B16",
+    "B08",
+    "B14"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "partial"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "strong"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "awarded",
+   "domain_proximity": "adjacent-personal-data"
+  },
+  {
+   "name": "DXOS Contacts example app on ECHO/Automerge + HALO identity",
+   "url": "https://dxos.org/docs/additional-resources/samples/",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B15",
+    "B16",
+    "B12",
+    "B06",
+    "B13"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "strong"
+    },
+    {
+     "family": "Assurance",
+     "strength": "none"
+    },
+    {
+     "family": "Verification",
+     "strength": "strong"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "direct-personal-network"
+  },
+  {
+   "name": "MITRE D3FEND (top tactic literally named 'Harden')",
+   "url": "https://d3fend.mitre.org/",
+   "behaviour_ids": [
+    "B25",
+    "B09",
+    "B22",
+    "B08",
+    "B16",
+    "B14",
+    "B24",
+    "B23"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "none"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "partial"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "strong"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "distant"
+  },
+  {
+   "name": "ElectricSQL 'electric-next' read-path-only pivot (writes guide + 2024 blog posts)",
+   "url": "https://electric.ax/docs/guides/writes",
+   "behaviour_ids": [
+    "B01",
+    "B02",
+    "B03",
+    "B13",
+    "B06",
+    "B09",
+    "B05"
+   ],
+   "families": [
+    {
+     "family": "Substrate",
+     "strength": "strong"
+    },
+    {
+     "family": "Sovereignty",
+     "strength": "partial"
+    },
+    {
+     "family": "Assurance",
+     "strength": "partial"
+    },
+    {
+     "family": "Verification",
+     "strength": "none"
+    },
+    {
+     "family": "Disclosure",
+     "strength": "none"
+    },
+    {
+     "family": "Adversary-modelling",
+     "strength": "none"
+    }
+   ],
+   "conformance_model": "none",
+   "domain_proximity": "general"
+  }
+ ],
+ "pna": {
+  "pna_behaviour_ids": [
+   "B01",
+   "B04",
+   "B05",
+   "B06",
+   "B07",
+   "B08",
+   "B09",
+   "B10",
+   "B11",
+   "B12",
+   "B14",
+   "B16",
+   "B17",
+   "B18",
+   "B19",
+   "B20",
+   "B21",
+   "B23",
+   "B24",
+   "B26",
+   "B25"
+  ],
+  "pna_families": [
+   {
+    "family": "Substrate",
+    "strength": "partial"
+   },
+   {
+    "family": "Sovereignty",
+    "strength": "strong"
+   },
+   {
+    "family": "Assurance",
+    "strength": "strong"
+   },
+   {
+    "family": "Verification",
+    "strength": "partial"
+   },
+   {
+    "family": "Disclosure",
+    "strength": "strong"
+   },
+   {
+    "family": "Adversary-modelling",
+    "strength": "strong"
+   }
+  ],
+  "leaf_behaviours": [
+   "Exception as a first-class, stable-ID'd honest-deviation construct that flips a machine-readable mode bit. A PNA may deliberately depart from a named guarantee (an AC, or the local-only definition itself) by raising an Exception (EX-*); doing so sets pna-active=false (it is 'not a PNA right now') while remaining 'exception-handling conformant' if it is consented-to before the raise, persistently signalled, reversibility-declared, and per-dimension strength-disclosed (handler contract EX-H1..EX-H8). The raise/catch/handle software-exception analogy and the relying-party-keys-on-pna-active predicate split are not captured by any canonical behaviour (B21/B23 touch consent/receipts but not mode-suspension) and appear in no other reference in the incidence.",
+   "Constraint as the dual of Exception: a platform-imposed ceiling (CST-*) that the PNA must declare honestly rather than over-claim. The PNA stays conformant by reducing capability to what the platform can keep and declaring the frontier truthfully; over-reach (promising a capability the substrate cannot keep) is a *silent conformance failure*, the dual of an undeclared exception. No canonical behaviour captures honest platform-ceiling declaration, and no other reference engenders it.",
+   "Per-dimension strength-profile disclosure with refusal-to-collapse. Conformance is reported per AC/EX ID against a fixed assurance vocabulary (enforced / verifiable / best-effort / provider-asserted / recoverable-only / none) and a single rolled-up grade is explicitly forbidden (EARL-style per-clause reporting; 'checked, not awarded'; 'detect, don't bless'). The meta-honesty of refusing to confer a collapsed conformance grade is not any canonical behaviour and is absent from every other reference.",
+   "Harden flow: advisory governance of the *operating environment* the app runs in, treated as a sibling to (not a kind of) the app's own guarantees. Against an adversary in the runtime (an OS-level same-UID AI agent, another local process reading the store) the toolkit *advises* environmental countermeasures it cannot itself enforce (run under a separate OS user, sandbox/denyRead the store, MCP access broker, honeytoken+watchdog), with the same-UID-agent confinement analysis (ptrace/namespace/MAC) made explicit. B25 captures threat-modelling but not this advisory-not-mandatory environmental-countermeasure posture; no other reference engenders it."
+  ],
+  "conjunction_readoff": "No reference in the incidence matches PNA's full family span together with its domain and conformance model. PNA's signature is the simultaneous combination of: direct-personal-network domain + strong Sovereignty + strong Assurance + strong Disclosure + strong Adversary-modelling, under a checked-not-awarded conformance model. That intersection is unoccupied in the corpus.\\n\\nThe corpus splits the requirements across disjoint clusters: (a) the direct-personal-network entries (Nostr, Matrix, ActivityPub, DSNP, Monica, Clay/Mesh, Dex, Folk/Cloze, IndieWeb, the contact RFCs, DXOS Contacts example) all carry Assurance none/partial and Disclosure none/partial — they are protocols/apps, not spec-conformance + egress-governance frameworks; (b) the strong-Assurance 'conformance verified by code' cluster (GitHub Spec Kit, Kiro, BMAD, OpenSpec, Tessl, Cucumber, LoRe, AgentRFC) is uniformly domain-general/distant with Substrate and Sovereignty none; (c) the strong-Disclosure+strong-Adversary cluster (AIUC-1, OWASP AISVS, ISO 31700-1) is general/adjacent AI-security or privacy-by-design, not local-first personal-network.\\n\\nClosest single neighbour by the most distinctive axes: the DXOS Contacts example app on ECHO/Automerge+HALO — it shares the direct-personal-network domain, strong Sovereignty, strong Substrate (the local-first root), and strong Verification. But it has Assurance none and Disclosure none, so it lacks PNA's entire conformance-checking apparatus and its egress/consent governance — it matches barely half of PNA's span. On the conformance-method axis the nearest is the spec-kit cluster (checked, code-verified, derive-and-extend), and on the egress-governance axis OWASP AISVS / AIUC-1 — but each of those is domain-general with no Substrate/Sovereignty. PNA is the only artifact that conjoins all three."
+ },
+ "reconciliation": "The emergent families DO NOT cleanly match the hypothesised four (Substrate, Sovereignty, Assurance, Verification). The honest result is: two of the four hold strongly, the third is thin, the fourth nearly collapses, and a large fifth family emerges that the four-way scheme does not name.\n\nWhat matches: Substrate (B01-B05, B13) and Sovereignty (B06-B08, B14-B17) are robust, well-populated clusters that survive the merge intact and correspond closely to the hypothesis.\n\nWhere it strains:\n1) ASSURANCE and VERIFICATION blur together and are both thin. The hypothesis treats them as peer families, but the corpus splits the assurance idea by *who is checking*: Assurance-as-self-proof (typed contracts, code-verified conformance, layered spec — B09/B10/B11) is about the builder demonstrating its own behaviour, while Verification-as-independent-confirmation reduces to a SINGLE behaviour, tamper-evident integrity (B12). A family of one is a sign the hypothesised Assurance/Verification split is finer than the evidence supports. A defensible alternative is to MERGE them into one \"Assurance/Verification\" family (B09-B12): checkable guarantees, whether self-attested or relying-party-confirmed.\n\n2) A genuinely DISTINCT fifth family emerges that the four do not capture: DISCLOSURE / runtime egress governance (B18-B24, B26). This is the largest cluster after Substrate+Sovereignty and is qualitatively different from all four hypothesised families — it is neither about where data rests (Substrate), nor static control posture (Sovereignty), nor proving built behaviour (Assurance/Verification). It governs the *live moment of sharing*: preview, consent, receipts, priority-ordered policy, human-in-the-loop guards, and treating LLM/agent calls as egress. This strongly corresponds to the prompt's flagged candidate \"a distinct honest-deviation / exception-handling family\" — the runtime mediation/consent surface. It should be ADDED as a first-class family; folding it into Sovereignty would lose the build-time-vs-runtime distinction that the corpus clearly draws.\n\n3) Threat-modelling (B25) is a stance/prerequisite rather than a behaviour peer; it sits adjacent to Disclosure and Sovereignty (it scopes their guards) and is reported as a small Adversary-modelling family rather than forced into one of the four.\n\nNet recommendation: keep Substrate and Sovereignty; collapse Assurance+Verification into one checkability family (the Verification-as-separate hypothesis is not supported — it is a singleton); ADD a Disclosure/runtime-egress-governance family. So the four-family hypothesis is better described as: Substrate, Sovereignty, Assurance/Verification (merged), and Disclosure (added) — four again, but a different four than hypothesised, with threat-modelling as a thin cross-cutting fifth.\""
+}
