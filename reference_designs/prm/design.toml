@@ -12,11 +12,11 @@ name = "prm"
 repo = "https://github.com/richbodo/prm"
 toolkit_version = "0.2"
 status = "active"
-archival = "archived"  # re-pinned to pnt-ref-0.2 (2d6889d) for the v0.2 re-attestation (AC-22 / AC-23 + UM-1/2/3). SWHIDs git-computed/content-addressed; Save Code Now submitted 2026-06-25 — ingest async.
+archival = "archived"  # re-pinned to pnt-ref-0.2.1 (b9ef679) for the RZ-* relabel (AC-PRM-C -> RZ-5; #103). SWHIDs git-computed/content-addressed; Save Code Now submitted 2026-06-25 — ingest async.
 
-commit    = "2d6889d892e95dc9812e43547500d1abaa23fc32"      # prm@pnt-ref-0.2 — PR #74 (v0.2 re-attestation: AC-22/23 + UM rows)
-swhid_rev = "swh:1:rev:2d6889d892e95dc9812e43547500d1abaa23fc32"
-swhid_dir = "swh:1:dir:e90b07e1b4c0c1d1023ffc82618ce6341104a79f"
+commit    = "b9ef6793ac7935320a657dd5180c0c49e95ea1c9"      # prm@pnt-ref-0.2.1 — RZ-* relabel (#103)
+swhid_rev = "swh:1:rev:b9ef6793ac7935320a657dd5180c0c49e95ea1c9"
+swhid_dir = "swh:1:dir:a4b5377858aab9f2d1c05736dfa0b76af3473d46"
 
 [flavor]
 distribution = "never-distributed-single-user"

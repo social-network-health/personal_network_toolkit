@@ -1,5 +1,18 @@
 # PNA Toolkit Changelog
 
+## Unreleased
+
+### Reference designs: retired AC-IDs relabeled to RZ-* (#103)
+
+- Both reference designs now attest the Layer-2 realizations under their `RZ-*` IDs instead of the legacy
+  retired AC-IDs: `fellows_local_db` `AC-3/12/13/14` → `RZ-1/2/3/4` (and the not-applicable `AC-PRM-C` →
+  `RZ-5`); `prm` `AC-PRM-C` → `RZ-5`. The L1/L2 layering pass had retired these from the `AC-*` namespace;
+  they previously resolved only via `spec/axes.md` redirect anchors. **Clarity only — no conformance
+  change** (same realizations, same tests). Both re-pinned at `pnt-ref-0.2.1`; bundled `Architecture.md` /
+  `design.toml` / `evaluate-report.json` copies + the realization index refreshed; the hardcoded fellows
+  pin fixtures in `lint_selftest.py` updated. A re-pin, not a toolkit version bump — `/VERSION` stays
+  `0.2.0`. `just ci` green.
+
 ## v0.2 (2026-06-25)
 
 ### Reference designs re-attested at Toolkit-Version 0.2 (the v0.2 design re-sync)

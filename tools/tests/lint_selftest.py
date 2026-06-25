@@ -140,14 +140,14 @@ SPEC_ID_FAULTS = [
         # check, this fault empties the commit — an archived design MUST carry its commit pin.
         name="manifest: archived design without its SWHID pin (honest-deferral)",
         file="reference_designs/fellows_local_db/design.toml",
-        old='commit    = "15be80dedb22973d11651e8eb89b0611937ac5be"',
+        old='commit    = "85b3a84f2a9e332ba5b6e70b60b0c3bd75850ae1"',
         new='commit    = ""',
         expect="requires 'commit'",
     ),
     dict(
         name="manifest: malformed SWHID value",
         file="reference_designs/fellows_local_db/design.toml",
-        old='swhid_dir = "swh:1:dir:f139d27207eb6d814eaf031d374f9cfb795aba17"',
+        old='swhid_dir = "swh:1:dir:0d378a2c88bb4c17976a702d463e80335432fd0a"',
         new='swhid_dir = "swh:1:dir:not-a-real-hash"',
         expect="malformed",
     ),

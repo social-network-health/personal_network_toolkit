@@ -13,11 +13,11 @@ name = "fellows_local_db"
 repo = "https://github.com/richbodo/fellows_local_db"
 toolkit_version = "0.2"
 status = "active"
-archival = "archived"   # re-pinned to pnt-ref-0.2 (15be80d) for the v0.2 re-attestation (AC-22 / AC-23 + UM + RZ-* note) + GPL-3.0 LICENSE. SWHIDs git-computed/content-addressed; Save Code Now submitted 2026-06-25 — ingest async.
+archival = "archived"   # re-pinned to pnt-ref-0.2.1 (85b3a84) for the RZ-* relabel (AC-3/12/13/14 -> RZ-1/2/3/4; AC-PRM-C n/a -> RZ-5; #103). SWHIDs git-computed/content-addressed; Save Code Now submitted 2026-06-25 — ingest async.
 
-commit    = "15be80dedb22973d11651e8eb89b0611937ac5be"   # fellows@pnt-ref-0.2 — v0.2 re-attestation (AC-22/23 + GPL-3.0 LICENSE)
-swhid_rev = "swh:1:rev:15be80dedb22973d11651e8eb89b0611937ac5be"
-swhid_dir = "swh:1:dir:f139d27207eb6d814eaf031d374f9cfb795aba17"
+commit    = "85b3a84f2a9e332ba5b6e70b60b0c3bd75850ae1"   # fellows@pnt-ref-0.2.1 — RZ-* relabel (#103)
+swhid_rev = "swh:1:rev:85b3a84f2a9e332ba5b6e70b60b0c3bd75850ae1"
+swhid_dir = "swh:1:dir:0d378a2c88bb4c17976a702d463e80335432fd0a"
 
 [flavor]
 distribution = "web-bundle-with-magic-link"
