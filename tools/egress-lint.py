@@ -13,6 +13,17 @@ architectural review described in pna-toolkit/SKILL.md, not a
 replacement; it is heuristic (regex over source) and can have false positives,
 which the allow-list and per-line output let a human triage quickly.
 
+Blind spot (FALSE NEGATIVES — read a clean run as "necessary, not sufficient").
+This scan only sees egress whose remote origin is a *string literal at the call /
+markup site*. An app whose egress is dynamic or config-driven — the URL assembled
+at runtime, read from a config file, or buried in a vendored networking / protocol
+library — presents no literal to match, so the scan can come back CLEAN while the
+app egresses heavily. (Worked case: Signal Desktop scans near-clean yet talks to
+~7 hosted services + a persistent websocket; its endpoints live in config and its
+calls go through libsignal.) The honest read: a clean egress-lint is necessary,
+not sufficient — the LLM/human tiers own "does this app actually egress?". See
+docs/design-notes/2026-06-egress-lint-dynamic-egress-blind-spot.md.
+
 Vectors detected:
   JS/TS  : fetch(), XMLHttpRequest.open(), navigator.sendBeacon(),
            new WebSocket(), new EventSource(), importScripts(), dynamic import(),

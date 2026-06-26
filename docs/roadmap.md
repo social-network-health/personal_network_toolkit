@@ -153,10 +153,11 @@ health/vulnerability-adjacent, so it stress-tests G2/G3 harder than any prior de
   defers until the simpler floor is proven usable + safe.*
 - **Multi-PNA ecosystem** (v0.2+ target; contracts already sized for it).
 
-## Inbound-findings registry (updated 2026-06-25)
+## Inbound-findings registry (updated 2026-06-27)
 
 | Finding | Source | Track | Demonstrator | Status |
 |---|---|---|---|---|
+| `egress-lint` blind spot: static scan misses dynamic / config-driven egress (false negatives) | Signal Desktop evaluation (2026-06-27) | [design note](design-notes/2026-06-egress-lint-dynamic-egress-blind-spot.md) | — | **Captured (Tier 2 toolkit-fix)** — docstring + note land the honesty fix; LLM/human tiers stay load-bearing. Next move: app-class warning banner (self-tested) |
 | Distribution = verifiability spectrum | prm#8 / #64 r1 | AC-23 | PRM | **DONE** — universal **AC-23**, merged (#95) |
 | User-mediation UM-1/2/3 | fellows#252 / #40 / #64 r3 | B3 | fellows (egress) + PRM (mutation) | **DONE** — `spec/user_mediation.md`, the third general mechanism, merged (#96) |
 | Exceptions-hardening — un-relaxable floor | exceptions existential review | D3 | fellows (`EX-CLOUD-LLM` respects it) | **DONE** — normative + lint-enforced, merged (#98) |
