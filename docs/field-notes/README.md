@@ -30,4 +30,5 @@ Each note is short and **evidence-linked**:
 
 ## Index
 
+- [`AC-18.md`](AC-18.md) — transports cannot read message contents (transport-eligibility; the content-blind-transport property). Surfaced by the Signal Desktop evaluation.
 - [`AC-PRM-H.md`](AC-PRM-H.md) — authenticated loopback surface (an app-opened HTTP daemon). Surfaced by PRM #59.
