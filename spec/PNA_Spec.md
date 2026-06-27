@@ -40,7 +40,9 @@ Worked examples below cite `fellows_local_db` as the first reference design — 
 
 - <a id="vocab-ac"></a>**Architectural commitment (AC).** A specific, stable-ID'd architectural promise a PNA must keep, derived from the [Goals](#goals). The AC is the **unit of conformance**: each carries an ID (`AC-1`, `AC-MCP-A`, …), every typed contract names the AC(s) it realizes, and a design attests AC-by-AC. An AC is a **Layer 1** commitment — it survives a total technology swap (see [§ How the pieces fit together](#how-the-pieces-fit-together)). A *universal* AC applies to every PNA; a *conditional* AC applies only when the PNA has a specific **behavioral property** — see [Universal, conditional, and realized commitments](#vocab-universal-ac).
 
-- **Axes.** Axes are areas of functionality that need to be defined when building a PNA. Each Axis offers a pre-defined, limited number of choices to the builder — internally we call these the builder's "Axis picks", and they are the first set of decisions that need to be made before building.
+- **Axes.** Axes are areas of functionality that need to be defined when building a PNA. These are the high level categories of app functionality that you must build.
+
+Each Axis offers a pre-defined, limited number of choices to the builder — internally we call these the builder's "Axis picks", although they can be changed later, they are the first set of decisions that need to be made before building, and some thought should be put into them.
 
   An example of an Axis is the **distribution** axis, which offers the Axis picks `web-bundle-with-magic-link` (fellows_local_db's pick), `never-distributed-single-user` (PRM's likely pick), `web-bundle-open`, `app-store-native`, `sideloaded-native` — the builder picks one.
 
@@ -64,7 +66,7 @@ Worked examples below cite `fellows_local_db` as the first reference design — 
 
 - <a id="vocab-mcp-server"></a>**MCP server.** A process exposing PNA capabilities as MCP tools (Anthropic's Model Context Protocol — JSON-RPC, a JSON-based Remote Procedure Call format, over stdio or socket). The spec defines five canonical MCP servers per PNA, structured around the Shared / Private privacy boundary so an AI client can be wired to one without the other:
 
-  - **Shared Data Ops** — read access over the Shared DB (mirrored contact data; AC-MCP-A is not triggered, because no Private DB rows flow through this surface).
+  - **Shared Data Ops** — read access over the Shared DB (typically mirrored contact data from SaaS systems; AC-MCP-A is not triggered, because no Private DB rows flow through this surface).
   - **Private Data Ops** — read access over the Private DB (user-owned relationship data; AC-MCP-A applies — cloud clients require per-call consent).
   - **Ingestion** — drives imports, dedup, orphan preview.
   - **Communications** — stages outreach for workspace-mediated user confirmation (AC-MCP-B; the MCP server proposes, the workspace disposes).
@@ -175,9 +177,11 @@ The spec is a small graph of typed components arranged in **three layers**. Nami
 ### The three layers
 
 - **Layer 0 — Goals.** The few human- and agent-facing outcomes a PNA delivers (see [§ Goals](#goals)). Stated at outcome altitude; they name no technology. The *why*.
+  
 - **Layer 1 — Architectural commitments (ACs).** The checkable promises that make the Goals real (see [§ Universal architectural commitments](#universal-architectural-commitments)). An AC is the **unit of conformance**. Layer 1 has two kinds, both technology-independent:
   - **Universal** — applies to every PNA, derived from the Goals alone.
   - **Conditional** — applies only when the PNA has a particular *behavioral property* (it reaches out to contacts; it mirrors more than one source; it exposes a programmatic surface over private data). Still Layer 1: a conditional AC names a *behavior*, never a technology.
+    
 - **Layer 2 — Realizations and constraints (the mechanical layer).** Everything that names or depends on a specific technology stack: the **Axes** ([`axes.md`](axes.md)) — the menu of technology choices a builder picks from; the **realizations** of each commitment on a chosen stack (a single OPFS-owning worker; a native file-lock); the **Constraints** (`CST-*`, [`constraints.md`](constraints.md)) a stack imposes; and the per-slot **[sub-contracts](#vocab-subcontract)** that decompose an implementation.
 
 ### The dividing test
