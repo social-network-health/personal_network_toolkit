@@ -73,7 +73,7 @@ demonstrates them") — is:
 
 ## Worked example — the restatement reads Signal *better*, not just looser
 
-The Signal Desktop evaluation ([`../../Signal-Desktop/evaluate-report.json`](../../Signal-Desktop/evaluate-report.json),
+The Signal Desktop evaluation ([`evaluations/signal-desktop/evaluate-report.json`](../../evaluations/signal-desktop/evaluate-report.json),
 2026-06-27) is what surfaced this. Under old AC-1 the verdict was the blunt "no two stores → non-conformant."
 A naive loosening ("does it let me own my data? yes → pass") would be too generous. The restatement
 discriminates — it separates the two facets AC-1 was fusing:

@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### `evaluations/` — a casebook of validations that proved something
+
+- Added a top-level **`evaluations/`** directory: a home for typed `evaluate-report.json` artifacts run
+  against real candidates that are **not accepted reference designs** (Mode-1 candidate audits + Mode-2
+  goal-impact reads, per `docs/conformance-scope-and-lifecycle.md`). Records/evidence, **not** reference
+  designs (those stay in `reference_designs/` — accepted, conformant, continuously-tested) and **not**
+  synthetic samples (`tools/report-viewer/sample-reports/`). First inhabitant:
+  **`evaluations/signal-desktop/`** — the Signal Desktop 8.16.0 evaluation (issue #99) that drove the
+  AC-1 restatement, the AC-18 field note, the egress-lint blind-spot finding, and the Toolkit self-check.
+  Linked from the conformance-scope Mode-2 worked example and the users-guide index; the previously
+  cross-repo report references in the AC-1 design note and AC-18 field note now resolve in-repo. Docs/data
+  only — no new obligation on any design. `just ci` green.
+
 ### Toolkit self-check: a judgment-tier swap-test + tooling-honesty audit the agent runs routinely
 
 - Added the **Toolkit self-check** — the judgment-tier sibling of `/capture-lesson`. When the agent
