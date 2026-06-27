@@ -287,6 +287,7 @@ Working on the toolkit itself: `just` for the command menu, `just ci` before pus
 - [`spec/user_mediation.md`](../spec/user_mediation.md) — User-mediation (`UM-*`): the third general mechanism — the actuation invariant (proposer stages, principal disposes; UM-1/2/3)
 - [`contracts/`](../contracts/) — typed contracts, each with a `Realizes:` header
 - [`reference_designs/`](../reference_designs/) — accepted designs + templates (record, Architecture, `design.toml`)
+- [`evaluations/`](../evaluations/) — a casebook of evaluate-flow reports run against candidates that are *not* reference designs (Mode-1 audits + Mode-2 goal-impact reads, e.g. the Signal Desktop evaluation); records/evidence, not endorsements
 - [`pna-toolkit/SKILL.md`](../pna-toolkit/SKILL.md) — the agent-consumption view of the flows above
 - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — full contribution rules and versioning policy
 - [`CLAUDE.md`](../CLAUDE.md) — repo conventions and the documentation map

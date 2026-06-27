@@ -69,6 +69,8 @@ Worked example — Signal: Goal 3 (user-controlled, content-blind transport) is
 **out-of-scope** (Signal isn't a root store); contact-graph metadata posture is a
 named, bounded *neutral/diminishes* note. That read is useful and honest. A
 PNA-membership verdict on Signal would be noise — it never claimed membership.
+*Realized: [`evaluations/signal-desktop/`](../evaluations/signal-desktop/) — the archived
+report of this read (under the restated AC-1, a Goal-3 finding sharper than store-count).*
 
 ### Mode 3 — Out-of-scope (no nexus)
 For an app with no personal-network root to protect or diminish (a photo editor,
