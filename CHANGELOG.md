@@ -33,6 +33,10 @@ stay conformant; the bundled design snapshots keep their wording and adopt the n
   **sealed private layer** as the concept, with the Shared DB / Private DB framed as the *canonical
   realization* rather than the definition. Also fixed a latent broken `#vocab-slot` anchor (referenced on the
   Sub-contract entry, never defined) — now defined, with `vocab-component` as primary.
+- **Plain-language → spec bridge.** In `docs/plain-language/four-goals-in-plain-language.md`, each promise's
+  reference — previously an opaque footnote number — now shows the commitment's **descriptive label** (e.g.
+  *Sovereign, sealed private layer*, *Honest capability assessment*) as the link text, so a reader crossing
+  into the spec already knows the term to look for (realization links carry their `RZ-*` label).
 - Docs/tooling only — no new obligation on any design. `just ci` green (47/47). Rationale recorded in
   [`docs/PriorArt.md` § Design notes](docs/PriorArt.md).
 
