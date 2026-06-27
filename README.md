@@ -34,7 +34,7 @@ The toolkit augments human-AI builder teams; it doesn't auto-build applications 
 
 ## Status
 
-**v0.2.** The toolkit is released at v0.2. The spec's three layers (Goals · architectural commitments · realizations), the universal ACs (including AC-22 / AC-23), axes, use cases, the slot map with sub-contracts, the typed contracts, the user-mediation mechanism (UM-1/2/3), and the exceptions/constraints machinery are all in place. Both reference designs — `fellows_local_db` and `prm` — attest at Toolkit-Version 0.2, and the contribution workflow has been exercised end-to-end (`prm` was authored through it).
+**v0.2.** The toolkit is released at v0.2. The spec's three layers (Goals · architectural commitments · realizations), the universal ACs (including AC-22 / AC-23), axes, use cases, the component map with sub-contracts, the typed contracts, the user-mediation mechanism (UM-1/2/3), and the exceptions/constraints machinery are all in place. Both reference designs — `fellows_local_db` and `prm` — attest at Toolkit-Version 0.2, and the contribution workflow has been exercised end-to-end (`prm` was authored through it).
 
 *Most recent landing: the v0.2 cut — the L1/L2 three-layer spec, the user-mediation mechanism (UM-1/2/3), the exceptions-hardening (the un-relaxable floor + the `pna-active` predicate split), the new universal ACs AC-22 / AC-23, and both reference designs re-attested at Toolkit-Version 0.2 (`fellows_local_db` also gained a GPL-3.0 license). See [`CHANGELOG.md`](CHANGELOG.md).*
 
@@ -58,7 +58,7 @@ Substantive changes bump the toolkit version per [`CHANGELOG.md`](CHANGELOG.md).
 Read in this first if you are new:
 
 - [`docs/users-guide.md`](docs/users-guide.md) — step-by-step instructions for each of the success criteria in § Status (building a PNA, auditing one, submitting a reference design).
-- [`spec/PNA_Spec.md`](spec/PNA_Spec.md) — universal PNA specification. Vocabulary, goals, how the pieces fit together (the three layers), use cases, axes, composition, universal architectural commitments, slot map with 57 sub-contracts, scope/versioning.
+- [`spec/PNA_Spec.md`](spec/PNA_Spec.md) — universal PNA specification. Vocabulary, goals, how the pieces fit together (the three layers), use cases, axes, composition, universal architectural commitments, component map with 57 sub-contracts, scope/versioning.
 
 To contribute to the spec with a new reference design or architectural finding:
 
@@ -77,11 +77,11 @@ To dig into the spec more deeply:
 
 A reference design is a working, deployed PNA that demonstrates one valid combination of axis picks against the spec. Each lives in its own repository so it can ship under its own release cadence.
 
-- **[fellows_local_db](https://github.com/richbodo/fellows_local_db)** — first reference design. Directory Archive use case. Its [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md) declares Toolkit-Version conformance and the per-slot specializations. Flavor:
+- **[fellows_local_db](https://github.com/richbodo/fellows_local_db)** — first reference design. Directory Archive use case. Its [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md) declares Toolkit-Version conformance and the per-component specializations. Flavor:
 
   | Axis                | Pick                          |
   | ------------------- | ----------------------------- |
-  | distribution        | `web-bundle-with-magic-link`  |
+  | distribution channel | `web-bundle-with-magic-link`  |
   | storage substrate   | `opfs-sqlite-wasm`            |
   | ingestion shape     | `single-source-static-mirror` |
   | workspace shell     | `vanilla-js-spa`              |
@@ -93,7 +93,7 @@ A reference design is a working, deployed PNA that demonstrates one valid combin
 
   | Axis                | Pick                            |
   | ------------------- | ------------------------------- |
-  | distribution        | `never-distributed-single-user` |
+  | distribution channel | `never-distributed-single-user` |
   | storage substrate   | `native-sqlite-via-filesystem`  |
   | ingestion shape     | `multi-source-merge-with-dedup` |
   | workspace shell     | `vanilla-js-spa`                |

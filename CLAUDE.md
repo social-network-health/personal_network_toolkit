@@ -43,7 +43,7 @@ When you add a fact, put it in the doc that owns its category and link from the 
 others), a term is defined before it is first used. When you reorder such a doc — e.g. promoting a
 section toward the top — first check that every term the moved section relies on is already defined
 *above* it, and move or add those definitions ahead of it. (Concretely: § Goals and its cardinality
-table lean on *Goal*, *Axis*, *Flavor*, *Slot*, *Sub-contract*, *AC*, *Exception*, *Constraint* — all
+table lean on *Goal*, *Axis*, *Flavor*, *Component*, *Sub-contract*, *AC*, *Exception*, *Constraint* — all
 glossed in § Vocabulary, which therefore stays above § Goals.)
 
 ## Conventions

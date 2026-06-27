@@ -40,15 +40,15 @@ Worked examples below cite `fellows_local_db` as the first reference design — 
 
 - <a id="vocab-ac"></a>**Architectural commitment (AC).** A specific, stable-ID'd architectural promise a PNA must keep, derived from the [Goals](#goals). The AC is the **unit of conformance**: each carries an ID (`AC-1`, `AC-MCP-A`, …), every typed contract names the AC(s) it realizes, and a design attests AC-by-AC. An AC is a **Layer 1** commitment — it survives a total technology swap (see [§ How the pieces fit together](#how-the-pieces-fit-together)). A *universal* AC applies to every PNA; a *conditional* AC applies only when the PNA has a specific **behavioral property** — see [Universal, conditional, and realized commitments](#vocab-universal-ac).
 
-- **Axes.** Axes are areas of functionality that need to be defined when building a PNA. Each Axis offers a pre-defined, limited number of choices to the builder — internally we call these the builder's "Axis picks", and they are the first set of decisions that need to be made before building.
+- <a id="vocab-axis"></a>**Axis.** An axis is the **menu of ways to build one [component](#vocab-component)** — the dimension along which that component varies, offering a pre-defined, limited set of choices (its *picks*). Choosing one pick per axis is the first set of decisions a builder makes. The relationship to a component is a layering one: the [component](#vocab-component) is the Layer-1 *part* (it survives a total technology swap — every PNA has an Ingestion part however it is built); its axis is the Layer-2 *menu of realizations* for that part (it names stacks and approaches). Most axes pair one-to-one with a component; **MCP-exposure** is the one axis not tied to a single component (a cross-cutting choice about which surfaces the PNA exposes).
 
-  An example of an Axis is the **distribution** axis, which offers the Axis picks `web-bundle-with-magic-link` (fellows_local_db's pick), `never-distributed-single-user` (PRM's likely pick), `web-bundle-open`, `app-store-native`, `sideloaded-native` — the builder picks one.
+  An example is the **distribution-channel** axis (how the PNA reaches a device), which offers the picks `web-bundle-with-magic-link` (fellows_local_db's pick), `never-distributed-single-user` (PRM's pick), `web-bundle-open`, `app-store-native`, `sideloaded-native` — the builder picks one.
 
-  v0.1 names these Axes: distribution, storage substrate, ingestion shape, workspace shell, comms transport set, MCP-exposure. The full catalog of attested picks per Axis lives in [`axes.md`](axes.md).
+  v0.1 names these axes: distribution channel, storage substrate, ingestion shape, workspace shell, comms transport set, MCP-exposure. The components and their axes are tabulated side by side in [§ Components and axes](#components-and-axes); the full catalog of attested picks per axis lives in [`axes.md`](axes.md).
 
-- **Axis pick.** One value on one Axis. Written `axis:value` — for instance `storage:opfs-sqlite-wasm`, `distribution:web-bundle-with-magic-link`. The set of attested picks per Axis is enumerated in [`axes.md`](axes.md).
+- **Axis pick.** One value on one axis. Written `axis:value` using the axis's short key — for instance `storage:opfs-sqlite-wasm`, `distribution:web-bundle-with-magic-link` (the distribution-channel axis keys as `distribution`). The set of attested picks per axis is enumerated in [`axes.md`](axes.md).
 
-- <a id="vocab-contact-data"></a>**Contact data.** The shared, externally-sourced facts that identify a person in the user's network — name, email, phone, photo, organizational membership. A species of [shared data](#vocab-shared-data): some external system (Google, Apple, a directory) holds a copy, the PNA mirrors it locally, and it is local-first and replaceable. Stored in the [Shared DB](#vocab-shared-db-private-db); read-only inside the PNA (written only by Ingestion).
+- <a id="vocab-contact-data"></a>**Contact data.** The shared, externally-sourced facts that identify a person in the user's network — name, email, phone, photo, organizational membership. A species of [shared data](#vocab-shared-data): some external system (Google, Apple, a directory) holds a copy, the PNA mirrors it locally, and it is local-first and replaceable. A member of the **shared class**; under the canonical realization it is held in the [Shared DB](#vocab-shared-db-private-db), read-only inside the PNA (written only by Ingestion).
 
 - <a id="vocab-constraint"></a>**Constraint (`CST-*`).** A ceiling a *platform or storage substrate* imposes that bounds how fully a PNA can honor a Goal or AC on that platform (e.g. the browser's OPFS sandbox). A PNA stays conformant by handling each inherited Constraint honestly — capability reduced to what the platform can keep, frontier declared truthfully. Constraints are the **dual of [Exceptions](#vocab-exception)** (platform-imposed vs. user-raised); catalogued in [`constraints.md`](constraints.md).
 
@@ -60,7 +60,7 @@ Worked examples below cite `fellows_local_db` as the first reference design — 
 
 - <a id="vocab-goal"></a>**Goal.** One of the few top-level, user-facing outcomes a PNA exists to deliver (see [§ Goals](#goals)). The Goals are the *why*; the [architectural commitments](#vocab-ac) are the checkable *how*. Each AC serves one **primary** Goal (occasionally a second where one mechanism genuinely serves two) — see the cardinality note in [§ Goals](#goals).
 
-- **Interface.** A contract that spans multiple slots. Where a slot is filled by *one* code module, an interface is a shared constraint — either a data shape that multiple slots produce and consume (the Shared and Private DB schemas), or a capability requirement every slot must implement (the Debug contract). v0.1 names three interfaces: **Shared schema**, **Private schema**, **Debug contract**. Catalogued in [§ Slots, Interfaces, and Sub-contracts](#slot-map) alongside the slots they bind.
+- **Interface.** A contract that spans multiple components. Where a component is filled by *one* code module, an interface is a shared constraint — either a data shape that multiple components produce and consume (the Shared and Private DB schemas), or a capability requirement every component must implement (the Debug contract). v0.1 names three interfaces: **Shared schema**, **Private schema**, **Debug contract**. Catalogued in [§ Components, Interfaces, and Sub-contracts](#component-map) alongside the components they bind.
 
 - <a id="vocab-mcp-server"></a>**MCP server.** A process exposing PNA capabilities as MCP tools (Anthropic's Model Context Protocol — JSON-RPC, a JSON-based Remote Procedure Call format, over stdio or socket). The spec defines five canonical MCP servers per PNA, structured around the Shared / Private privacy boundary so an AI client can be wired to one without the other:
 
@@ -82,15 +82,15 @@ Worked examples below cite `fellows_local_db` as the first reference design — 
 
 - <a id="vocab-plugin"></a>**Plugin / extension.** Anything that adds a capability to a composed PNA without modifying its core. A memory-assistant view, a calendar overlay, a federated portrait pull, a community-statistics survey tool — all plugins. PNAs themselves will expose MCP server interfaces as well.
 
-- <a id="vocab-private-data"></a>**Private data.** Data that exists only on the user's device(s). The user is *not* OK with any external system holding a copy. *Examples:* notes the user keeps about a contact, tags they apply, groups they assemble, communication history. The PNA's central architectural job is to keep this layer protected, durable, and exclusively local. This data must never be sent across insecure channels, and must only be explicitly sent by the user's command in any form.
+- <a id="vocab-private-data"></a>**Private data.** Data that exists only on the user's device(s) — the **private class**, the sealed-by-default layer AC-1 keeps sovereign. The user is *not* OK with any external system holding a copy. *Examples:* notes the user keeps about a contact, tags they apply, groups they assemble, communication history. The PNA's central architectural job is to keep this layer protected, durable, and exclusively local. This data must never be sent across insecure channels, and must only be explicitly sent by the user's command in any form.
 
-- <a id="vocab-reference-design"></a>**Reference design / thematic example.** A working, deployed PNA that demonstrates one valid combination of slot-fills against the spec. fellows_local_db is the first reference design — its load-bearing adjectives are *magic-link distributed PWA (Progressive Web App)* (Distribution choice) + *static network DB archive* (Ingestion choice — the directory is mirrored once with opt-in updates, not linked to a live contact manager) + *single shared directory* (Source choice). New reference designs accumulate adjectives as their slot-fills land. AIs adapting a thematic example start from one of these and ask the user which slot-fills to keep, swap, or extend.
+- <a id="vocab-reference-design"></a>**Reference design / thematic example.** A working, deployed PNA that demonstrates one valid combination of component-fills against the spec. fellows_local_db is the first reference design — its load-bearing adjectives are *magic-link distributed PWA (Progressive Web App)* (Distribution choice) + *static network DB archive* (Ingestion choice — the directory is mirrored once with opt-in updates, not linked to a live contact manager) + *single shared directory* (Source choice). New reference designs accumulate adjectives as their component-fills land. AIs adapting a thematic example start from one of these and ask the user which component-fills to keep, swap, or extend.
 
   *Archival (v0.1).* When a reference design is accepted into the toolkit's set, its source at the submitted commit MUST be archived with a Software Heritage Persistent IDentifier (SWHID — a `swh:1:dir:...` content-addressed identifier produced by Software Heritage's Save Code Now service). The SWHID is recorded in the design's toolkit entry so the source survives even if the upstream repo is deleted or relocated. Future toolkit versions MAY revise the archival mechanism; v0.1 commits to SWHID.
 
-- <a id="vocab-relationship-data"></a>**Relationship data.** The private memory a user creates over their contacts — notes, tags, groups, communication history, recency — the layer that turns a contact list into a personal network the user can actually work. A species of [private data](#vocab-private-data): it exists only on the user's device(s), is read-write from the workspace, and is the layer the PNA's central architectural job protects. The positioning calls it *private relationship memory*. Stored in the [Private DB](#vocab-shared-db-private-db).
+- <a id="vocab-relationship-data"></a>**Relationship data.** The private memory a user creates over their contacts — notes, tags, groups, communication history, recency — the layer that turns a contact list into a personal network the user can actually work. A species of [private data](#vocab-private-data): it exists only on the user's device(s), is read-write from the workspace, and is the layer the PNA's central architectural job protects — the **private class** of the sealed private layer. The positioning calls it *private relationship memory*. Under the canonical realization it is held in the [Private DB](#vocab-shared-db-private-db).
 
-- <a id="vocab-shared-data"></a>**Shared data.** In the context of a PNA, shared data is data that exists in more than one place — typically, a copy held by an external system the user uses (Google Contacts, Apple Contacts, Facebook friends, a fellowship's directory, a school's roster). The user is OK with that external system continuing to hold it, and often has no say in the matter. *Examples:* name, email, photo, organizational membership. The PNA mirrors this data locally so the user can browse and search it without depending on the external system being reachable.
+- <a id="vocab-shared-data"></a>**Shared data.** In the context of a PNA, shared data — the **shared class** — is data that exists in more than one place — typically, a copy held by an external system the user uses (Google Contacts, Apple Contacts, Facebook friends, a fellowship's directory, a school's roster). The user is OK with that external system continuing to hold it, and often has no say in the matter. *Examples:* name, email, photo, organizational membership. The PNA mirrors this data locally so the user can browse and search it without depending on the external system being reachable.
 
   > "Shared" is the key word — not "public" in the everyday sense. Shared data can be data that the user publicly shared, or shared with Apple Contacts and exported, and is typically maintained outside the user's systems. The contact data in your Google account isn't *publicly visible*; it just isn't *exclusively yours* — it is shared with Google and any controlling governments or Google partners it is sold to. In all cases, some external system has a copy, or once did.
 
@@ -98,23 +98,23 @@ Worked examples below cite `fellows_local_db` as the first reference design — 
 
   In fellows_local_db, the shared DB is `fellows.db` and the private DB is `relationships.db`. The spec uses the generic names; specializations may rename for ergonomics, or change database engines for practical reasons, as long as the data stays local.
 
-- **Slot.** A slot is a part of a PNA — a code module that handles a specific job within the system. v0.1 names five slots:
+- <a id="vocab-component"></a><a id="vocab-slot"></a>**Component.** A component is a *part* of a PNA — a named role that code fills to handle one specific job. (Earlier drafts of this spec called a component a *slot*; the name changed, the meaning did not.) A component is **Layer 1**: it survives a total technology swap (every PNA has an Ingestion part regardless of language, OS, or database), and the *menu of ways to build it* is its [axis](#vocab-axis) (Layer 2). v0.1 names five components:
 
-  - **Ingestion** — loads contact data into the Shared DB
-  - **Storage** — owns the data files and serves queries
+  - **Ingestion** — loads contact data into the shared class (canonically the Shared DB)
+  - **Storage** — owns the data and serves queries; holds the sovereign, sealed private layer
   - **Workspace** — runs the UI
   - **Communications** — launches outreach
   - **Distribution** — ships the PNA to other users
 
-  Each slot has a contract; any code that satisfies the contract can fill it — a JavaScript module, a Python package, or an OS process, depending on the target environment. The full catalog and contracts are in [§ Slots, Interfaces, and Sub-contracts](#slot-map).
+  Each component has a contract; any code that satisfies the contract can fill it — a JavaScript module, a Python package, or an OS process, depending on the target environment. The full catalog and contracts are in [§ Components, Interfaces, and Sub-contracts](#component-map).
 
-- <a id="vocab-subcontract"></a>**Sub-contract.** A named, stable-ID'd decomposition of a [slot](#vocab-slot)'s or interface's contract (prefixes `WS-`, `ST-`, `IN-`, `CO-`, `DI-`, `SH-`, `PR-`, `DB-`), so a builder can target each piece individually. Sub-contracts cite the ACs they realize; catalogued in [§ Slots, Interfaces, and Sub-contracts](#slot-map).
+- <a id="vocab-subcontract"></a>**Sub-contract.** A named, stable-ID'd decomposition of a [component](#vocab-component)'s or interface's contract (prefixes `WS-`, `ST-`, `IN-`, `CO-`, `DI-`, `SH-`, `PR-`, `DB-`), so a builder can target each piece individually. Sub-contracts cite the ACs they realize; catalogued in [§ Components, Interfaces, and Sub-contracts](#component-map).
 
 - <a id="vocab-universal-ac"></a>**Universal, conditional, and realized commitments.** A *universal* commitment applies to every PNA — it derives from the [Goals](#goals) alone. A *conditional* commitment applies only when the PNA has a particular **behavioral property** (it reaches out to contacts; it mirrors more than one source; it exposes a programmatic surface over private data). Both are **Layer 1** [architectural commitments](#vocab-ac): they survive a total technology swap and carry an `AC-*` ID. A <a id="vocab-realization"></a>**realization** is the **Layer 2** counterpart — *how* a commitment is met on a specific technology stack (a single OPFS-owning worker; a native file-lock). A realization names a technology, does **not** survive the swap, and carries **no** `AC-*` ID; it lives in [`axes.md`](axes.md) beside the axis pick that brings it. The three layers and the swap test are defined in [§ How the pieces fit together](#how-the-pieces-fit-together). [§ Universal architectural commitments](#universal-architectural-commitments) lists the universal set; the conditional ACs and the realizations live in [`axes.md`](axes.md).
 
 - <a id="vocab-use-case"></a>**Use case.** A user-facing class of PNA — "Directory Archive," "Personal Relationship Manager." A use case names what kind of app this is *from the user's perspective*. v0.1 attests three (Minimum Viable PNA, Directory Archive, Personal Relationship Manager); future versions will add more. Use case is *not* one of the Axes (above); it's the parent category that a flavor instantiates. A use case typically suggests default axis picks (Directory Archives gravitate toward web-bundle distribution; PRMs toward never-distributed-single-user) but the axes remain independent — a hypothetical Directory Archive shipped as a Tauri shell + native SQLite is conceivable. Full catalog in [`use_cases.md`](use_cases.md).
 
-- <a id="vocab-workspace"></a>**Workspace.** One of the slots in a PNA: the viewer + editor. The thing the user looks at and clicks. fellows_local_db's workspace is a vanilla-JS SPA (Single-Page Application) in the browser; another PNA's might be a native shell, a Tauri app, a TUI (Terminal User Interface), or a separately-distributed mini-app sharing the same data layer.
+- <a id="vocab-workspace"></a>**Workspace.** One of the components in a PNA: the viewer + editor. The thing the user looks at and clicks. fellows_local_db's workspace is a vanilla-JS SPA (Single-Page Application) in the browser; another PNA's might be a native shell, a Tauri app, a TUI (Terminal User Interface), or a separately-distributed mini-app sharing the same data layer.
 
 ---
 
@@ -178,7 +178,7 @@ The spec is a small graph of typed components arranged in **three layers**. Nami
 - **Layer 1 — Architectural commitments (ACs).** The checkable promises that make the Goals real (see [§ Universal architectural commitments](#universal-architectural-commitments)). An AC is the **unit of conformance**. Layer 1 has two kinds, both technology-independent:
   - **Universal** — applies to every PNA, derived from the Goals alone.
   - **Conditional** — applies only when the PNA has a particular *behavioral property* (it reaches out to contacts; it mirrors more than one source; it exposes a programmatic surface over private data). Still Layer 1: a conditional AC names a *behavior*, never a technology.
-- **Layer 2 — Realizations and constraints (the mechanical layer).** Everything that names or depends on a specific technology stack: the **Axes** ([`axes.md`](axes.md)) — the menu of technology choices a builder picks from; the **realizations** of each commitment on a chosen stack (a single OPFS-owning worker; a native file-lock); the **Constraints** (`CST-*`, [`constraints.md`](constraints.md)) a stack imposes; and the per-slot **[sub-contracts](#vocab-subcontract)** that decompose an implementation.
+- **Layer 2 — Realizations and constraints (the mechanical layer).** Everything that names or depends on a specific technology stack: the **Axes** ([`axes.md`](axes.md)) — the menu of technology choices a builder picks from; the **realizations** of each commitment on a chosen stack (a single OPFS-owning worker; a native file-lock); the **Constraints** (`CST-*`, [`constraints.md`](constraints.md)) a stack imposes; and the per-component **[sub-contracts](#vocab-subcontract)** that decompose an implementation.
 
 ### The dividing test
 
@@ -200,12 +200,13 @@ Within and across the layers, the typed components relate many-to-many; stating 
 |---|---|---|
 | **Goal ↔ AC** (an AC *serves* a Goal) | many-to-many, rendered **primary-grouped** | Each AC's `Serves` (in the [universal-AC table](#universal-architectural-commitments)) lists every Goal it bears on; the per-Goal views above group each AC under one *primary* home. A secondary appears only where one mechanism genuinely serves two — e.g. [AC-1](#ac-1), the sovereign sealed private layer, serves both *Take ownership of the root* and *Protect the root from egress*. Cross-cuts are capped at two; most ACs serve exactly one. |
 | **Axis → pick → flavor** | one-to-many | An axis offers several picks; a *flavor* is one pick per axis. |
+| **Component → axis** (a component *varies along* it) | one-to-one (mostly) | Each component has one axis — the Layer-2 menu of ways to build it; `MCP-exposure` is the lone axis not tied to a component. Tabulated in [§ Components and axes](#components-and-axes). |
 | **Behavioral property → conditional AC** (a property *triggers* an AC) | one-to-many | A property a PNA has (reaches out; multi-source; exposes a private-data surface) may trigger zero or more conditional ACs. A technology *pick* may **entail** a property — and separately brings its Layer-2 realizations and constraints ([`axes.md`](axes.md)). |
-| **Slot → sub-contract** | one-to-many | Each slot decomposes into named [sub-contracts](#vocab-subcontract) (`WS-`, `ST-`, …). |
+| **Component → sub-contract** | one-to-many | Each component decomposes into named [sub-contracts](#vocab-subcontract) (`WS-`, `ST-`, …). |
 | **Contract / sub-contract → AC** (*realizes*) | many-to-many | A contract may realize several ACs; an AC may be realized by several. |
 | **Exception → AC** (*relaxes*), **Constraint → AC/Goal** (*bounds*) | many-to-many | An [`EX-*`](#vocab-exception) / [`CST-*`](#vocab-constraint) names every guarantee it relaxes or bounds. |
 
-The rule of thumb: **Goals are few and crisp; everything beneath them composes many-to-many — but the reading views (per-Goal AC lists, per-slot sub-contracts) stay clean trees by giving each item one primary home and linking the genuine cross-cuts.**
+The rule of thumb: **Goals are few and crisp; everything beneath them composes many-to-many — but the reading views (per-Goal AC lists, per-component sub-contracts) stay clean trees by giving each item one primary home and linking the genuine cross-cuts.**
 
 ---
 
@@ -222,25 +223,36 @@ Full catalog with attestation status, default axis picks, and reference-design l
 
 ---
 
-## Axes
+## Components and axes
+<a id="axes"></a>
 
-v0.1 names the independent Axes a PNA picks along. A PNA's *flavor* is the full constellation of picks. Each pick may trigger conditional ACs (via a behavioral property it entails) and brings its own Layer-2 realizations and constraints (the tags appear in [`axes.md`](axes.md), grouped by axis-pick).
+A PNA is built from a few **components** — the parts every PNA has (the Layer-1 structural roles; see [§ How the pieces fit together](#how-the-pieces-fit-together)). Each component is built one way or another, and its **axis** is the menu of those ways: the dimension along which that component varies, with a fixed set of **picks**. The one-sentence model:
 
-- **Distribution** — how the PNA reaches a user's device. Picks: `web-bundle-with-magic-link`, `never-distributed-single-user`, `web-bundle-open`, `app-store-native`, `sideloaded-native`.
-- **Storage substrate** — what backs the data layer. Picks: `opfs-sqlite-wasm`, `native-sqlite-via-filesystem`, `idb-only-browser`, `native-sqlcipher`.
-- **Ingestion shape** — how the Shared DB is filled and refreshed. Picks: `single-source-static-mirror`, `multi-source-merge-with-dedup`, `single-source-live-pull`, `federated-read` (deferred).
-- **Workspace shell** — what the user sees and clicks. Picks: `vanilla-js-spa`, `framework-spa`, `tui-textual`, `cli-subcommands`, `native-shell-tauri`, `native-shell-native`.
-- **Comms transport set** — which outreach mechanisms the workspace offers. Picks: `mailto-only`, `mailto-plus-signal`, `mailto-plus-matrix`, `shell-out-to-cli-clients`.
-- **MCP-exposure** — which canonical MCP servers (Shared Data Ops / Private Data Ops / Ingestion / Comms / Diagnostics) the PNA hosts. Picks: `none`, `shared-only`, `shared+private`, `shared+private+comms`, `full`.
+> *A component is the part; its axis is the menu of ways to build that part; a pick is the way you chose; your **flavor** is all your picks together.*
 
-Notes on Axis independence:
+So "Ingestion" (the component) and "ingestion shape" (its axis) are the same functional area seen at two layers — the fixed role (L1) and the menu of realizations for it (L2) — which is why they pair up. Choosing one pick per axis is the first design step; the picks are largely independent, so a flavor is a point in this multi-axis space.
 
-- Some Axes cluster strongly. Browser-based distribution typically goes with `storage:opfs-sqlite-wasm` and a SPA-style workspace shell. CLI (Command-Line Interface) distribution typically goes with `storage:native-sqlite-via-filesystem` and a TUI or CLI workspace shell. [§ Composition](#composition) names these clusters (Browser PNAs, CLI / native PNAs) for shorthand.
-- Some Axes are genuinely orthogonal. A Directory Archive use case could in principle ship as a Tauri-wrapped native shell + native SQLite + a browser-style bundle; the use case doesn't determine those picks.
+The components and their axes, side by side:
 
-Use case is *not* one of these Axes — it's the parent category from which a flavor is instantiated; see [§ Use cases](#use-cases).
+| Component (L1 — the part) | What it does | Its axis (L2 — varies along) | Picks (choose one) |
+|---|---|---|---|
+| **Ingestion** | get shared data in | ingestion shape | `single-source-static-mirror` · `multi-source-merge-with-dedup` · `single-source-live-pull` · `federated-read` (deferred) |
+| **Storage** | own the data, serve queries; hold the sealed private layer | storage substrate | `opfs-sqlite-wasm` · `native-sqlite-via-filesystem` · `idb-only-browser` · `native-sqlcipher` |
+| **Workspace** | the UI — show data, write private data, confirm sends | workspace shell | `vanilla-js-spa` · `framework-spa` · `tui-textual` · `cli-subcommands` · `native-shell-tauri` · `native-shell-native` |
+| **Communications** *(optional)* | launch outreach | comms transport set | `mailto-only` · `mailto-plus-signal` · `mailto-plus-matrix` · `shell-out-to-cli-clients` · `none` |
+| **Distribution** *(optional)* | ship the PNA to other users | distribution channel | `web-bundle-with-magic-link` · `never-distributed-single-user` · `web-bundle-open` · `app-store-native` · `sideloaded-native` |
+| *(no component — a cross-cutting surface choice)* | expose PNA capabilities to AI clients | MCP-exposure | `none` · `shared-only` · `shared+private` · `shared+private+comms` · `full` |
 
-Full per-pick catalog with attestation status, AC triggers, and correlation notes: [`axes.md`](axes.md).
+The bottom row is the one axis not paired with a component: **MCP-exposure** chooses which canonical MCP servers (Shared Data Ops / Private Data Ops / Ingestion / Comms / Diagnostics) the PNA hosts — a surface bolted onto Storage and Workspace, not a structural part of its own. (The `distribution-channel` axis keys as `distribution` in pick notation and manifests — e.g. `distribution:web-bundle-with-magic-link`; the qualifier only distinguishes the *axis* from the **Distribution** *component*, exactly as `storage` keys the "storage substrate" axis.)
+
+Notes on axis independence:
+
+- Some axes cluster strongly. Browser-based distribution typically goes with `storage:opfs-sqlite-wasm` and a SPA-style workspace shell. CLI (Command-Line Interface) distribution typically goes with `storage:native-sqlite-via-filesystem` and a TUI or CLI workspace shell. [§ Composition](#composition) names these clusters (Browser PNAs, CLI / native PNAs) for shorthand.
+- Some axes are genuinely orthogonal. A Directory Archive use case could in principle ship as a Tauri-wrapped native shell + native SQLite + a browser-style bundle; the use case doesn't determine those picks.
+
+Use case is *not* one of these axes — it's the parent category from which a flavor is instantiated; see [§ Use cases](#use-cases).
+
+Each pick may trigger conditional ACs (via a behavioral property it entails) and brings its own Layer-2 realizations and constraints. Full per-pick catalog with attestation status, AC triggers, realizations, and correlation notes: [`axes.md`](axes.md).
 
 ---
 
@@ -255,8 +267,8 @@ The contracts are written so the agent can pick them up and check its own work, 
 The agent's job when **building**, per this spec, is to:
 
 1. Identify the **use case** with the user (see [§ Use cases](#use-cases)).
-2. Walk the user through the **Axes** (see [§ Axes](#axes)) and make picks that fit the user's goals.
-3. Generate or adapt code that fills each **slot** (see [§ Slots, Interfaces, and Sub-contracts](#slots-interfaces-and-sub-contracts)) according to its contract, consistent with the axis picks.
+2. Walk the user through the **axes** (see [§ Components and axes](#components-and-axes)) and make picks that fit the user's goals.
+3. Generate or adapt code that fills each **component** (see [§ Components, Interfaces, and Sub-contracts](#components-interfaces-and-sub-contracts)) according to its contract, consistent with the axis picks.
 4. Verify the result against the **universal architectural commitments** (see [§ Universal architectural commitments](#universal-architectural-commitments)) and any conditional commitments the picks add (catalogued in [`axes.md`](axes.md)).
 
 Building is one of **four flows** the skill packages — *validate* (audit a candidate against the spec), *build* (the steps above), *contribute* (feed a finding back into the spec), and *harden* (advise on securing the operating environment a PNA runs in — the advisory flow defined in [`exceptions.md` § Environmental threats and the Harden flow](exceptions.md)). The first three secure what the built PNA does; harden secures the environment around it. See [`pna-toolkit/SKILL.md`](../pna-toolkit/SKILL.md) and [`docs/users-guide.md`](../docs/users-guide.md).
@@ -276,7 +288,7 @@ At runtime, multiple PNAs on a user's device can cooperate through their canonic
 
 This is the longer-arc *ecosystem reference design* described in [§ Vision](#vision). v0.1 doesn't yet have multiple cooperating PNAs to demonstrate the pattern, but the architectural seams that enable it — the five canonical MCP server interfaces (Shared Data Ops, Private Data Ops, Ingestion, Communications, Diagnostics), AC-MCP-A's cloud-client consent rule, AC-MCP-B's workspace-mediated outreach — are part of v0.1.
 
-Cooperation across PNAs is not the same kind of thing as building one PNA. Building is design-time + AI coding agent + writing code that fills slots. Cooperation is runtime + AI client + invoking MCP tools across already-built PNAs. The two kinds of composition are separate concerns.
+Cooperation across PNAs is not the same kind of thing as building one PNA. Building is design-time + AI coding agent + writing code that fills components. Cooperation is runtime + AI client + invoking MCP tools across already-built PNAs. The two kinds of composition are separate concerns.
 
 ---
 
@@ -353,28 +365,28 @@ The two `AC-PRM-*` IDs here are frozen legacy identifiers (the suffix records th
 
 ---
 
-## Slots, Interfaces, and Sub-contracts
-<a id="slot-map"></a>
+## Components, Interfaces, and Sub-contracts
+<a id="component-map"></a>
 
-> **Reference material — skip unless you're implementing or auditing a PNA.** This section is the architectural skeleton (the five slots and three interfaces), then the detailed, ID'd **sub-contracts** that decompose each. A first read can stop after the [Slots](#slots) and [Interfaces](#interfaces) tables; the sub-contracts below them are a per-piece checklist for builders and for the evaluate flow, not narrative.
+> **Reference material — skip unless you're implementing or auditing a PNA.** This section is the architectural skeleton (the five components and three interfaces), then the detailed, ID'd **sub-contracts** that decompose each. A first read can stop after the [Components](#components) and [Interfaces](#interfaces) tables; the sub-contracts below them are a per-piece checklist for builders and for the evaluate flow, not narrative.
 
-The spec defines **five slots** (positions filled by code) and **three interfaces** (cross-cutting contracts spanning multiple slots). The Slot and Interface vocab terms are defined in [§ Vocabulary](#vocabulary).
+The spec defines **five components** (positions filled by code) and **three interfaces** (cross-cutting contracts spanning multiple components). The Component and Interface vocab terms are defined in [§ Vocabulary](#vocabulary).
 
-**Required vs optional slots.** Three slots are **required**: **Ingestion** (get shared data in), **Storage** (the sovereign, sealed private layer that *is* the PNA's defining promise — canonically the two-store split), and **Workspace** (the surface where the user writes private data and confirms anything outbound). **Communications** and **Distribution** are **optional**: a PNA that never reaches out omits Communications — its comms ACs (AC-16/18/19) are then vacuous, like the MCP ACs when no MCP server is exposed — and a single-user PNA omits Distribution. The smallest conformant shape is the [Minimum Viable PNA](use_cases.md) (ingest + store + a minimal workspace to add notes). The Workspace is required but can be *minimal*: its form — GUI, TUI, CLI, native shell — is the `workspace-shell` axis. **MCP servers can *add* an AI-driven surface but cannot *replace* the Workspace in v0.1**, because the data-ops MCP servers are read-only (no private writes via MCP yet) and the Workspace is the human-in-the-loop consent boundary that AC-MCP-A/B require — the MCP server proposes, the Workspace disposes. (A headless, MCP-native PNA is a v0.2+ direction; see [`use_cases.md`](use_cases.md).)
+**Required vs optional components.** Three components are **required**: **Ingestion** (get shared data in), **Storage** (the sovereign, sealed private layer that *is* the PNA's defining promise — canonically the two-store split), and **Workspace** (the surface where the user writes private data and confirms anything outbound). **Communications** and **Distribution** are **optional**: a PNA that never reaches out omits Communications — its comms ACs (AC-16/18/19) are then vacuous, like the MCP ACs when no MCP server is exposed — and a single-user PNA omits Distribution. The smallest conformant shape is the [Minimum Viable PNA](use_cases.md) (ingest + store + a minimal workspace to add notes). The Workspace is required but can be *minimal*: its form — GUI, TUI, CLI, native shell — is the `workspace-shell` axis. **MCP servers can *add* an AI-driven surface but cannot *replace* the Workspace in v0.1**, because the data-ops MCP servers are read-only (no private writes via MCP yet) and the Workspace is the human-in-the-loop consent boundary that AC-MCP-A/B require — the MCP server proposes, the Workspace disposes. (A headless, MCP-native PNA is a v0.2+ direction; see [`use_cases.md`](use_cases.md).)
 
-Each slot has a code-level contract. The typed contracts — JSON Schema for RPC + handshake, OpenAPI fragments for distribution, SQL DDL (Data Definition Language) for schemas, TypeScript declaration for the Communications transport interface, JSON Schema for each canonical MCP server's tool surface — live in [`contracts/`](../contracts/).
+Each component has a code-level contract. The typed contracts — JSON Schema for RPC + handshake, OpenAPI fragments for distribution, SQL DDL (Data Definition Language) for schemas, TypeScript declaration for the Communications transport interface, JSON Schema for each canonical MCP server's tool surface — live in [`contracts/`](../contracts/).
 
-Many Universal ACs (see [§ Universal architectural commitments](#universal-architectural-commitments)) cite specific slots in their wording. The slots and interfaces are the architectural skeleton — the named roles every PNA fills, which survive a [total technology swap](#how-the-pieces-fit-together) — and the Layer-1 ACs are the load-bearing constraints over them. Each slot decomposes further into named sub-contracts — see [§ Sub-contracts per slot](#sub-contracts-per-slot) below — which are **Layer 2** (how a slot is realized on a specific stack); a builder targets each piece individually, keeping the Layer-1 AC and adapting the Layer-2 realization to their stack.
+Many Universal ACs (see [§ Universal architectural commitments](#universal-architectural-commitments)) cite specific components in their wording. The components and interfaces are the architectural skeleton — the named roles every PNA fills, which survive a [total technology swap](#how-the-pieces-fit-together) — and the Layer-1 ACs are the load-bearing constraints over them. Each component decomposes further into named sub-contracts — see [§ Sub-contracts per component](#sub-contracts-per-component) below — which are **Layer 2** (how a component is realized on a specific stack); a builder targets each piece individually, keeping the Layer-1 AC and adapting the Layer-2 realization to their stack.
 
-### Slots
+### Components
 
-| Slot | Purpose |
+| Component | Purpose |
 |---|---|
-| <a id="slot-ingestion"></a>**Ingestion** | Produces a Shared DB conforming to the Shared schema, from one or many external sources. |
-| <a id="slot-storage"></a>**Storage** | Owns both DB files (Shared + Private) and serves queries. Implements AC-1's sovereign/sealed private-layer boundary (canonically the two-store split) and AC-4's cross-boundary version handshake. |
-| <a id="slot-workspace"></a>**Workspace** *(required)* | The user-facing surface — routing, rendering shared data, reading and **writing private data**, and (when Communications is present) **confirming any outbound send**. Its form is the `workspace-shell` axis (GUI/TUI/CLI/native). Enforces AC-19's user-visible payload before send. |
-| <a id="slot-communications"></a>**Communications** *(optional)* | Pluggable transport layer for outreach. Honors AC-16's user-driven selection and AC-18's transport eligibility rule. Omitted by a PNA that never reaches out (its comms ACs are then vacuous). |
-| <a id="slot-distribution"></a>**Distribution** *(optional)* | Delivers the PNA to other users' devices. When the PNA isn't distributed (single-user CLI / native), this slot is empty. |
+| <a id="component-ingestion"></a>**Ingestion** | Produces a Shared DB conforming to the Shared schema, from one or many external sources. |
+| <a id="component-storage"></a>**Storage** | Owns both DB files (Shared + Private) and serves queries. Implements AC-1's sovereign/sealed private-layer boundary (canonically the two-store split) and AC-4's cross-boundary version handshake. |
+| <a id="component-workspace"></a>**Workspace** *(required)* | The user-facing surface — routing, rendering shared data, reading and **writing private data**, and (when Communications is present) **confirming any outbound send**. Its form is the `workspace-shell` axis (GUI/TUI/CLI/native). Enforces AC-19's user-visible payload before send. |
+| <a id="component-communications"></a>**Communications** *(optional)* | Pluggable transport layer for outreach. Honors AC-16's user-driven selection and AC-18's transport eligibility rule. Omitted by a PNA that never reaches out (its comms ACs are then vacuous). |
+| <a id="component-distribution"></a>**Distribution** *(optional)* | Delivers the PNA to other users' devices. When the PNA isn't distributed (single-user CLI / native), this component is empty. |
 
 ### Interfaces
 
@@ -382,15 +394,15 @@ Many Universal ACs (see [§ Universal architectural commitments](#universal-arch
 |---|---|
 | <a id="iface-shared-schema"></a>**Shared schema** | Data contract for the Shared DB — tables, columns, optional FTS (Full-Text Search) structure, optional per-record asset URL conventions. Produced by Ingestion; consumed by Storage and Workspace. |
 | <a id="iface-private-schema"></a>**Private schema** | Data contract for the Private DB — `groups`, `group_members`, `record_tags`, `record_notes`, `settings`, opt-in `record_comms_history`. Owned by Storage; accessed by Workspace through Storage. Durability rules (survives app update + Clear App Cache; wiped only by Reset Everything) are part of the contract. |
-| <a id="iface-debug-contract"></a>**Debug contract** | Capabilities every slot must implement: build label substitution at build *and* serve time (AC-15), sanitized error capture (with sink endpoint when configured), diagnostic state-dump, bug-report flow, always-reachable escape hatch (AC-6), boot watchdog with named phase marks. |
+| <a id="iface-debug-contract"></a>**Debug contract** | Capabilities every component must implement: build label substitution at build *and* serve time (AC-15), sanitized error capture (with sink endpoint when configured), diagnostic state-dump, bug-report flow, always-reachable escape hatch (AC-6), boot watchdog with named phase marks. |
 
-### Sub-contracts per slot
+### Sub-contracts per component
 
-Each slot's contract decomposes into named sub-contracts so an AI building or rewriting a PNA can target each piece individually. Naming convention: two-letter prefix per slot (`WS-`, `ST-`, `IN-`, `CO-`, `DI-`) and per interface (`SH-`, `PR-`, `DB-`), then dash, then monotonic integer. New sub-contracts get the next integer; numbers don't get reused.
+Each component's contract decomposes into named sub-contracts so an AI building or rewriting a PNA can target each piece individually. Naming convention: two-letter prefix per component (`WS-`, `ST-`, `IN-`, `CO-`, `DI-`) and per interface (`SH-`, `PR-`, `DB-`), then dash, then monotonic integer. New sub-contracts get the next integer; numbers don't get reused.
 
 Sub-contracts cite the universal ACs they realize where appropriate; the AC table above remains the single source of truth for the architectural commitments themselves.
 
-**These sub-contracts are Layer 2** (see [§ How the pieces fit together](#how-the-pieces-fit-together)). They decompose *how* each slot is realized on a concrete stack, not *what* the PNA must promise — that is the [Layer-1 ACs](#universal-architectural-commitments) they cite. Most are generalized from `fellows_local_db`'s browser implementation (the toolkit's first reference design) and carry "or substrate-equivalent" hedges for non-browser flavors; a few still name browser specifics outright (e.g. ST-1's OPFS-SAH-Pool VFS, ST-3's exact `{id, op, args}` RPC envelope, WS-7's literal `fellows_authenticated_once` localStorage key). Read them as a builder's checklist *for that lineage* — adapt per stack, do not treat them as universal contracts. As reference designs on other substrates land, the genuinely-universal pieces factor up into ACs and the stack-specific ones stay realizations. (The `RZ-*` family in [`axes.md`](axes.md) is the other half of Layer 2 — realizations a specific *axis pick* brings; these sub-contracts are the per-slot decomposition of the same lineage.)
+**These sub-contracts are Layer 2** (see [§ How the pieces fit together](#how-the-pieces-fit-together)). They decompose *how* each component is realized on a concrete stack, not *what* the PNA must promise — that is the [Layer-1 ACs](#universal-architectural-commitments) they cite. Most are generalized from `fellows_local_db`'s browser implementation (the toolkit's first reference design) and carry "or substrate-equivalent" hedges for non-browser flavors; a few still name browser specifics outright (e.g. ST-1's OPFS-SAH-Pool VFS, ST-3's exact `{id, op, args}` RPC envelope, WS-7's literal `fellows_authenticated_once` localStorage key). Read them as a builder's checklist *for that lineage* — adapt per stack, do not treat them as universal contracts. As reference designs on other substrates land, the genuinely-universal pieces factor up into ACs and the stack-specific ones stay realizations. (The `RZ-*` family in [`axes.md`](axes.md) is the other half of Layer 2 — realizations a specific *axis pick* brings; these sub-contracts are the per-component decomposition of the same lineage.)
 
 #### Workspace (`WS-`)
 
@@ -405,14 +417,14 @@ Sub-contracts cite the universal ACs they realize where appropriate; the AC tabl
 - <a id="ws-9"></a>**WS-9: Sanitization discipline.** The workspace MUST escape HTML (`escapeHtml`) for all user-supplied data, MUST use parameterized `?` placeholders for all SQL, and MUST validate image paths against traversal.
 - <a id="ws-10"></a>**WS-10: User-visible payload before send (AC-19).** The workspace MUST show the full composition before any communication launches.
 
-Cross-slot: WS-4 sits at the boundary with Storage (the `worker` tier is RPC into ST-3); WS-5 implements the boot side of DB-3.
+Cross-component: WS-4 sits at the boundary with Storage (the `worker` tier is RPC into ST-3); WS-5 implements the boot side of DB-3.
 
 #### Storage (`ST-`)
 
-- <a id="st-1"></a>**ST-1: Substrate.** The Storage slot MUST use a single dedicated worker, the OPFS-SAH-Pool VFS (Storage Access Handle Pool Virtual File System), and a sqlite-wasm runtime (or the substrate-equivalent for non-browser flavors). The worker MUST be the only context that calls `navigator.storage.getDirectory` or opens a `FileSystemSyncAccessHandle` (per RZ-1).
+- <a id="st-1"></a>**ST-1: Substrate.** The Storage component MUST use a single dedicated worker, the OPFS-SAH-Pool VFS (Storage Access Handle Pool Virtual File System), and a sqlite-wasm runtime (or the substrate-equivalent for non-browser flavors). The worker MUST be the only context that calls `navigator.storage.getDirectory` or opens a `FileSystemSyncAccessHandle` (per RZ-1).
 - <a id="st-2"></a>**ST-2: Init handshake.** The first RPC across the boundary MUST be `op='init'`. Init MUST return `{workerRpcVersion, schemaVersion, buildLabel, opfsCapable, hasSharedDb, hasPrivateDb, poolFiles, trace}`. Capability detection MUST happen inside this op (per RZ-2, realizing AC-22). Typed contract: [`contracts/worker-init-handshake.schema.json`](../contracts/worker-init-handshake.schema.json).
 - <a id="st-3"></a>**ST-3: RPC protocol.** The RPC envelope MUST be `{id, op, args}` ↔ `{id, ok, result|error}`. Fan-in dispatch MUST be sequence-numbered via a pending Map. On `worker.onerror`, all pending RPCs MUST be rejected so callers can fall back instead of hanging. Typed contract: [`contracts/worker-rpc-protocol.schema.json`](../contracts/worker-rpc-protocol.schema.json).
-- <a id="st-4"></a>**ST-4: Two-database management.** The Storage slot MUST manage a Private DB (RW) and a Shared DB (RO). Cross-DB joins MUST use `ATTACH ?mode=ro`, attached once per init in the worker.
+- <a id="st-4"></a>**ST-4: Two-database management.** The Storage component MUST manage a Private DB (RW) and a Shared DB (RO). Cross-DB joins MUST use `ATTACH ?mode=ro`, attached once per init in the worker.
 - <a id="st-5"></a>**ST-5: Schema bootstrap.** Storage MUST use `CREATE IF NOT EXISTS` for both schemas, MUST set `PRAGMA foreign_keys=ON` per connection, and MUST set `PRAGMA user_version` to the schema version. The bootstrap MUST be idempotent so older backups gain newer tables on restore.
 - <a id="st-6"></a>**ST-6: Auto-backup.** Storage MUST take per-boot debounced snapshots of the Private DB to OPFS root (outside the SAH-pool dir, so snapshots survive sqlite-wasm operations). Rotation MUST be by sorted ISO filename. Per AC-9.
 - <a id="st-7"></a>**ST-7: Restore.** Restore MUST accept either a user-supplied file or a recent auto-backup. It MUST validate via `PRAGMA quick_check` plus schema check. The pre-restore state MUST be snapshotted to the same rotation. The swap MUST be atomic.
@@ -421,16 +433,16 @@ Cross-slot: WS-4 sits at the boundary with Storage (the `worker` tier is RPC int
 - <a id="st-10"></a>**ST-10: Reset Everything.** A `wipeAll` RPC MUST be exposed that closes both DBs, calls `removeVfs()`, and iterates the OPFS root removing every entry. The caller MUST reload after.
 - <a id="st-11"></a>**ST-11: Diagnostics.** Storage MUST expose `getOpfsInventory`, `getTrace`, `getVersions`, `getSharedDbMeta`. These MUST be read-only — pure reads, no fetches.
 
-Cross-slot: ST-2/3 are the contract WS-4 calls; ST-7's schema re-bootstrap respects PR-3.
+Cross-component: ST-2/3 are the contract WS-4 calls; ST-7's schema re-bootstrap respects PR-3.
 
 #### Ingestion (`IN-`)
 
-- <a id="in-1"></a>**IN-1: Source adapter.** The Ingestion slot MUST produce bytes conforming to the Shared schema (SH-1 through SH-3). The adapter is app-specific.
+- <a id="in-1"></a>**IN-1: Source adapter.** The Ingestion component MUST produce bytes conforming to the Shared schema (SH-1 through SH-3). The adapter is app-specific.
 - <a id="in-2"></a>**IN-2: Output validation.** Output MUST pass `PRAGMA quick_check`. The primary record table MUST have ≥1 row (zero-row guard prevents catastrophic orphaning of every Private DB reference).
 - <a id="in-3"></a>**IN-3: Sourced provenance (AC-17).** Every record MUST trace to a specific external source the user has configured.
 - <a id="in-4"></a>**IN-4: Re-ingestion mechanics.** Re-ingestion MUST be atomic stage → validate → swap. It MUST be non-destructive of Private DB references. An orphan preview MUST be provided (per AC-10, surfaced via ST-8 + WS-3).
 
-Cross-slot: IN-4 hands off to ST-8 for the actual stage/swap; SH-5 is the Shared-side view of the same transition.
+Cross-component: IN-4 hands off to ST-8 for the actual stage/swap; SH-5 is the Shared-side view of the same transition.
 
 #### Communications (`CO-`)
 
@@ -439,20 +451,20 @@ Cross-slot: IN-4 hands off to ST-8 for the actual stage/swap; SH-5 is the Shared
 - <a id="co-3"></a>**CO-3: Transport eligibility (AC-18).** A transport's mechanism MUST NOT read message contents.
 - <a id="co-4"></a>**CO-4: User-driven selection (AC-16).** The workspace MUST surface multiple transports; the user MUST pick per outreach.
 - <a id="co-5"></a>**CO-5: User-visible payload (AC-19).** The workspace MUST show the full payload (recipients, body, merged data) before launch.
-- <a id="co-6"></a>**CO-6: Distinction from distribution-mechanism transports.** A distribution flavor's auth-link transport (e.g., Postmark in fellows_local_db's magic-link distribution) is governed by Distribution slot contracts, not by CO-3.
+- <a id="co-6"></a>**CO-6: Distinction from distribution-mechanism transports.** A distribution flavor's auth-link transport (e.g., Postmark in fellows_local_db's magic-link distribution) is governed by Distribution component contracts, not by CO-3.
 
-Cross-slot: CO-4 is observable from WS (the shell renders the picker); CO-5 is the same contract as WS-10, dual-listed because both slots co-implement.
+Cross-component: CO-4 is observable from WS (the shell renders the picker); CO-5 is the same contract as WS-10, dual-listed because both components co-implement.
 
 #### Distribution (`DI-`) — optional
 
-- <a id="di-1"></a>**DI-1: Install path.** The Distribution slot MUST provide bundle delivery, a verified initial Shared DB, and a session bootstrap.
+- <a id="di-1"></a>**DI-1: Install path.** The Distribution component MUST provide bundle delivery, a verified initial Shared DB, and a session bootstrap.
 - <a id="di-2"></a>**DI-2: Update path.** The update path MUST cover the shell and worker file via the service worker plus cache versioning. Shared DB updates MUST be user-driven (per AC-10), not automatic.
-- <a id="di-3"></a>**DI-3: Auth contract.** The Distribution slot MUST expose `GET /api/auth/status`, `POST /api/send-unlock`, `POST /api/verify-token`, and `POST /api/logout`. The session cookie MUST be signed using HMAC (Hash-based Message Authentication Code) and version-prefixed (so prior versions reject cleanly post-deploy). Typed contract: [`contracts/distribution-auth.openapi.yaml`](../contracts/distribution-auth.openapi.yaml).
+- <a id="di-3"></a>**DI-3: Auth contract.** The Distribution component MUST expose `GET /api/auth/status`, `POST /api/send-unlock`, `POST /api/verify-token`, and `POST /api/logout`. The session cookie MUST be signed using HMAC (Hash-based Message Authentication Code) and version-prefixed (so prior versions reject cleanly post-deploy). Typed contract: [`contracts/distribution-auth.openapi.yaml`](../contracts/distribution-auth.openapi.yaml).
 - <a id="di-4"></a>**DI-4: Anti-enum + rate limit (AC-8).** `send-unlock` and `client-errors` MUST always return 200 / 204. Per-IP and per-email-hash rate limits MUST be enforced. `verify-token` MUST use distinct expired/invalid error strings.
 - <a id="di-5"></a>**DI-5: Server hardening.** The Distribution server MUST terminate TLS on :443 → 127.0.0.1 origin. It MUST send COOP (Cross-Origin Opener Policy) and COEP (Cross-Origin Embedder Policy) headers (RZ-3). POST body MUST be capped at 16KB. The server MUST NOT expose per-user RW endpoints (AC-2). Caching MUST be status-aware (4xx/5xx MUST NOT be long-cached).
 - <a id="di-6"></a>**DI-6: PWA-specific gotchas (when distribution medium is a PWA).** The manifest MUST be minimal — no `related_applications`, no `share_target` POST. The service worker MUST be network-first for HTML/JS/CSS/SW + worker file and cache-first for the vendored runtime. A separate asset cache MUST be used. The Shared DB URL MUST be bypassed in the SW fetch handler (RZ-4).
 
-Cross-slot: DI-2's update path triggers WS's "New version available — Reload" banner; DI-3 outcomes feed WS-1's persona decision.
+Cross-component: DI-2's update path triggers WS's "New version available — Reload" banner; DI-3 outcomes feed WS-1's persona decision.
 
 #### Shared schema (`SH-`)
 
@@ -463,7 +475,7 @@ Cross-slot: DI-2's update path triggers WS's "New version available — Reload" 
 - <a id="sh-5"></a>**SH-5: Atomic re-import semantics with orphan preview (AC-10).** Re-imports MUST be stage → validate → swap. A pre-swap impact preview MUST list Private DB references that would be orphaned.
 - <a id="sh-6"></a>**SH-6: Sourced-provenance per record (AC-17).** Multi-source PNAs MUST add a `source` column. Single-source PNAs MAY omit it.
 
-Cross-slot: SH-5 is implemented by ST-8.
+Cross-component: SH-5 is implemented by ST-8.
 
 #### Private schema (`PR-`)
 
@@ -474,7 +486,7 @@ Cross-slot: SH-5 is implemented by ST-8.
 - <a id="pr-5"></a>**PR-5: Backup/restore conformance.** Implementations MUST use idempotent CREATE IF NOT EXISTS so older backups gain newer tables on restore.
 - <a id="pr-6"></a>**PR-6: Human-readable export (recommended).** Implementations SHOULD provide an export of the Private DB to a flat, human-readable format in addition to the canonical SQLite file — for example CSV per table, JSON with the schema embedded, or a Markdown vault keyed by `record_id`. The export MUST be readable without any PNA tooling (a generic CSV / JSON / Markdown reader suffices). The canonical SQLite file remains the authoritative form; the human-readable export is a portability escape hatch, not a sync surrogate — implementations MUST NOT treat it as a guaranteed re-import surface, and re-import stays on the PR-5 SQLite path. *Verification: a deterministic check that every exported file parses with a standard-library reader and requires no project code — see [`tools/export-readable-lint.py`](../tools/export-readable-lint.py).*
 
-Cross-slot: PR-4 is enforced by ST-1 (separate file from Shared DB) and ST-10 (Reset Everything is the only wipe path); PR-5 is exercised by ST-7; PR-6 is produced by Storage (export bytes) and surfaced by the Workspace (export action).
+Cross-component: PR-4 is enforced by ST-1 (separate file from Shared DB) and ST-10 (Reset Everything is the only wipe path); PR-5 is exercised by ST-7; PR-6 is produced by Storage (export bytes) and surfaced by the Workspace (export action).
 
 #### Debug contract (`DB-`)
 
@@ -488,11 +500,11 @@ Cross-slot: PR-4 is enforced by ST-1 (separate file from Shared DB) and ST-10 (R
 - <a id="db-8"></a>**DB-8: Configurability.** Every part of the Debug substrate MUST be configurable. Purely-personal PNAs MAY have an empty sink and no maintainer mailbox; the substrate MUST still work.
 - <a id="db-9"></a>**DB-9: Test affordance.** The workspace MUST expose the active data provider on a stable global (`window.__dataProvider` in fellows_local_db) so test suites can drive the contracts the same way the workspace does, without a separate test-only seam.
 
-Cross-slot: every component implements DB-1; WS instantiates DB-2, DB-3, DB-6, DB-7, DB-9; DI hosts DB-4 (when present).
+Cross-component: every component implements DB-1; WS instantiates DB-2, DB-3, DB-6, DB-7, DB-9; DI hosts DB-4 (when present).
 
-### Cross-slot sub-contract threads
+### Cross-component sub-contract threads
 
-Sub-contracts that span slots, formalized:
+Sub-contracts that span components, formalized:
 
 - **Build-label discipline (AC-15):** every component implements DB-1.
 - **Update notification:** DI-2 → SW banner → WS-3 reload affordance.
@@ -500,17 +512,17 @@ Sub-contracts that span slots, formalized:
 - **Storage RPC boundary:** WS-4 calls ST-3 / ST-4 / etc.; ST-2's handshake gates whether mutations are allowed (AC-4).
 - **Restore data flow:** WS (file picker / backup picker UI) → ST-7 → PR-5 (re-bootstrap).
 - **Human-readable export (PR-6):** ST produces the export bytes; WS exposes the export action. One-way — re-import stays on the PR-5 SQLite path.
-- **User-aware payload (AC-19):** WS-10 ↔ CO-5 — dual-listed because both slots co-implement.
+- **User-aware payload (AC-19):** WS-10 ↔ CO-5 — dual-listed because both components co-implement.
 - **Capability-failure surfacing:** ST-2 (`opfsCapable=false`) → WS-6 (panel render); ST-9 (`OWNERSHIP_CONFLICT`) → WS-6 (multi-tab variant).
-- **Diagnostic substrate (DB-\*):** every slot logs to DB-4; WS surfaces DB-2/3/6/7/9.
+- **Diagnostic substrate (DB-\*):** every component logs to DB-4; WS surfaces DB-2/3/6/7/9.
 
-These cross-slot threads are what make the spec describe a *system* rather than a bag of slots.
+These cross-component threads are what make the spec describe a *system* rather than a bag of components.
 
 ### Decomposition decisions
 
-- **No slots split.** Each top-level slot keeps a single contract surface; sub-contracts give it texture without fragmenting the toolkit's mental model. The toolkit may internally factor slots further (Storage in particular has eleven internal contracts already), but the spec exposes one slot per concern.
-- **Cross-slot ACs land in both slots' sub-contracts.** AC-19 is both WS-10 and CO-5; AC-10 fans out into IN-4 + ST-8 + SH-5 + WS-3; etc. The AC table remains the single source of truth; sub-contracts cite ACs where they land.
-- **One naming convention.** `<slot prefix>-<integer>`, monotonic per slot. No renumbering as items are added; new sub-contracts get the next integer.
+- **No components split.** Each top-level component keeps a single contract surface; sub-contracts give it texture without fragmenting the toolkit's mental model. The toolkit may internally factor components further (Storage in particular has eleven internal contracts already), but the spec exposes one component per concern.
+- **Cross-component ACs land in both components' sub-contracts.** AC-19 is both WS-10 and CO-5; AC-10 fans out into IN-4 + ST-8 + SH-5 + WS-3; etc. The AC table remains the single source of truth; sub-contracts cite ACs where they land.
+- **One naming convention.** `<component prefix>-<integer>`, monotonic per component. No renumbering as items are added; new sub-contracts get the next integer.
 
 ---
 

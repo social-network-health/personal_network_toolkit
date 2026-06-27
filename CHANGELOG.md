@@ -2,6 +2,40 @@
 
 ## Unreleased
 
+### Spec vocabulary clarified: "slot" → "component", axes co-located with their components, AC-1 generalized terms
+
+A readability pass on `spec/PNA_Spec.md` (and the docs/contracts that echo its vocabulary). **No AC,
+contract, or conformance meaning changes** — every axis pick *key* is unchanged, so both reference designs
+stay conformant; the bundled design snapshots keep their wording and adopt the new terms on re-attestation.
+
+- **`slot` → `component`.** The structural-part term is renamed to the more intuitive **component** (a
+  Layer-1 part a PNA is built from; "Function" was rejected — it collides with the programming sense in a
+  spec read by AI agents). The rename swept the spec (visible text **plus** the `slot-*` anchor IDs and
+  internal links, moved together so nothing breaks), `axes.md`, `SKILL.md`, `users-guide.md`, `README.md`,
+  `llms.txt`, the templates, the typed-contract comments, and `CLAUDE.md`. The OPFS/staging "slot" (a
+  storage concept) and Python `__slots__` were deliberately left untouched.
+- **Components and axes are co-located.** The old parallel "Slots" and "Axes" sections read as redundant (a
+  near-1:1 mapping with near-homonym names). `§ Axes` is now **§ Components and axes**, leading with a
+  one-sentence model — *a component is the part; its axis is the menu of ways to build it; a pick is the way
+  you chose; your flavor is all your picks* — and a side-by-side table (component · what it does · its axis ·
+  picks). A new `Component → axis` cardinality row makes the pairing explicit, and `MCP-exposure` is called
+  out as the lone axis with no component.
+- **The `distribution` axis is renamed "distribution channel"** (display name only) so it no longer collides
+  with the **Distribution** component — matching the qualifier every other axis already carries (storage
+  *substrate*, ingestion *shape*, …). The machine key stays `distribution` (pick notation `distribution:…`,
+  the `[flavor]` keys, the `Triggered-by:` tokens, the lint's `AXIS_PREFIX_TO_HEADING` key, both reference
+  designs all unchanged) — so there is **zero** flavor-key / cross-repo churn. ("delivery" was considered and
+  declined for exactly that churn.) Only the lint's heading-resolution *value* moved to match the renamed
+  `axes.md` heading.
+- **AC-1 generalized terminology propagated into the vocabulary.** Following the AC-1 restatement
+  ("Sovereign, sealed private layer"; two-store split → canonical realization), the data-class vocab entries
+  (Contact / Shared / Private / Relationship data) now name the **shared class** / **private class** and the
+  **sealed private layer** as the concept, with the Shared DB / Private DB framed as the *canonical
+  realization* rather than the definition. Also fixed a latent broken `#vocab-slot` anchor (referenced on the
+  Sub-contract entry, never defined) — now defined, with `vocab-component` as primary.
+- Docs/tooling only — no new obligation on any design. `just ci` green (47/47). Rationale recorded in
+  [`docs/PriorArt.md` § Design notes](docs/PriorArt.md).
+
 ### Documentation-stamp reconciliation: finish the v0.2 cut + bring durable docs under the version lint
 
 - **Completed the v0.2 mechanical bump's trailing drift.** `VERSION` was already `0.2.0` (tag `v0.2.0`,

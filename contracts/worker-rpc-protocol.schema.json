@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://pna-spec.example/v0.1/worker-rpc-protocol.schema.json",
-  "title": "Storage slot — RPC protocol",
+  "title": "Storage component — RPC protocol",
   "$comment": "Realizes: AC-4, AC-10. Toolkit-Version: 0.2.",
-  "description": "Sub-contract ST-3 from the Storage slot. Defines the request/response envelope across the Storage boundary plus the input/output shape of the AC-load-bearing ops. The envelope is what every implementation must conform to; the op catalog below is the v0.1 minimum surface — implementations expose additional ops (CRUD on Private DB tables, reads on the Shared DB, auto-backup management, diagnostics) under the same envelope, and those flavor-specific ops are documented per implementation rather than pinned here.\n\nThe ops pinned here are the ones that enforce or surface an architectural commitment, so the spec contract is what an auditor reads to confirm AC compliance:\n- `init` — the version handshake (AC-4) and capability flag (RZ-2); shape lives in worker-init-handshake.schema.json.\n- `compareSharedDbSha`, `previewSharedDbSwap`, `applySharedDbSwap`, `cancelSharedDbSwap` — the staged Shared-DB swap dance that AC-10 (opt-in non-destructive re-imports of the Shared store) hinges on.\n- `wipeAll` — the Reset Everything nuclear path (ST-10).\n- `getOpfsInventory`, `getVersions` — the diagnostic surface (ST-11) used by `?diag=1` and bug reports.\n\nFan-in dispatch: a single Storage boundary handles concurrent in-flight RPCs by correlating `id`. The implementation tracks pending RPCs in a sequence-numbered Map and rejects all pending entries on `worker.onerror` (or substrate-equivalent fatal-error signal) with a synthetic error so callers can fall back instead of hanging.\n\nNaming note (v0.1): the spec uses generic op names (`compareSharedDbSha`, `previewSharedDbSwap`, …). fellows_local_db's worker today uses fellows-specific names (`compareFellowsDbSha`, `previewFellowsDbSwap`, …) — a flavor-specific divergence pre-dating the spec; aligning op names is tracked separately. Implementations conforming to v0.1 should use the generic names.",
+  "description": "Sub-contract ST-3 from the Storage component. Defines the request/response envelope across the Storage boundary plus the input/output shape of the AC-load-bearing ops. The envelope is what every implementation must conform to; the op catalog below is the v0.1 minimum surface — implementations expose additional ops (CRUD on Private DB tables, reads on the Shared DB, auto-backup management, diagnostics) under the same envelope, and those flavor-specific ops are documented per implementation rather than pinned here.\n\nThe ops pinned here are the ones that enforce or surface an architectural commitment, so the spec contract is what an auditor reads to confirm AC compliance:\n- `init` — the version handshake (AC-4) and capability flag (RZ-2); shape lives in worker-init-handshake.schema.json.\n- `compareSharedDbSha`, `previewSharedDbSwap`, `applySharedDbSwap`, `cancelSharedDbSwap` — the staged Shared-DB swap dance that AC-10 (opt-in non-destructive re-imports of the Shared store) hinges on.\n- `wipeAll` — the Reset Everything nuclear path (ST-10).\n- `getOpfsInventory`, `getVersions` — the diagnostic surface (ST-11) used by `?diag=1` and bug reports.\n\nFan-in dispatch: a single Storage boundary handles concurrent in-flight RPCs by correlating `id`. The implementation tracks pending RPCs in a sequence-numbered Map and rejects all pending entries on `worker.onerror` (or substrate-equivalent fatal-error signal) with a synthetic error so callers can fall back instead of hanging.\n\nNaming note (v0.1): the spec uses generic op names (`compareSharedDbSha`, `previewSharedDbSwap`, …). fellows_local_db's worker today uses fellows-specific names (`compareFellowsDbSha`, `previewFellowsDbSwap`, …) — a flavor-specific divergence pre-dating the spec; aligning op names is tracked separately. Implementations conforming to v0.1 should use the generic names.",
   "type": "object",
   "required": ["envelope", "errorCodes", "ops"],
   "properties": {
@@ -128,11 +128,11 @@
         },
         "VERSION_MISMATCH": {
           "type": "string",
-          "description": "AC-4: The workspace's expected workerRpcVersion or schemaVersion doesn't match what the Storage slot emitted in the init handshake. Mutating ops MUST be refused with this code; reads MAY still be served. The standard remediation is the workspace's update banner (e.g., the service worker's 'New version available — Reload' affordance for browser PNAs)."
+          "description": "AC-4: The workspace's expected workerRpcVersion or schemaVersion doesn't match what the Storage component emitted in the init handshake. Mutating ops MUST be refused with this code; reads MAY still be served. The standard remediation is the workspace's update banner (e.g., the service worker's 'New version available — Reload' affordance for browser PNAs)."
         },
         "LOCAL_DATA_UNAVAILABLE": {
           "type": "string",
-          "description": "The Storage slot can't currently serve the requested data — substrate failure (RZ-2 negative), version-skew refusal (AC-4 mutation gate), or capability gap. The workspace catches this code and surfaces the appropriate failure panel (WS-6) rather than a generic error. In hot-swap mode (AC-5 fallback to api+idb), the data provider catches this same code on mutating Private-DB ops and refuses with a localDataUnavailableError to the calling render path."
+          "description": "The Storage component can't currently serve the requested data — substrate failure (RZ-2 negative), version-skew refusal (AC-4 mutation gate), or capability gap. The workspace catches this code and surfaces the appropriate failure panel (WS-6) rather than a generic error. In hot-swap mode (AC-5 fallback to api+idb), the data provider catches this same code on mutating Private-DB ops and refuses with a localDataUnavailableError to the calling render path."
         },
         "NOT_FOUND": {
           "type": "string",
@@ -140,7 +140,7 @@
         },
         "INTERNAL": {
           "type": "string",
-          "description": "Catch-all for unexpected Storage-slot failures that don't map to a more specific code. Workspaces typically surface this as 'something went wrong, please reload' and include the `meta` + `stack` fields in the bug-report payload (AC-7)."
+          "description": "Catch-all for unexpected Storage-component failures that don't map to a more specific code. Workspaces typically surface this as 'something went wrong, please reload' and include the `meta` + `stack` fields in the bug-report payload (AC-7)."
         }
       }
     },
@@ -271,7 +271,7 @@
     },
     "op_wipeAll": {
       "type": "object",
-      "description": "ST-10 nuclear reset. Closes both DB handles, tears down the storage substrate (browser PNAs: `removeVfs()` + iterate OPFS root removing every entry; native PNAs: substrate-equivalent), and returns an inventory of what was removed. The Storage slot is unusable post-wipe; the workspace MUST reload after the response. Pure read of OPFS / disk; no network. The workspace's Reset Everything button binds to this op.",
+      "description": "ST-10 nuclear reset. Closes both DB handles, tears down the storage substrate (browser PNAs: `removeVfs()` + iterate OPFS root removing every entry; native PNAs: substrate-equivalent), and returns an inventory of what was removed. The Storage component is unusable post-wipe; the workspace MUST reload after the response. Pure read of OPFS / disk; no network. The workspace's Reset Everything button binds to this op.",
       "required": ["input", "output"],
       "properties": {
         "input": {
@@ -333,7 +333,7 @@
     },
     "op_getVersions": {
       "type": "object",
-      "description": "ST-11 diagnostic read. Same version pair the init handshake returned, made re-readable so a long-running workspace can verify the Storage slot is still the same generation without re-issuing init. Pure read.",
+      "description": "ST-11 diagnostic read. Same version pair the init handshake returned, made re-readable so a long-running workspace can verify the Storage component is still the same generation without re-issuing init. Pure read.",
       "required": ["input", "output"],
       "properties": {
         "input": {

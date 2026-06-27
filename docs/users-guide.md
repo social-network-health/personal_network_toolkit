@@ -79,17 +79,17 @@ The skill packages four flows. Each is a numbered sequence below; run whichever 
 
 You're starting (or extending) a personal network application.
 
-1. **Skim the spec and pick a use case.** You don't need to memorize [`spec/PNA_Spec.md`](../spec/PNA_Spec.md) to start — but read enough to know its vocabulary (*slot*, *axis*, *flavor*, *AC*, *Exception*, *Constraint*) and that the universal ACs are non-negotiable. Then browse [`spec/use_cases.md`](../spec/use_cases.md) for the attested classes of PNA and pick one. A use case suggests default axis picks but doesn't determine them.
+1. **Skim the spec and pick a use case.** You don't need to memorize [`spec/PNA_Spec.md`](../spec/PNA_Spec.md) to start — but read enough to know its vocabulary (*component*, *axis*, *flavor*, *AC*, *Exception*, *Constraint*) and that the universal ACs are non-negotiable. Then browse [`spec/use_cases.md`](../spec/use_cases.md) for the attested classes of PNA and pick one. A use case suggests default axis picks but doesn't determine them.
 
 2. **Walk through axis picks with the agent.** Open Claude Code in your new project's directory and ask:
 
    > "Use the toolkit skill to walk me through axis picks for a [Directory Archive | Personal Relationship Manager | …] PNA."
 
-   The agent walks each Axis (distribution, storage substrate, ingestion shape, workspace shell, comms transport set, MCP-exposure) and the attested picks per Axis. Your full set of picks is your *flavor*. Some picks entail a **conditional AC** (defined in [`spec/PNA_Spec.md` § Conditional architectural commitments](../spec/PNA_Spec.md#conditional-architectural-commitments)); each pick also brings its own `RZ-*` realizations and constraints — see [`spec/axes.md`](../spec/axes.md).
+   The agent walks each Axis (distribution channel, storage substrate, ingestion shape, workspace shell, comms transport set, MCP-exposure) and the attested picks per Axis. Your full set of picks is your *flavor*. Some picks entail a **conditional AC** (defined in [`spec/PNA_Spec.md` § Conditional architectural commitments](../spec/PNA_Spec.md#conditional-architectural-commitments)); each pick also brings its own `RZ-*` realizations and constraints — see [`spec/axes.md`](../spec/axes.md).
 
 3. **Enumerate the Constraints your picks inherit.** A [Constraint](../spec/constraints.md) (`CST-*`) is a platform/substrate ceiling that comes attached to an axis pick — e.g. a `web-bundle` × `opfs-sqlite-wasm` PNA inherits the `CST-PWA-*` family. The agent lists them and helps you plan the honest per-platform capability reduction up front (the cross-references in [`spec/axes.md`](../spec/axes.md) name which picks inherit which constraints). If your design will deliberately depart from a guarantee, plan the [Exception](../spec/exceptions.md) (`EX-*`) handling too — but the **un-relaxable floor** (AC-18 / AC-19 / AC-MCP-B, the human-review-before-send seam) may not be relaxed even with consent (the lint rejects an exception that names a floor AC in `Relaxes:`).
 
-4. **Study the closest reference design.** Each [`reference_designs/<name>/`](../reference_designs/) directory has a design record naming its flavor and a Software Heritage SWHID pointing to archived source. Pick the design whose flavor overlaps your picks the most; read its code and treat it as the seed your PNA grows from. Adapting beats starting from scratch — the cross-slot integration work is already done. To find proven code *per AC* across all designs (not just the closest one), consult the [realization index](#the-realization-index) — it maps each AC to the designs that realize it, where, and at which archived commit.
+4. **Study the closest reference design.** Each [`reference_designs/<name>/`](../reference_designs/) directory has a design record naming its flavor and a Software Heritage SWHID pointing to archived source. Pick the design whose flavor overlaps your picks the most; read its code and treat it as the seed your PNA grows from. Adapting beats starting from scratch — the cross-component integration work is already done. To find proven code *per AC* across all designs (not just the closest one), consult the [realization index](#the-realization-index) — it maps each AC to the designs that realize it, where, and at which archived commit.
 
 5. **Stub an Architecture document.** Copy [`reference_designs/templates/ARCHITECTURE_TEMPLATE.md`](../reference_designs/templates/ARCHITECTURE_TEMPLATE.md) to `docs/Architecture.md` in your design's own repo. Fill in Toolkit-Version, axis picks and their versions, and per-axis implementation notes. Leave the attestation tables empty for now — you fill them as you build (step 7).
 
@@ -279,7 +279,7 @@ Working on the toolkit itself: `just` for the command menu, `just ci` before pus
 
 ## Where to find things
 
-- [`spec/PNA_Spec.md`](../spec/PNA_Spec.md) — the canonical spec (vocabulary, Goals, ACs, slot map, sub-contracts)
+- [`spec/PNA_Spec.md`](../spec/PNA_Spec.md) — the canonical spec (vocabulary, Goals, ACs, component map, sub-contracts)
 - [`spec/axes.md`](../spec/axes.md) — axes, attested picks, and the constraints each pick inherits
 - [`spec/use_cases.md`](../spec/use_cases.md) — attested classes of PNA
 - [`spec/exceptions.md`](../spec/exceptions.md) — Exceptions (`EX-*`): declared, handled departures from a guarantee

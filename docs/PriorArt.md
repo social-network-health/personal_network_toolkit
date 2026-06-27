@@ -179,6 +179,22 @@ These references inform the toolkit's design without constraining it to any of t
 
 A running log of toolkit-shaping decisions and their rationale — most often a mapping of the toolkit against the prior art above driving a spec change (or a deliberate decision *not* to make one), but also discipline and tooling decisions distilled from a real finding in a reference design. This is where the *why* of a toolkit fix lives when it isn't itself a reference design. Newest first; each entry is dated and names what it changed.
 
+### 2026-06 — Spec vocabulary: "slot" → "component"; axes co-located; "distribution channel"
+
+A readability pass requested while reviewing the spec. The **slot / axis / pick** vocabulary read as
+confusing because the five "slots" and five of the six "axes" mapped near 1:1 with near-homonym names, so two
+parallel lists looked redundant. The fix **names the distinction instead of removing it**: a **component** is
+the Layer-1 *part* (renamed from *slot* — "Function" was rejected for colliding with the programming sense in
+an agent-read spec); its **axis** is the Layer-2 *menu of ways to build that part*. The two are now
+**co-located** in one "Components and axes" table (with a one-sentence model and a `Component → axis`
+cardinality row) rather than presented as co-equal parallel sections — so "why two lists?" no longer arises.
+The `distribution` axis gained the qualifier the others already carry — **"distribution channel"** — to stop
+colliding with the **Distribution** component; the machine key stays `distribution`, so **"delivery" was
+declined** (it would have forced a cross-repo `[flavor]`-key migration and made the bundled snapshots drift
+from their source repos, for a prose-only gain). Also propagated the AC-1-restatement terms (shared / private
+*class*, the sealed private layer) into the data-class vocab entries, keeping the two-store DBs as the
+*realization*. A clarification — no AC, contract, or conformance change; pick keys unchanged.
+
 ### 2026-06 — AC-1 restated: "Sovereign, sealed private layer" (two-store split → canonical realization)
 
 *Full note: [`design-notes/2026-06-ac1-privacy-boundary-restatement.md`](design-notes/2026-06-ac1-privacy-boundary-restatement.md). Surfaced by the Signal Desktop evaluation.*

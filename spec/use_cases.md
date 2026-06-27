@@ -83,6 +83,6 @@ The longer-arc goal introduced in [`PNA_Spec.md` § Vision](PNA_Spec.md#vision):
 
 Achieving the unified meta-view requires per-source database connectors, careful dedup and conflict resolution, and disciplined provenance — substantial work that's deferred to later toolkit versions. The eventual *ecosystem reference design* would demonstrate this; v0.1 establishes the architectural seams (the five canonical MCP server contracts, AC-10's opt-in non-destructive re-imports, AC-PRM-B's multi-source dedup contract, AC-MCP-A's cloud-client consent rule, AC-MCP-B's workspace-mediated outreach) that let the ecosystem grow into place.
 
-This is the deep "why" behind defining slot contracts substrate-neutrally: when the second PNA exists, an AI agent can wire it to the first without modifying either; when the fifth PNA exists, the same. Composability isn't bolted on; it's the architecture's primary deliverable.
+This is the deep "why" behind defining component contracts substrate-neutrally: when the second PNA exists, an AI agent can wire it to the first without modifying either; when the fifth PNA exists, the same. Composability isn't bolted on; it's the architecture's primary deliverable.
 
 **Reference design:** None yet. Target for v0.2+.

@@ -3,7 +3,7 @@
 """Export-readability lint — deterministic PR-6 check (Goal 4 / PR-6).
 
 Verifies that a PNA's human-readable Private-DB export is actually readable
-*without any PNA tooling*. PR-6 (see spec/PNA_Spec.md § Sub-contracts per slot →
+*without any PNA tooling*. PR-6 (see spec/PNA_Spec.md § Sub-contracts per component →
 Private schema) says implementations SHOULD ship a flat, human-readable export
 of the Private DB *in addition to* the canonical SQLite file, and that the
 export MUST be readable with a generic CSV / JSON / Markdown reader.
