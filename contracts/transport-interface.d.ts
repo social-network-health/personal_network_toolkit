@@ -1,7 +1,7 @@
 // Realizes: AC-16, AC-18, AC-19.
 // Toolkit-Version: 0.2
 
-// Communications slot — the transport interface every comms transport
+// Communications component — the transport interface every comms transport
 // implements. Sub-contracts CO-1 through CO-6 from `_pna_triage.md` Part 4.
 //
 // A Transport is a pluggable outreach mechanism — mailto, signal-cli, a
@@ -23,7 +23,7 @@
 // CO-6: This interface is for *workspace-launched* user outreach. The
 // distribution-mechanism's auth-link transport (Postmark in
 // fellows_local_db's magic-link distribution flavor) is governed by the
-// Distribution slot's contracts, NOT by this interface. They look similar
+// Distribution component's contracts, NOT by this interface. They look similar
 // — both deliver bytes to a user — but their AC sets and trust postures
 // are different.
 

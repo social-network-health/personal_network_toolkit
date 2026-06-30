@@ -20,8 +20,8 @@ This skill covers four flows: **build**, **evaluate**, **contribute**, and **har
 
 Use when the user is starting or extending a PNA.
 
-1. **Read the spec end-to-end first.** `spec/PNA_Spec.md` covers vocabulary, goals, axes, universal architectural commitments, and the slot map with 57 sub-contracts. The universal ACs are non-negotiable.
-2. **Determine axis picks with the user.** Each axis has documented options in `spec/axes.md`. The axes in v0.1: distribution, storage substrate, ingestion shape, workspace shell, comms transport set, MCP-exposure. The spec uses variable language because the set may evolve.
+1. **Read the spec end-to-end first.** `spec/PNA_Spec.md` covers vocabulary, goals, axes, universal architectural commitments, and the component map with 57 sub-contracts. The universal ACs are non-negotiable.
+2. **Determine axis picks with the user.** Each axis has documented options in `spec/axes.md`. The axes in v0.1: distribution channel, storage substrate, ingestion shape, workspace shell, comms transport set, MCP-exposure. The spec uses variable language because the set may evolve.
 3. **Enumerate inherited Constraints.** From the chosen axis picks, list every Constraint they inherit (`spec/constraints.md`, via each pick's `Triggered-by:` and the cross-references in `spec/axes.md`). For each, state the handling you will implement — per-platform capability reduction, "enough power to be useful, not enough to be dangerous" — and its frontier. A `web-bundle` × `opfs-sqlite-wasm` PNA inherits the full `CST-PWA-*` family; plan the folder-mode-vs-OPFS-only split and the honest non-Chromium messaging up front, not as an afterthought. A capability reduction MUST enforce at the data layer, not UI-only.
 4. **Author an Architecture document for the design.** Use the template at `reference_designs/templates/ARCHITECTURE_TEMPLATE.md`. It declares the Toolkit-Version, axis picks and their versions, and per-axis implementation choices.
 5. **Pull the typed contracts.** For each axis pick, the relevant contracts live in `contracts/`. Each contract opens with a `Realizes: AC-X, AC-Y` header naming the ACs it realizes. Treat the contracts as load-bearing — do not deviate without proposing a spec change (contribute flow).
@@ -212,7 +212,7 @@ The judgment-tier sibling of [§ Capturing a conformance lesson](#capturing-a-co
 
 ## Key resources
 
-- `spec/PNA_Spec.md` — canonical spec (vocabulary, goals, ACs, slot map, sub-contracts)
+- `spec/PNA_Spec.md` — canonical spec (vocabulary, goals, ACs, component map, sub-contracts)
 - `spec/axes.md` — axes, attested picks per axis, and the `RZ-*` realizations + constraints each pick brings (it links up to the conditional ACs in `spec/PNA_Spec.md` they entail)
 - `spec/constraints.md` — platform/substrate ceilings (`CST-*`) inherited by axis picks; the dual of exceptions.md
 - `spec/user_mediation.md` — the third general mechanism: user-mediation (`UM-*`), the actuation invariant (proposer stages, principal disposes; UM-1/2/3)

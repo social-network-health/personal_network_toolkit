@@ -3,9 +3,9 @@
 
 -- Shared schema interface — canonical SQL DDL for a conforming Shared DB.
 --
--- Sub-contracts SH-1 through SH-6 from spec/PNA_Spec.md § Slot map. The Shared
+-- Sub-contracts SH-1 through SH-6 from spec/PNA_Spec.md § Components, Interfaces, and Sub-contracts. The Shared
 -- DB holds mirrored contact data — read-only inside the PNA, written only
--- by the Ingestion slot. AC-17 (mirrored data is sourced) and AC-10
+-- by the Ingestion component. AC-17 (mirrored data is sourced) and AC-10
 -- (opt-in non-destructive re-imports with orphan preview) apply.
 --
 -- This DDL is the spec-generic shape — implementations supply app-specific
@@ -104,12 +104,12 @@ CREATE TABLE IF NOT EXISTS records (
 --
 --   ATTACH DATABASE 'file:.../shared.db?mode=ro' AS shared;
 --
--- For browser PNAs using OPFS, the dedicated worker (Storage slot) opens
+-- For browser PNAs using OPFS, the dedicated worker (Storage component) opens
 -- the file with the equivalent read-only flag at SAH-pool import. Any
 -- stray write into the attached namespace raises `OperationalError` —
 -- the read-only-ness is not just an app-layer convention.
 --
--- The only writer is the Ingestion slot's atomic-swap pipeline (SH-5).
+-- The only writer is the Ingestion component's atomic-swap pipeline (SH-5).
 
 -- SH-5: Atomic re-import semantics with orphan preview (AC-10).
 --
@@ -117,4 +117,4 @@ CREATE TABLE IF NOT EXISTS records (
 -- → op_applySharedDbSwap). The DDL above is what an ingested fresh DB
 -- must conform to; the orchestration (stage, validate via PRAGMA
 -- quick_check, compute affected Private DB references, surface them to
--- the user before commit, atomic swap) is in the Storage slot.
+-- the user before commit, atomic swap) is in the Storage component.

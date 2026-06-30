@@ -52,21 +52,21 @@
       "ac_source": "universal",
       "status": "not-applicable",
       "goals": [3],
-      "rationale": "No Communications slot: the vault never reaches out, so the transport-selection AC is vacuous (the same way the MCP ACs are vacuous when no MCP server is exposed)."
+      "rationale": "No Communications component: the vault never reaches out, so the transport-selection AC is vacuous (the same way the MCP ACs are vacuous when no MCP server is exposed)."
     },
     {
       "ac_id": "AC-18",
       "ac_source": "universal",
       "status": "not-applicable",
       "goals": [3],
-      "rationale": "No Communications slot present."
+      "rationale": "No Communications component present."
     },
     {
       "ac_id": "AC-19",
       "ac_source": "universal",
       "status": "not-applicable",
       "goals": [3],
-      "rationale": "No Communications slot present."
+      "rationale": "No Communications component present."
     },
     {
       "ac_id": "AC-MCP-A",

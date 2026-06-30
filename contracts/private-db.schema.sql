@@ -3,7 +3,7 @@
 
 -- Private schema interface — canonical SQL DDL for a conforming Private DB.
 --
--- Sub-contracts PR-1 through PR-5 from spec/PNA_Spec.md § Slot map. The Private DB
+-- Sub-contracts PR-1 through PR-5 from spec/PNA_Spec.md § Components, Interfaces, and Sub-contracts. The Private DB
 -- holds user-authored relationship data (groups, tags, notes, settings,
 -- optional comms history); it is read-write from the workspace and is the
 -- store that AC-1 promises to keep local-only.
@@ -119,7 +119,7 @@ CREATE INDEX IF NOT EXISTS idx_record_comms_history_record
 -- PNAs).
 --
 -- PR-5: Auto-backups + user-supplied restores are part of the Storage
--- slot's contract (ST-6, ST-7). This DDL is idempotent so a restore from
+-- component's contract (ST-6, ST-7). This DDL is idempotent so a restore from
 -- an older backup gains any newer tables on next boot without a manual
 -- migration step. Schema migrations beyond CREATE-IF-NOT-EXISTS will
 -- branch on `PRAGMA user_version`.

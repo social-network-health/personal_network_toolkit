@@ -156,7 +156,7 @@ DETECT_CLASSES = {"feature-detect", "empirical-probe", "ua-sniff"}
 # as a cross-axis error). Maps the axis-prefix token a constraint may use to the
 # axes.md section heading whose '### Picks' bullets define that axis's picks.
 AXIS_PREFIX_TO_HEADING = {
-    "distribution": "distribution",
+    "distribution": "distribution channel",
     "storage": "storage substrate",
     "ingestion": "ingestion shape",
     "workspace": "workspace shell",
@@ -244,7 +244,7 @@ def iter_tables(text: str):
 def _ids_by_header(text: str, id_headers: set[str], id_re) -> set[str]:
     """IDs read from whichever column is headed by one of `id_headers`, in every
     table that has such a column. Anchor prefix stripped; column order-agnostic.
-    Tables without that header (Slots, Interfaces, strength profiles, …) are
+    Tables without that header (Components, Interfaces, strength profiles, …) are
     skipped, so an ID mentioned in a prose cell is never miscollected."""
     out: set[str] = set()
     for headers, rows in iter_tables(text):

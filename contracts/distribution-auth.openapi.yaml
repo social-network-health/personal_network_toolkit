@@ -1,10 +1,10 @@
 # Realizes: AC-2, AC-5, AC-8.
 # Toolkit-Version: 0.2
 
-# Distribution slot — auth, install, and sanitized-error endpoints.
+# Distribution component — auth, install, and sanitized-error endpoints.
 #
 # Sub-contracts DI-3 (auth) and DI-4 (anti-enum + rate limit) from
-# spec/PNA_Spec.md § Slot map, plus the DB-4 sanitized error sink that
+# spec/PNA_Spec.md § Components, Interfaces, and Sub-contracts, plus the DB-4 sanitized error sink that
 # Distribution hosts (the sink lives at the Distribution boundary
 # because it must be reachable by users who failed the auth gate).
 #
@@ -12,7 +12,7 @@
 # Shared DB (/api/fellows/*, /api/search, /api/stats etc.) are NOT
 # pinned here — they're flavor-specific to the Shared schema and live in
 # the implementation's own API docs. The endpoints below are what the
-# Distribution slot itself is responsible for.
+# Distribution component itself is responsible for.
 #
 # AC-bearing properties this contract enforces:
 #   - AC-2 (no SaaS surface): the only POSTs accepted are the four below.
@@ -32,10 +32,10 @@
 
 openapi: 3.1.0
 info:
-  title: PNA Distribution slot — auth + error endpoints
+  title: PNA Distribution component — auth + error endpoints
   version: 0.1.0
   description: |
-    Canonical surface for the Distribution slot's auth, install, and
+    Canonical surface for the Distribution component's auth, install, and
     sanitized-error endpoints. v0.1 reference implementation:
     `deploy/server.py` in fellows_local_db. The implementation may host
     additional endpoints (Shared DB reads, build metadata, health check);
@@ -211,7 +211,7 @@ paths:
         returns 200 `{sent: true}`** (AC-8 / DI-4) regardless of the
         actual outcome — the real outcome is logged to journald.
 
-        Hard request-body cap: 16 KB (enforced by the Distribution slot's
+        Hard request-body cap: 16 KB (enforced by the Distribution component's
         POST handler — DI-5). The body schema is tiny so the cap is
         primarily about /api/client-errors.
       requestBody:

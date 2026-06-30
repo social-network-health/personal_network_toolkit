@@ -14,9 +14,9 @@ For each Axis below: a description of what the Axis decides, the attested picks 
 
 ---
 
-## Distribution
+## Distribution channel
 
-How the PNA reaches a user's device. The distribution pick shapes whether the PNA has a server at all, whether that server gates installs, and whether the bundle ships as a PWA — choices that ripple into several conditional ACs and realizations.
+How the PNA reaches a user's device. The distribution-channel pick shapes whether the PNA has a server at all, whether that server gates installs, and whether the bundle ships as a PWA — choices that ripple into several conditional ACs and realizations. (Axis key: `distribution`, as in `distribution:web-bundle-with-magic-link`; the qualifier distinguishes the *axis* from the **Distribution** *component*.)
 
 > **Verifiability is a universal commitment, not a distribution pick.** Whether a user (or their tools) can read and check the running code before trusting it is [AC-23](PNA_Spec.md#ac-23) (Goal 2), which applies to *every* PNA regardless of how it is delivered. The picks below describe **delivery mechanics only** — server / no server, PWA / native / CLI, app-store / sideload — not a trust posture. So a `never-distributed-single-user` PNA shipped build-from-verifiable-source and the same pick shipped as an opaque binary are the *same* distribution pick; they differ on AC-23, and that difference lives in the commitment, not the axis. (This supersedes the earlier proposal to split the distribution axis on verifiability — [toolkit#39](https://github.com/richbodo/personal_network_toolkit/issues/39) / #64 rider 1.)
 
