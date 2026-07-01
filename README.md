@@ -2,7 +2,9 @@
 
 > **Toolkit-Version:** 0.2 — the toolkit (spec, contracts, skill, lint, templates) is versioned as a unit; see [VERSION](VERSION).
 
-The PNA Toolkit is a [generative application-class blueprint](docs/PriorArt.md) for building and validating **[personal network applications (PNAs)](spec/PNA_Spec.md#goals)** — local-only apps that take local ownership of your contact data and let you build **private relationship memory** over it behind a firewalled private data layer. PNAs run on the user's device, never as SaaS, and bridge SaaS-held contact data into a private workspace. The spec is organized around **four goals** — *take ownership of the root · protect its integrity by validation · protect it from egress · protect it from entropy & accidents*. **[Why do this?](spec/PNA_Spec.md#preamble)**
+The PNA Toolkit is a [generative application-class blueprint](docs/PriorArt.md) for building and validating **[personal network applications (PNAs)](spec/PNA_Spec.md#goals)** — local-only apps that take local ownership of your contact data and let you build **private relationship memory** over it behind a firewalled private data layer. 
+
+PNAs run on the user's device, never as SaaS, and bridge SaaS-held contact data into a private workspace. The spec is organized around **four goals** — *take ownership of the root · protect its integrity by validation · protect it from egress · protect it from entropy & accidents*. **[Why do this?](spec/PNA_Spec.md#preamble)**
 
 The spec is built in **three layers**: the **Goals** (what a PNA delivers for a person), the **architectural commitments** (the technology-independent promises that make the Goals real — and the unit of conformance), and the **realizations and constraints** (how those promises are met on a specific stack — a given language, OS, database, or delivery mechanism — and what that stack permits). A commitment holds no matter how the app is built; the mechanical specifics live one layer down. See [§ How the pieces fit together](spec/PNA_Spec.md#how-the-pieces-fit-together).
 
