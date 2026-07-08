@@ -1,17 +1,14 @@
 # What this kind of app promises you — in plain language
 
-These apps are built to do four things for you. Each one is written below as a
-single plain sentence, followed by the specific promises that make it real —
-also one sentence each, no jargon.
+This toolkit helps people ensure that their apps protect their data by keeping several promises.
 
 The link after each promise carries the **name** of the exact commitment in the
-project's technical specification — the short label the spec uses for it — and points
-straight to it, so anyone who wants to dig in arrives already knowing the term to look
-for. Where a single plain promise covers more than one technical commitment, you'll see
-more than one name.
+project's technical specification.  The name points
+straight to the commitment.  Where a single promise covers more than one technical commitment, you'll see
+more than one commitment name.
 
 (If you want the full technical version with all the engineering detail, that
-lives in the project's specification. This page is the same set of promises, said
+lives in the project's [specification](https://github.com/social-network-health/personal_network_toolkit/blob/main/spec/PNA_Spec.md). This page is the same set of promises, said
 plainly.)
 
 ---
