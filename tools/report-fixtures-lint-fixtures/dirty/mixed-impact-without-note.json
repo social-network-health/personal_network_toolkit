@@ -1,0 +1,35 @@
+{
+  "report_schema_version": "0.2",
+  "candidate": {
+    "name": "Broken fixture: a mixed Goal read with no note",
+    "pna_spec_version": "0.2",
+    "picks_source": "inferred",
+    "classification": {
+      "application_class": "messaging client",
+      "stores_contact_data": true,
+      "stores_relationship_data": true,
+      "nexus": "adjacent",
+      "nexus_source": "inferred",
+      "mode": "goal-impact"
+    }
+  },
+  "summary": {
+    "posture": "not-a-pna",
+    "headline": "Deliberately broken fixture: a goal_impacts entry reads 'mixed' with no note naming the two facets. The reads a user acts on (diminishes, mixed) must be self-explaining. report-fixtures-lint MUST flag this (exit 1).",
+    "goal_impacts": [
+      { "goal": 1, "impact": "neutral" },
+      { "goal": 2, "impact": "protects" },
+      { "goal": 3, "impact": "mixed" },
+      { "goal": 4, "impact": "protects" }
+    ]
+  },
+  "findings": [
+    {
+      "ac_id": "AC-1",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [1, 3],
+      "rationale": "Fixture filler so the findings array is otherwise valid."
+    }
+  ]
+}

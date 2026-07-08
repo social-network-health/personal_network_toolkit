@@ -3,14 +3,14 @@
   "$id": "https://pna-spec.example/v0.1/evaluate-report.schema.json",
   "$comment": "Toolkit-Version: 0.2.",
   "title": "PNA Toolkit evaluate-report artifact",
-  "description": "Machine-comparable form of the report produced by the skill's evaluate flow (pna-toolkit/SKILL.md § Evaluate flow). Keyed by AC ID so two runs on the same candidate can be diffed to show exactly which ACs changed status. The human-readable report is a rendering (a view) over an instance of this schema; this artifact is the source of truth. This is NOT a PNA interface contract — it realizes no AC and intentionally lives in tools/, not contracts/ (the lint-spec-ids check requires every file in contracts/ to name an AC it realizes; this one realizes none). It is the typed output of the toolkit's own evaluative tooling. Deterministic checks in tools/ (for example the egress lint) emit evidence entries with source=deterministic that an LLM evaluator folds into the relevant AC finding alongside its own source=llm evidence; source=human covers maintainer or reviewer judgement. Goals 1-4 (see spec/PNA_Spec.md § Goals) are the load-bearing user-facing concerns and drive the summary.",
+  "description": "Machine-comparable form of the report produced by the skill's evaluate flow (pna-toolkit/SKILL.md § Evaluate flow). Keyed by AC ID so two runs on the same candidate can be diffed to show exactly which ACs changed status. The human-readable report is a rendering (a view) over an instance of this schema; this artifact is the source of truth. This is NOT a PNA interface contract — it realizes no AC and intentionally lives in tools/, not contracts/ (the lint-spec-ids check requires every file in contracts/ to name an AC it realizes; this one realizes none). It is the typed output of the toolkit's own evaluative tooling. Deterministic checks in tools/ (for example the egress lint) emit evidence entries with source=deterministic that an LLM evaluator folds into the relevant AC finding alongside its own source=llm evidence; source=human covers maintainer or reviewer judgement. Goals 1-4 (see spec/PNA_Spec.md § Goals) are the load-bearing user-facing concerns and drive the summary. A report is emitted in one of two output modes (docs/conformance-scope-and-lifecycle.md § The utility line): membership (Mode 1 — a PNA candidate, verdict by posture) or goal-impact (Mode 2 — an adjacent app that touches the personal-network root without claiming to be a PNA; the AC findings are the instrument, summary.goal_impacts is the verdict, and the posture is not-a-pna). Mode 3 (no nexus, out of scope) emits no report.",
   "type": "object",
   "required": ["report_schema_version", "candidate", "summary", "findings"],
   "additionalProperties": false,
   "properties": {
     "report_schema_version": {
-      "const": "0.1",
-      "description": "Version of THIS report schema (not the PNA Spec version the candidate was evaluated against — that is candidate.pna_spec_version). Lets a diff tool refuse to compare incompatible report shapes."
+      "enum": ["0.1", "0.2"],
+      "description": "Version of THIS report schema (not the PNA Spec version the candidate was evaluated against — that is candidate.pna_spec_version). Lets a diff tool refuse to compare incompatible report shapes. 0.2 is strictly additive over 0.1: it adds candidate.classification (the evaluate flow's Step-0 categorization), summary.goal_impacts (the Mode-2 per-Goal read), and the not-a-pna posture. Every valid 0.1 instance remains valid; a 0.2 instance must carry candidate.classification."
     },
     "generated_at": {
       "type": "string",
@@ -39,7 +39,8 @@
           "type": "object",
           "description": "The candidate's flavor: axis -> pick. Determines which flavor-derived ACs apply (see spec/axes.md). Keys are axis names (e.g. 'distribution', 'storage'); values are pick identifiers (e.g. 'web-bundle-with-magic-link').",
           "additionalProperties": { "type": "string" }
-        }
+        },
+        "classification": { "$ref": "#/$defs/classification" }
       }
     },
     "summary": {
@@ -49,8 +50,8 @@
       "additionalProperties": false,
       "properties": {
         "posture": {
-          "enum": ["conformant", "not-pna-active", "non-conformant", "mixed", "indeterminate"],
-          "description": "Reports PNA membership (the pna-active bit, exceptions.md § Concept) together with conformance; exception *handling* lives solely in the per-EX findings and is never rolled up here. conformant = a PNA right now (no exception active) AND no non-conformances AND nothing left undetermined. not-pna-active = an exception is active (pna-active = false), so the app is not a PNA right now — a cleanly-handled EX-CLOUD-LLM app reads this, never conformant. non-conformant = at least one Goal 1-4 AC is non-conformant. mixed = some non-conformances but none on Goals 1-4, or non-conformances coexisting with conformant findings. indeterminate = too many unable-to-determine findings to take a posture."
+          "enum": ["conformant", "not-pna-active", "non-conformant", "mixed", "indeterminate", "not-a-pna"],
+          "description": "Reports PNA membership (the pna-active bit, exceptions.md § Concept) together with conformance; exception *handling* lives solely in the per-EX findings and is never rolled up here. conformant = a PNA right now (no exception active) AND no non-conformances AND nothing left undetermined. not-pna-active = an exception is active (pna-active = false), so the app is not a PNA right now — a cleanly-handled EX-CLOUD-LLM app reads this, never conformant. non-conformant = at least one Goal 1-4 AC is non-conformant. mixed = some non-conformances but none on Goals 1-4, or non-conformances coexisting with conformant findings. indeterminate = too many unable-to-determine findings to take a posture. not-a-pna = the Mode-2 posture: the candidate never claimed PNA membership (classification.mode = goal-impact), so a membership verdict would be noise — the verdict is summary.goal_impacts, and the classification block says what the app IS. Distinct from not-pna-active, which is a PNA-claimant temporarily out of PNA mode under an active Exception; not-a-pna is an app that was never a claimant at all. The two membership-verdict postures (conformant / non-conformant) are reserved for Mode-1 reports; not-a-pna is required for, and exclusive to, Mode-2 reports."
         },
         "headline": {
           "type": "string",
@@ -60,17 +61,125 @@
           "type": "array",
           "description": "AC IDs (matching findings[].ac_id) the summary calls out as most concerning, in priority order. Typically the Goal 1-4 non-conformances.",
           "items": { "$ref": "#/$defs/ac_id" }
+        },
+        "goal_impacts": {
+          "type": "array",
+          "description": "The Mode-2 verdict: the candidate's relationship to each of the four Goals on the fixed scale from docs/conformance-scope-and-lifecycle.md § Mode 2 (protects / neutral / diminishes / mixed / out-of-scope). Exactly one entry per Goal. Required when classification.mode = goal-impact; permitted (informative) on a membership report. Bounded strictly to the Goals — never a general privacy or quality score.",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "$ref": "#/$defs/goal_impact" },
+          "allOf": [
+            { "contains": { "properties": { "goal": { "const": 1 } }, "required": ["goal"] } },
+            { "contains": { "properties": { "goal": { "const": 2 } }, "required": ["goal"] } },
+            { "contains": { "properties": { "goal": { "const": 3 } }, "required": ["goal"] } },
+            { "contains": { "properties": { "goal": { "const": 4 } }, "required": ["goal"] } }
+          ]
         }
       }
     },
     "findings": {
       "type": "array",
-      "description": "One entry per AC the evaluator considered for the candidate's flavor. The diff signal: same candidate.commit + same report_schema_version should produce the same set of (ac_id -> status); a status change between two runs is the regression/improvement signal.",
+      "description": "One entry per AC the evaluator considered for the candidate's flavor. The diff signal: same candidate.commit + same report_schema_version should produce the same set of (ac_id -> status); a status change between two runs is the regression/improvement signal. In a Mode-2 (goal-impact) report the findings still carry real statuses — they are the instrument that makes the per-Goal read precise and diffable — but a non-conformant entry there is a class-contrast observation feeding goal_impacts, not the failure of a claim; the verdict is summary.goal_impacts.",
       "minItems": 1,
       "items": { "$ref": "#/$defs/finding" }
     }
   },
+  "allOf": [
+    {
+      "$comment": "A 0.2 instance must classify the candidate (the Step-0 categorization is recorded as a matter of course).",
+      "if": { "properties": { "report_schema_version": { "const": "0.2" } }, "required": ["report_schema_version"] },
+      "then": { "properties": { "candidate": { "required": ["classification"] } } }
+    },
+    {
+      "$comment": "Mode-2 coupling, forward: a goal-impact report's verdict is the per-Goal read, and its posture must be not-a-pna (a membership verdict on a non-claimant is noise).",
+      "if": {
+        "properties": { "candidate": { "properties": { "classification": { "properties": { "mode": { "const": "goal-impact" } }, "required": ["mode"] } }, "required": ["classification"] } },
+        "required": ["candidate"]
+      },
+      "then": { "properties": { "summary": { "required": ["goal_impacts"], "properties": { "posture": { "const": "not-a-pna" } } } } }
+    },
+    {
+      "$comment": "Mode-2 coupling, backward: the not-a-pna posture is exclusive to goal-impact reports — a membership (Mode-1) report may not use it.",
+      "if": { "properties": { "summary": { "properties": { "posture": { "const": "not-a-pna" } }, "required": ["posture"] } }, "required": ["summary"] },
+      "then": {
+        "properties": { "candidate": { "required": ["classification"], "properties": { "classification": { "properties": { "mode": { "const": "goal-impact" } } } } } }
+      }
+    }
+  ],
   "$defs": {
+    "classification": {
+      "type": "object",
+      "description": "The evaluate flow's Step-0 output (pna-toolkit/SKILL.md § Evaluate flow): what kind of application the candidate is and which output mode the evaluation ran in (the three-mode line in docs/conformance-scope-and-lifecycle.md § The utility line). Recorded as a matter of course, so a report on an adjacent app (a messenger, a mail client, an editor a user keeps contacts in) leads with an honest categorization instead of a membership verdict the candidate never claimed.",
+      "required": ["application_class", "stores_contact_data", "stores_relationship_data", "nexus", "nexus_source", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "application_class": {
+          "type": "string",
+          "description": "What the candidate is, named plainly — e.g. 'end-to-end-encrypted messaging client', 'personal relationship manager', 'text editor'. From its own claims plus its architectural shape."
+        },
+        "stores_contact_data": {
+          "type": "boolean",
+          "description": "Does the candidate hold contact data (spec/PNA_Spec.md § Vocabulary — externally-sourced facts identifying people: names, emails, phones, group rosters)?"
+        },
+        "contact_data_note": {
+          "type": "string",
+          "description": "Optional one-liner on where/how the contact data lives (e.g. 'local SQLCipher store synced to the vendor's storage service')."
+        },
+        "stores_relationship_data": {
+          "type": "boolean",
+          "description": "Does the candidate hold private relationship data (spec/PNA_Spec.md § Vocabulary — user-created memory over contacts: notes, tags, groups, comms history, sensitive communications)?"
+        },
+        "relationship_data_note": {
+          "type": "string",
+          "description": "Optional one-liner on where/how the relationship data lives."
+        },
+        "nexus": {
+          "enum": ["pna-candidate", "adjacent", "none"],
+          "description": "The candidate's nexus with the personal-network root. pna-candidate = claims to be a PNA or is architecturally shaped like one (a sovereign private layer, local-first, downstream of SaaS). adjacent = does not claim, but stores contact and/or relationship data. none = no personal-network root to protect or diminish."
+        },
+        "nexus_source": {
+          "enum": ["claimed", "inferred", "user-declared"],
+          "description": "How the nexus was established. claimed = the candidate itself claims PNA membership (an Architecture document, an explicit statement). inferred = the evaluator read it from the source/architecture. user-declared = the evaluation runner supplied it ('it's an editor, but I keep all my contacts in it') — record the declaration verbatim in user_declaration."
+        },
+        "user_declaration": {
+          "type": "string",
+          "description": "The runner's verbatim statement establishing nexus. Required when nexus_source = user-declared."
+        },
+        "mode": {
+          "enum": ["membership", "goal-impact"],
+          "description": "Which output mode the evaluation ran in (docs/conformance-scope-and-lifecycle.md § The utility line). membership = Mode 1, a full conformance verdict. goal-impact = Mode 2, per-Goal protects/neutral/diminishes/mixed/out-of-scope with posture not-a-pna. Mode 3 (nexus = none and no user declaration) emits no report — the honest output is 'out of scope', said in prose. A runner may force membership on an adjacent app; record nexus honestly either way."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "nexus_source": { "const": "user-declared" } }, "required": ["nexus_source"] },
+          "then": { "required": ["user_declaration"] }
+        }
+      ]
+    },
+    "goal_impact": {
+      "type": "object",
+      "description": "One Goal's read on the fixed Mode-2 scale. The high-value signal is diminishes — the app erodes the user's control of their personal-network root; mixed = genuinely both directions on one Goal (name both facets in the note).",
+      "required": ["goal", "impact"],
+      "additionalProperties": false,
+      "properties": {
+        "goal": { "type": "integer", "minimum": 1, "maximum": 4, "description": "The Goal number (spec/PNA_Spec.md § Goals)." },
+        "impact": {
+          "enum": ["protects", "neutral", "diminishes", "mixed", "out-of-scope"],
+          "description": "protects = actively advances what the Goal protects. neutral = neither helps nor erodes. diminishes = erodes the user's control of their personal-network root on this Goal. mixed = materially both (e.g. an exemplary content-blind transport whose private overlay still syncs off-device). out-of-scope = the Goal's subject matter is absent from this app."
+        },
+        "note": {
+          "type": "string",
+          "description": "One or two sentences grounding the read, naming the AC findings it leans on. Required for diminishes and mixed (the reads a user acts on must be self-explaining)."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "impact": { "enum": ["diminishes", "mixed"] } }, "required": ["impact"] },
+          "then": { "required": ["note"] }
+        }
+      ]
+    },
     "ac_id": {
       "type": "string",
       "pattern": "^AC-[A-Z0-9-]+$",

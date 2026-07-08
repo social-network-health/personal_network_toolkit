@@ -27,7 +27,8 @@ just view-reports evaluations/<name>                        # render in the Visu
 
 ## Index
 
-- [`signal-desktop/`](signal-desktop/) — **Signal Desktop 8.16.0**. **Not a PNA** — an end-to-end-encrypted
-  messaging client, and the canonical AC-18 *transport* the spec endorses; evaluated **non-conformant** as
-  a candidate PNA. Drove the AC-1 restatement (#106), the AC-18 transport field note + the egress-lint
-  blind-spot finding (#107), and the Toolkit self-check (#108).
+- [`signal-desktop/`](signal-desktop/) — **Signal Desktop 8.17.0**. **Not a PNA** — an end-to-end-encrypted
+  messaging client, and the canonical AC-18 *transport* the spec endorses; a **Mode-2 goal-impact read**
+  (posture `not-a-pna`: Goals 1–3 **mixed**, Goal 4 **protects**). Drove the AC-1 restatement (#106), the
+  AC-18 transport field note + the egress-lint blind-spot finding (#107), the Toolkit self-check (#108),
+  and the Mode-2 first-class report shape itself (schema 0.2; run 3 is the first instance).
