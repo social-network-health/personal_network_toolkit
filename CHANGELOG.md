@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+### Visual Validator: the report library, per-app run history, and Mode-2 rendering
+
+The Visual Validator becomes the way to *browse the toolkit's validations*, not just render one file.
+Toolkit fix — viewer/tooling/docs only; 0.1 reports render exactly as before.
+
+- **`just view-reports` (no argument) now opens the report library** — every real validation report in
+  the repo: each `evaluations/` casebook entry (its dated `runs/` history where present) plus both
+  bundled reference-design reports, served from the repo root and globbed at serve time (no manifest to
+  go stale). The synthetic fixtures move behind `just view-reports samples`; `just view-reports <dir>`
+  is unchanged.
+- **Run history as files (`evaluations/<name>/runs/`).** A re-evaluated subject keeps every committed
+  run as an immutable dated copy (`runs/<date>-run<N>-<tag>.json`) beside the canonical
+  `evaluate-report.json` (the latest). Backfilled for Signal Desktop: runs 2 and 3 (run 1 predates the
+  casebook and was never committed — noted, not fabricated). Convention documented in
+  [`evaluations/README.md`](evaluations/README.md).
+- **Grouped picker.** When the loaded set holds several reports for one app, the viewer's dropdown
+  groups them under the app's name (pick an app, walk its runs, labels `date · posture`); flat sets
+  read `name · date · posture`. ← / → still cycles everything.
+- **Mode-2 rendering.** The candidate card shows the schema-0.2 `classification` block ("What it is",
+  nexus/mode/storage chips, and the verbatim user declaration when one brought the app in scope); both
+  summary registers render `summary.goal_impacts` as a per-Goal strip (impact badges reuse the existing
+  status palette); the `not-a-pna` posture gets its badge and plain-language verdict line.
+- Browser render tests extended for the strip, the classification banner, and the grouped picker
+  (opt-in `just test-viewer` suite, per the repo's one sanctioned non-stdlib exception).
+
 ### Adjacent-app evaluation becomes routine: the classification gate + Mode 2 (goal-impact read) as a first-class evaluate output
 
 Evaluating apps that never claimed to be PNAs but hold contact/relationship data (Signal, a mail

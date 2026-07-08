@@ -20,9 +20,19 @@ behind a spec decision, a worked example of the flow, or a diffable baseline for
 `README.md` naming the headline finding and what it drove. The reports are **static records**, not
 continuously re-run — re-evaluation is deliberate (re-run the flow, diff the JSON for posture drift).
 
+**Run history (`runs/`).** When a subject is re-evaluated, the superseded report is not discarded:
+each run also lands as an immutable dated copy at `runs/<date>-run<N>-<tag>.json`, while
+`evaluate-report.json` stays the canonical latest (identical to the newest runs/ file). That keeps the
+run-to-run diff — *which findings changed, and why* — browsable as files, and lets the Visual Validator
+group a subject's history in its picker (pick the app, walk its runs). Only runs that were actually
+committed are backfilled; a run that predates its casebook entry stays uncommitted history, noted in
+the subject's README.
+
 ```
 just report-lint  evaluations/<name>/evaluate-report.json   # validate against the render contract
-just view-reports evaluations/<name>                        # render in the Visual Validator
+just view-reports                                           # the library: every evaluation here (runs/
+                                                            #   history included) + the reference designs
+just view-reports evaluations/<name>/runs                   # one subject's history only
 ```
 
 ## Index

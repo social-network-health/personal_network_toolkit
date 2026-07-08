@@ -115,13 +115,36 @@ setup-test:
 test-viewer *args:
     {{venv}}/bin/pytest tools/report-viewer/tests/ {{args}}
 
-# Serve the Visual Validator and flip through a directory of reports (← / →). No arg = the bundled samples.
+# Serve the Visual Validator over the report library and flip through it (← / →, grouped by app). No arg = the library (evaluations/ casebook — dated runs/ history where present — plus the bundled reference-design reports); `samples` = the synthetic sample fixtures; a dir path = that directory's *.json.
 [group('browser-test')]
 view-reports dir="":
     #!/usr/bin/env bash
     set -euo pipefail
     viewer="tools/report-viewer"
     if [ -z "{{dir}}" ]; then
+      # Library mode: every real validation report in the repo. Per casebook entry,
+      # prefer the dated runs/ history (newest first; it contains the latest run)
+      # over the canonical evaluate-report.json, so an app's runs group in the
+      # viewer without the latest appearing twice. Served from the repo root.
+      files=""
+      for d in evaluations/*/; do
+        if compgen -G "${d}runs/*.json" > /dev/null; then
+          files+="$(ls -r "${d}runs/"*.json | paste -sd, -),"
+        elif [ -f "${d}evaluate-report.json" ]; then
+          files+="${d}evaluate-report.json,"
+        fi
+      done
+      for f in reference_designs/*/evaluate-report.json; do
+        [ -f "$f" ] && files+="$f,"
+      done
+      files="${files%,}"
+      [ -n "$files" ] || { echo "no reports found under evaluations/ or reference_designs/"; exit 1; }
+      q="reports=/$(echo "$files" | sed 's#,#,/#g')"
+      url="http://127.0.0.1:{{viewer_port}}/$viewer/index.html?$q&mode=side-by-side"
+      echo "Visual Validator (library) → $url   (Ctrl-C to stop)"
+      ( sleep 1; {{opener}} "$url" >/dev/null 2>&1 || true ) &
+      exec {{python}} -m http.server {{viewer_port}} -d .
+    elif [ "{{dir}}" = "samples" ]; then
       q="reports=$(cd "$viewer" && ls sample-reports/*.json | paste -sd, -)"
     else
       abs="$(cd "{{dir}}" && pwd)"

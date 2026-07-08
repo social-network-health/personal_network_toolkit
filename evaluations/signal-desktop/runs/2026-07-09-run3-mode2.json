@@ -1,0 +1,343 @@
+{
+  "report_schema_version": "0.2",
+  "generated_at": "2026-07-09T00:00:00Z",
+  "generated_by": "pna-toolkit evaluate flow — Claude. Run 3: re-emitted as a first-class Mode-2 (goal-impact) report at report schema 0.2, and re-verified at Signal Desktop 8.17.0 (44c41468d): all 34 citations re-anchored at the new version with no behavioral drift affecting any finding (no AI/LLM feature added, no local listening surface, crash-upload posture unchanged, reproducible builds still Linux-only). Every per-AC status is unchanged from run 2; what changes is the frame — posture non-conformant -> not-a-pna, with the verdict now carried by summary.goal_impacts. Verification tier for this run: LLM citation re-anchoring + an 8.16->8.17 drift sweep; the deterministic egress-lint tier ran in runs 1-2 (LLM architectural pass + egress-lint) and was not re-run at 8.17.0.",
+  "candidate": {
+    "name": "Signal Desktop",
+    "repo_url": "https://github.com/signalapp/Signal-Desktop",
+    "commit": "44c41468d",
+    "pna_spec_version": "0.2",
+    "picks_source": "inferred",
+    "classification": {
+      "application_class": "end-to-end-encrypted messaging client (a client of Signal's hosted service) — and the canonical conformant transport the spec itself endorses (AC-18, 'Signal-class protocols pass')",
+      "stores_contact_data": true,
+      "contact_data_note": "Contacts and conversations live in a local SQLCipher store (db.sqlite), populated from the Signal network — linked-device sync, storage-service sync, CDS, message senders — not from a user-configured mirror.",
+      "stores_relationship_data": true,
+      "relationship_data_note": "A private overlay per contact (notes, nicknames) plus groups and full message history, in the same store; the notes/nicknames are packed into contact records that sync to storage.signal.org and the primary device.",
+      "nexus": "adjacent",
+      "nexus_source": "inferred",
+      "mode": "goal-impact"
+    },
+    "axis_picks": {
+      "distribution": "sideloaded-native (signal.org download / apt / store; no PNA-operated auth-gating server)",
+      "storage": "native-sqlcipher (single @signalapp/sqlcipher db.sqlite; 256-bit key in OS keychain via Electron safeStorage)",
+      "ingestion": "approx single-source-live-pull (sui generis: linked-device sync + storage-service sync + CDS + message senders; not a mirror-and-build)",
+      "workspace-shell": "framework-spa (React SPA in the Electron renderer)",
+      "comms": "signal-protocol-only (the app IS the transport; no transport menu)",
+      "mcp-exposure": "none"
+    }
+  },
+  "summary": {
+    "posture": "not-a-pna",
+    "headline": "Signal Desktop is an end-to-end-encrypted messaging client, not a PNA — a different application class that never claimed membership, so this is a goal-impact read, not a membership verdict; it is in fact the canonical conformant *transport* the spec endorses (AC-18, 'Signal-class protocols pass'). Read against the Goals: under the restated AC-1 (a sovereign, *sealed-by-default* private layer) Signal delivers the ownership facet — your data lives in a local encrypted store you can back up and export (Goal 1) — but not the sealing facet (Goal 3): even the private overlay (contact notes/nicknames) and the relationship graph sync off-device to storage.signal.org and the primary phone, automatically. It is SaaS-backed rather than local-only (chat/storage/CDS servers + a persistent websocket), it background-polls/syncs without user action (AC-21), and it carries no per-source contact provenance (AC-17). Where Signal is genuinely strong it lands on the same values the spec prizes: message content is E2EE so the transport cannot read it (AC-18), the user sees the full payload before send (AC-19), there is no telemetry and crash-upload is off by default, the source is AGPL-3.0 with reproducible Linux builds (AC-23), and runtime capability is probed honestly (AC-22). The mismatch is architectural class, not engineering quality.",
+    "leading_concerns": ["AC-1", "AC-21", "AC-17"],
+    "goal_impacts": [
+      {
+        "goal": 1,
+        "impact": "mixed",
+        "note": "Local custody is real: contacts, messages, and the private overlay live in a local SQLCipher store with exportable backups (AC-1 ownership facet, AC-9). But the root is not sovereign: it is bound to the Signal account, populated and refreshed by continuous background sync rather than user-initiated ingestion (AC-21 non-conformant), so it cannot serve as a root store you keep independent of the service."
+      },
+      {
+        "goal": 2,
+        "impact": "mixed",
+        "note": "Code-validation is exemplary: AGPL-3.0 source with reproducible Linux builds (AC-23), honest runtime capability probing (AC-22), and a strong redacted, user-initiated debug substrate (AC-7). Data-validation is absent: contact records auto-materialize from the network with no per-source provenance and no user-configured source gate (AC-17 non-conformant)."
+      },
+      {
+        "goal": 3,
+        "impact": "mixed",
+        "note": "As a transport, exemplary — content-blind E2EE with sealed sender (AC-18), full payload visible before send (AC-19), no telemetry, crash-upload off by default. As a keeper of the private layer, it diminishes control: the contact notes/nicknames overlay and the relationship graph sync to storage.signal.org and the primary device automatically, with no per-item user action (AC-1 sealing facet non-conformant)."
+      },
+      {
+        "goal": 4,
+        "impact": "protects",
+        "note": "Timestamped local encrypted backups with configurable rotation (AC-9), a version-skew guard on the storage boundary (AC-4, stricter than the spec asks), and OS-level single-instance locking (AC-11) — durability against entropy and accidents is engineered for."
+      }
+    ]
+  },
+  "findings": [
+    {
+      "ac_id": "AC-1",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1, 3],
+      "requirement": "A PNA MUST distinguish shared data (externally mirrored, replaceable) from private data (locally created, sovereign); the private class MUST be locally owned and sealed by default — it MUST NOT egress or mutate except through an explicit user action — with the class boundary enforced at the data layer. (The two-store split is the canonical realization, not the requirement.)",
+      "rationale": "Under the restated AC-1 the verdict is sharper than 'no two stores' and lands on the real failure. Signal DELIVERS the ownership facet (Goal 1): contact + message data lives in a local SQLCipher store the user controls, with local and exportable backups — taking local custody is not blocked. But it FAILS the sealed-by-default facet (Goal 3): Signal keeps no sealed private layer. The user's private overlay — contact notes and nicknames — is written into the contact record that syncs to storage.signal.org and back to the primary phone, automatically; the relationship graph and metadata sync in the background too. Private/relationship data therefore egresses without an explicit per-item user action, which the restated AC-1's 'sealed by default' MUST forbids. Store count is not the basis of this finding — a single encrypted store could still seal a private class at the data layer; Signal does not, because by design it replicates that layer to its service. (At-rest encryption of the whole store is stronger-than-required on a dimension the spec does not mandate, and orthogonal to sealing.)",
+      "citations": [
+        { "path": "ts/services/storageRecordOps.preload.ts", "lines": "337-344", "note": "toContactRecord(): the user's private overlay — notes + nicknames — is packed into the contact record synced to the storage service and back to the phone; the private layer is not sealed on-device." },
+        { "path": "ts/services/storage.preload.ts", "lines": "1319-1323", "note": "Storage-service sync merges/uploads contact records automatically — the private overlay egresses with no explicit per-item user action." },
+        { "path": "ts/sql/Server.node.ts", "lines": "1017", "note": "Single db.sqlite, one privacy posture — context for the absent shared/private class boundary; not itself the basis of the finding under the restated AC-1." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Restated AC-1 discriminates: ownership facet (Goal 1) met — local encrypted store, exportable backups; sealed-by-default facet (Goal 3) violated — private overlay (notes/nicknames) + relationship graph sync off-device automatically. Verdict unchanged from the pre-reframe run (still non-conformant), but the reason moves from store-structure to private-layer egress." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-4",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [4],
+      "rationale": "The storage boundary version-checks at init and refuses to operate on a database newer than the code supports (DBVersionFromFutureError), protecting integrity across version skew — AC-4's intent. Marked needs_human_review because the literal sub-requirement 'read operations MUST continue to work on mismatch' is NOT honored: Signal hard-stops the app (refuses reads too) rather than degrading to read-only. Defensible as a safety choice for a messaging client, but stricter/different than AC-4's graceful-degradation wording.",
+      "citations": [
+        { "path": "ts/sql/migrations/index.node.ts", "lines": "1694-1778", "note": "user_version-based migration list; throws DBVersionFromFutureError when DB > MAX_VERSION, app refuses to start." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Version mismatch refuses ALL operations (hard stop), not just mutating ops; AC-4 wants reads to continue. Integrity intent met; literal read-continuation not." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-6",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A force-reset escape exists: on a database-initialization failure the user gets a 'Delete and Restart' path (double-confirmed) that wipes the DB + config and relaunches; the Debug Log is reachable from the View menu at any time. Marked needs_human_review because the reset hatch is gated to the DB-error dialog rather than a single always-reachable affordance independent of app state (there is no '--reset' CLI flag — only '--lang').",
+      "citations": [
+        { "path": "app/main.main.ts", "lines": "1944-1998", "note": "onDatabaseInitializationError: 'Delete and Restart' -> sql.removeDB() + userConfig.remove() + relaunch, requires double confirmation." },
+        { "path": "app/menu.std.ts", "lines": "141-142", "note": "'Debug log' menu item -> showDebugLog, always reachable from the main window." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-7",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Signal ships a strong self-service field-debug substrate: an always-reachable Debug Log, sanitized/redacted log capture, a runtime version label, and a user-initiated upload (bug-report) flow to debuglogs.org. Redaction strips phone numbers, UUIDs, group IDs, paths, card numbers, etc. before any upload, and upload happens only on an explicit Submit click.",
+      "citations": [
+        { "path": "ts/util/privacy.node.ts", "lines": "218-234", "note": "redactAll() composes redactPhoneNumbers/redactUuids/redactGroupIds/redactSensitivePaths/... applied before log assembly + upload." },
+        { "path": "ts/components/DebugLogWindow.dom.tsx", "lines": "87-106", "note": "handleSubmit() -> uploadLogs(text) only on explicit user click." },
+        { "path": "ts/logging/uploadDebugLog.node.ts", "lines": "18", "note": "BASE_URL = 'https://debuglogs.org' — user-initiated, redacted upload." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-9",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [4],
+      "rationale": "Signal provides local encrypted backups under a SignalBackups folder with timestamped snapshots and configurable rotation/pruning, plus an optional remote encrypted backup service. This satisfies AC-9's auto-backup-with-a-recovery-ring intent. Marked needs_human_review because the snapshot cadence/opt-in posture (vs. AC-9's per-boot debounced cadence) was not fully traced; the rotation ring is present.",
+      "citations": [
+        { "path": "ts/services/backups/util/localBackup.node.ts", "lines": "28", "note": "LOCAL_BACKUP_SNAPSHOT_DIR_PREFIX = 'signal-backup-' — timestamped local snapshots." },
+        { "path": "ts/services/backups/util/localBackup.node.ts", "lines": "98-164", "note": "Configurable rotation: snapshots pruned, old media deleted (the recovery ring)." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-10",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [1, 4],
+      "rationale": "AC-10 governs opt-in, non-destructive re-imports of a Shared store with an orphan-preview before commit. Signal has no mirror-and-build Shared store to re-import; contact/conversation data flows in continuously via linked-device sync, storage-service sync, CDS, and message senders. There is no re-mirror event and thus no orphan-preview concept. The closest analog (continuous background sync) instead bears on AC-21, where it is non-conformant.",
+      "citations": [
+        { "path": "ts/services/contactSync.preload.ts", "lines": "144-149", "note": "Contact data arrives as a sync attachment from the primary device, applied continuously — not a user-committed re-import." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-11",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [4],
+      "rationale": "Concurrent access is prevented at the OS level: Electron requestSingleInstanceLock() makes the second instance exit and focuses the first, so two processes never write the one DB concurrently (the corruption AC-11 guards against). Marked needs_human_review because AC-11 asks for a *specific* conflict message rather than a generic outcome; Signal exits silently and raises the existing window instead of surfacing a 'another instance is open' message.",
+      "citations": [
+        { "path": "app/main.main.ts", "lines": "256-283", "note": "requestSingleInstanceLock(); second instance app.exit(); first instance focused. No specific user-facing conflict message." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-15",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A runtime-visible build label exists — version 8.16.0 is shown in the About window and read from package.json at runtime — and maps to a published git release tag. Marked needs_human_review because the label is a semver release string with no embedded commit SHA, so 'tied to source revision' holds only at release-tag granularity, not commit-exact; and there is no 'serve time' substitution (native app, not served).",
+      "citations": [
+        { "path": "package.json", "lines": "9", "note": "\"version\": \"8.16.0\"." },
+        { "path": "ts/windows/about/app.dom.tsx", "lines": "27", "note": "About window shows version via SignalContext.getVersion()." },
+        { "path": "ts/util/packageJson.main.ts", "lines": "11-13", "note": "Runtime version read from package.json; no git SHA embedded." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-16",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-16 requires a PNA workspace to surface multiple outreach transports and let the user pick per outreach. Signal Desktop is itself a single transport (the Signal protocol) — it does not present a transport menu and there is no email/SMS/other fallback. It is the transport a conforming PNA would offer (and which passes AC-18), not a PNA workspace choosing among transports, so the AC does not apply to it as a candidate.",
+      "citations": [
+        { "path": "ts/textsecure/OutgoingMessage.preload.ts", "lines": "434-440", "note": "Single send path: Signal protocol only; no transport-selection surface." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-17",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [2],
+      "requirement": "Every record in the Shared store MUST trace to a specific external source the user has explicitly configured. The toolkit MUST NOT introduce contact data the user hasn't approved.",
+      "rationale": "Signal contact/conversation records carry no per-source provenance field and are not gated on a user-configured source. Contacts auto-materialize from the Signal network: any incoming message sender becomes a conversation, group members appear, and CDS/storage-service/profile-refresh populate records — none of which the user 'explicitly configured' as a source. Merge across identifiers (ACI/E164/PNI) is identity consolidation, not source-attributed provenance.",
+      "citations": [
+        { "path": "ts/model-types.d.ts", "lines": "357-449", "note": "ConversationAttributesType has name/profileName/note/nickname fields but NO 'source' provenance field." },
+        { "path": "ts/ConversationController.preload.ts", "lines": "732-1026", "note": "maybeMergeContacts: any sender/identifier auto-creates+merges conversations; no user-configured-source gate." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Provenance is absent; records originate from the network rather than a user-approved source list." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-18",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [3],
+      "rationale": "Signal is the spec's exemplar of a content-blind transport: message bodies and attachments are encrypted client-side with the Signal Protocol (libsignal) and wrapped in sealed-sender before egress, so the transport/server sees only ciphertext and cannot read contents. AC-18 explicitly names 'Signal-class protocols pass'.",
+      "citations": [
+        { "path": "ts/textsecure/OutgoingMessage.preload.ts", "lines": "434-440", "note": "signalEncrypt() on plaintext before send — content encrypted client-side." },
+        { "path": "ts/textsecure/OutgoingMessage.preload.ts", "lines": "539-549", "note": "sealedSenderEncrypt(); envelope contents are encrypted bytes (UNIDENTIFIED_SENDER)." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-19",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [3],
+      "rationale": "For user-composed messages the full payload is visible before send: the composer renders recipients (conversation header), body (Quill editor), attachments, quotes, and link previews, and the send is an explicit click that invokes the send action. No auto-blast of message content without the user seeing the composition. (Protocol acks — delivery/read/viewed receipts, typing indicators — are sent without a per-item payload review, but those are not user 'communications' in the AC-19 sense; read/viewed receipts and typing are user-configurable and default OFF.)",
+      "citations": [
+        { "path": "ts/components/CompositionArea.dom.tsx", "lines": "403-447", "note": "handleSubmit() fires only on explicit user send; composer shows full payload first." },
+        { "path": "ts/state/ducks/composer.preload.ts", "lines": "650-756", "note": "sendMultiMediaMessage receives the composed body/attachments/quote/preview the user saw." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-20",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-20 governs LLM invocations over Private/Shared data (treat as a transport; local default; cloud opt-in per call; show prompt before send). Signal Desktop has no AI/LLM feature of any kind — no smart-reply, summarization, transcription, or cloud-model call over messages or contacts — so there is no LLM-as-transport surface to govern. Vacuously satisfied / not applicable.",
+      "citations": [
+        { "path": "ts/messages/MessageSendState.std.ts", "lines": "249", "note": "Only 'summarize' hit is internal send-status UI reduction, not AI summarization; no openai/anthropic/llm/inference references found." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-21",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1],
+      "requirement": "Re-ingestion MUST be triggered by an explicit user action; the PNA MUST NOT background-poll source services. The user always knows when fresh data is being fetched.",
+      "rationale": "Signal continuously fetches/syncs in the background without user action: a routine profile refresh loop (≈hourly, up to 50 contacts/cycle), automatic storage-service sync on startup and on any change, and a persistent websocket keepalive to receive messages. This is correct and necessary behavior for a messaging client, but it is the direct opposite of AC-21's no-background-poll rule, so as a candidate PNA it is non-conformant.",
+      "citations": [
+        { "path": "ts/routineProfileRefresh.preload.ts", "lines": "54-101", "note": "RoutineProfileRefresher.start(): infinite background loop refreshing contact profiles." },
+        { "path": "ts/routineProfileRefresh.preload.ts", "lines": "27", "note": "MIN_ELAPSED_DURATION_TO_REFRESH_AGAIN = HOUR; background cadence, not user-initiated." },
+        { "path": "ts/services/storage.preload.ts", "lines": "1319-1323", "note": "Storage-service sync merges contact records automatically (no user trigger)." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Background profile refresh + storage sync + websocket keepalive run without explicit user action." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-22",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Signal probes the runtime capability it depends on rather than assuming it: it calls safeStorage.isEncryptionAvailable() (and detects a degraded Linux backend) before relying on OS-keychain encryption, and on a missing/changed capability it surfaces an explicit dialog with honest choices (quit, or continue-with-plaintext) instead of silently downgrading. This is the sound-probe-and-report-truthfully behavior AC-22 requires.",
+      "citations": [
+        { "path": "app/main.main.ts", "lines": "1653-1660", "note": "isEncryptionAvailable gated on safeStorage.isEncryptionAvailable() + Linux backend != basic_text." },
+        { "path": "app/main.main.ts", "lines": "1755-1786", "note": "Explicit dialog on safeStorage decryption failure (Flatpak edge case); no silent plaintext downgrade." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-23",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Source is available for verification: Signal Desktop is AGPL-3.0-only with full public source, and ships a reproducible-builds pipeline (pinned Docker image, SOURCE_DATE_EPOCH, SHA-256 comparison against official .deb) so a user can verify the shipped binary matches published source. Marked needs_human_review because reproducible builds are Linux-only today (macOS/Windows rely on the signing/notarization trust chain, not source-reproducibility).",
+      "citations": [
+        { "path": "package.json", "lines": "10", "note": "\"license\": \"AGPL-3.0-only\" — copyleft, source-available." },
+        { "path": "reproducible-builds/README.md", "lines": "14", "note": "Reproducible builds documented; macOS/Windows 'not available yet'." },
+        { "path": "reproducible-builds/Dockerfile", "lines": "1-8", "note": "Pinned base image + SOURCE_DATE_EPOCH for deterministic Linux builds." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-MCP-A",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [2, 3],
+      "rationale": "AC-MCP-A governs MCP tools that return Private DB rows to cloud AI clients. Signal Desktop exposes no MCP servers and no programmatic data surface (the only automation surface, ts/CI.preload.ts, is gated behind config.ciMode and absent from production builds). No MCP surface, so the AC does not apply.",
+      "citations": [
+        { "path": "ts/windows/main/phase4-test.preload.ts", "lines": "15-26", "note": "SignalCI exposed only if config.ciMode; not present in production — no shipped MCP/automation surface." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-MCP-B",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-MCP-B governs MCP Communications tools staging outreach for workspace-launched send. Signal exposes no MCP Communications server (mcp-exposure: none); outbound sends are driven only by the user through the composer. Nothing to mediate, so the AC does not apply.",
+      "citations": [
+        { "path": "ts/components/CompositionArea.dom.tsx", "lines": "403-447", "note": "Sends originate from the human composer; no MCP staging surface exists." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-2",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-2 (no SaaS surface) is conditional on a PNA standing up a *server over its own data* — typically a distribution server. Signal Desktop stands up no such server; it is a *client* to Signal's hosted infrastructure (chat/storage/CDS/CDN/SFU). So the AC as written (the PNA's own delivery server must be a channel not a service) does not apply. The deeper issue — that Signal's core function depends on SaaS infrastructure, and even the private overlay syncs to storage.signal.org — is the PNA-DEFINITION departure (local-only, never SaaS) carried in the report summary and reflected in AC-1/AC-21, not in AC-2.",
+      "citations": [
+        { "path": "config/production.json", "lines": "1-13", "note": "serverUrl/storageUrl/directoryUrl/cdn/sfuUrl — hosted services Signal is a client of; no PNA-operated delivery server." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-5",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [1],
+      "rationale": "AC-5 is conditional on a PNA gating a Shared store behind an authenticated refresh and requires a rejected fetch to fall through to local cache. Signal's model is not an auth-gated Shared-store refresh; it does, however, serve cached conversations/messages offline when the network is unavailable, so the spirit (don't lock the user out of local data) is met even though the trigger does not apply.",
+      "citations": [
+        { "path": "ts/textsecure/SocketManager.preload.ts", "lines": "59", "note": "Offline handling via keepalive/backoff; cached data remains readable offline — but not an auth-gated Shared-store refresh." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-8",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-8 is conditional on a PNA operating an authentication server with a configured error sink. Signal Desktop operates no authentication server (it authenticates as a client to Signal's service). No PNA-operated auth endpoint exists to anti-enumerate or rate-limit, so the AC does not apply.",
+      "citations": [
+        { "path": "config/production.json", "lines": "1-2", "note": "Auth is against the hosted chat.signal.org service; the desktop app runs no auth server of its own." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-B",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [2],
+      "rationale": "AC-PRM-B is conditional on mirroring more than one source (multi-source dedup with per-field provenance). Signal has a single logical source — the Signal network — and its merge across ACI/E164/PNI identifiers is identity consolidation of the same person on one network, not reconciliation across distinct external sources. The multi-source-mirror behavioral property is absent, so the AC does not apply.",
+      "citations": [
+        { "path": "ts/ConversationController.preload.ts", "lines": "789-801", "note": "Merge matches on serviceId/e164/pni for the same Signal identity — single-source identity consolidation, not multi-source merge." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-H",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-PRM-H is conditional on the PNA exposing a same-host surface over its data (a loopback HTTP daemon / local socket). Signal Desktop opens no local listening server — no createServer/listen/127.0.0.1 binding in production code; cross-process communication is internal Electron IPC only. With no same-host surface, the AC does not apply.",
+      "citations": [
+        { "path": "ts/CI.preload.ts", "lines": "1-30", "note": "The only external-style instrumentation (SignalCI) is test-mode-gated; no production loopback HTTP/socket server is opened." }
+      ],
+      "needs_human_review": false
+    }
+  ]
+}
