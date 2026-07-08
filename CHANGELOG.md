@@ -2,6 +2,47 @@
 
 ## Unreleased
 
+### Adjacent-app evaluation becomes routine: the classification gate + Mode 2 (goal-impact read) as a first-class evaluate output
+
+Evaluating apps that never claimed to be PNAs but hold contact/relationship data (Signal, a mail
+client, a CRM — or "it's an editor, but I keep all my contacts in it") is now a **normal, first-class
+use of the evaluate flow**, realizing roadmap item **R5** of
+[`docs/conformance-scope-and-lifecycle.md`](docs/conformance-scope-and-lifecycle.md). Toolkit fix — no
+new obligation on any design; every existing `0.1` report (including the bundled reference-design
+copies) stays valid.
+
+- **The classification gate (SKILL.md § Evaluate flow, step 1).** Before judging any AC, the agent
+  establishes what class of app the candidate is, whether it stores contact data, and whether it stores
+  private relationship data — and picks the output mode from that nexus: **membership** (Mode 1, the
+  existing flow), **goal-impact** (Mode 2, adjacent apps), or an honest **out-of-scope** decline
+  (Mode 3) — *after asking the user how they use the app*, since a user declaration ("I keep all my
+  contacts in this editor") establishes the nexus (`nexus_source: user-declared`, recorded verbatim)
+  and proceeds as Mode 2.
+- **Report schema 0.2 (`tools/evaluate-report.schema.json`), strictly additive.** New
+  `candidate.classification` block (application class · the two storage answers · nexus · nexus source ·
+  mode), new `summary.goal_impacts` (one entry per Goal on the fixed scale, now including **`mixed`**;
+  a note is required for `diminishes`/`mixed`), and the new **`not-a-pna`** posture — required for, and
+  exclusive to, goal-impact reports (distinct from `not-pna-active`, a *claimant* under an active
+  Exception). `0.1` instances remain valid; a `0.2` instance must carry the classification.
+- **Instrument vs. verdict, reconciled.** The scope doc's Mode-2 wording previously said failed ACs are
+  "not-applicable" for a non-claimant, yet the realized Signal report keyed real AC statuses — and that
+  precision is what drove the AC-1 restatement. The line now reads: the **AC walk is the instrument**
+  (real statuses, class-contrast observations, diffable), the **per-Goal read is the verdict**, and the
+  posture is `not-a-pna`, never a membership verdict the app didn't claim.
+- **Lint + self-tests.** `tools/report-fixtures-lint.py` enforces the 0.2 couplings (classification
+  required at 0.2; goal-impact ⇔ `not-a-pna`; complete Goals 1–4; impact vocabulary; verbatim
+  user declaration; notes on `diminishes`/`mixed`), with five new dirty fixtures each pinned to its
+  message by a new `case_report_mode2` self-test, plus the clean Mode-2 sample
+  `tools/report-viewer/sample-reports/05-adjacent-app-goal-impact.json`.
+- **Signal Desktop re-evaluated (run 3)** at v8.17.0 (`44c41468d`) under schema 0.2: every per-AC status
+  unchanged from run 2 (all 34 citations re-verified and re-anchored at the new version; no new AI
+  feature, no loopback surface, reproducible builds still Linux-only), posture `non-conformant` →
+  **`not-a-pna`**, and the verdict now lives in the per-Goal impact strip.
+- Docs: users-guide gains [Audit an adjacent app](docs/users-guide.md); the scope doc's § Mode 2 and R5
+  updated as above. Rationale: [`docs/design-notes/2026-07-adjacent-app-goal-impact-mode.md`](docs/design-notes/2026-07-adjacent-app-goal-impact-mode.md)
+  and [`docs/PriorArt.md` § Design notes](docs/PriorArt.md). Viewer rendering of the impact strip lands
+  in a follow-up PR.
+
 ### Spec vocabulary clarified: "slot" → "component", axes co-located with their components, AC-1 generalized terms
 
 A readability pass on `spec/PNA_Spec.md` (and the docs/contracts that echo its vocabulary). **No AC,

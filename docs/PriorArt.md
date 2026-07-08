@@ -353,3 +353,23 @@ Mapping the spec against the Ink & Switch [*local-first software*](https://www.i
 
 Auditing `fellows_local_db` surfaced a discoverability trap: the design ships *two* conformance artifacts derived from one attestation source — a design-internal ship-gate readout at `docs/conformance/report.json` (fellows-format, carries fellows-local `UM-*` rows) and the toolkit's render-contract artifact `docs/conformance/evaluate-report.json`. An auditor landing in `docs/conformance/` reaches for `report.json` first and validates the wrong file against `tools/evaluate-report.schema.json` — a false "non-conformant report shape" signal. Two decisions came out of it, recorded as a toolkit fix (no new design obligation): **(1)** the docs now name the **canonical filename (`evaluate-report.json`)** and state explicitly that a design's other conformance readouts are not this artifact, so the artifact is identified by name+schema, not by directory convention. **(2)** A design's deterministic `[verify].entrypoint` emitter is recognized as a **first-class producer** of the artifact, co-equal with the skill's LLM evaluate flow — the deterministic path is *more* reproducible (same commit + same attestation → byte-identical output) and is the stronger evidence tier for a contribution (cf. the `[verify]`-runs-it "Tier F" in [`design-notes/2026-06-validate-command-and-strength-tiers.md`](design-notes/2026-06-validate-command-and-strength-tiers.md)). The SKILL had only ever framed the evaluate-report as the *output of the LLM flow*; both producers now appear, and the agent is told to confirm which file is a schema instance when a candidate ships several. Origin: PNT audit of `richbodo/fellows_local_db` at `6697b00` (the `evaluate-report.json` emitter, `fellows_local_db#267`, postdated that commit).
 
+### 2026-07 — Adjacent apps are evaluated routinely: classify first, then membership verdict or goal-impact read
+
+The Signal Desktop evaluation — the toolkit's most productive single validation (it drove the AC-1
+restatement) — was of an app that never claimed to be a PNA, and the toolkit had no honest report
+shape for that: Signal got a membership verdict (`non-conformant`) the scope doc itself calls noise,
+and the doc's Mode-2 wording ("failed ACs read not-applicable") contradicted the realized report,
+whose real AC statuses were exactly what made it productive. Decision (a toolkit fix, realizing
+[`conformance-scope-and-lifecycle.md`](conformance-scope-and-lifecycle.md) R5): the evaluate flow now
+**classifies every candidate first** (what class of app is it? does it store contact data? private
+relationship data? does it claim membership?) and picks the output mode from that nexus — membership
+(Mode 1), **goal-impact** (Mode 2: the AC walk is the *instrument*, real statuses as class-contrast
+observations; the per-Goal read `protects`/`neutral`/`diminishes`/`mixed`/`out-of-scope` is the
+*verdict*; posture **`not-a-pna`**, distinct from the claimant-posture `not-pna-active`), or an honest
+out-of-scope decline — *after asking the user how they use the app*, since a verbatim-recorded user
+declaration ("it's an editor, but I keep all my contacts in it") establishes the nexus. Schema 0.2 is
+strictly additive (`candidate.classification`, `summary.goal_impacts`; every 0.1 report stays valid —
+what keeps this obligation-free for designs), with each new lint coupling pinned by a message-level
+self-test. Declined: any general "privacy score" (the scale stays bounded to the four Goals), and a
+typed artifact for Mode-3 declines (one honest line of prose). Full rationale:
+[`design-notes/2026-07-adjacent-app-goal-impact-mode.md`](design-notes/2026-07-adjacent-app-goal-impact-mode.md).

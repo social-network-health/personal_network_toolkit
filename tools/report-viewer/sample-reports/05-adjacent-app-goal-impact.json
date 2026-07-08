@@ -1,0 +1,83 @@
+{
+  "report_schema_version": "0.2",
+  "generated_at": "2026-07-08T00:00:00Z",
+  "generated_by": "synthetic sample — illustrates the Mode-2 (goal-impact) report shape, not a real evaluation",
+  "candidate": {
+    "name": "NoteKeeper (illustrative)",
+    "repo_url": "https://example.invalid/notekeeper",
+    "commit": "0000000",
+    "pna_spec_version": "0.2",
+    "picks_source": "inferred",
+    "classification": {
+      "application_class": "note-taking editor",
+      "stores_contact_data": true,
+      "contact_data_note": "No contact features of its own; the user keeps a contacts.md vault with names, emails, and phone numbers in local plain-text files.",
+      "stores_relationship_data": true,
+      "relationship_data_note": "The same vault holds per-person notes and interaction history — private relationship memory in the spec's sense.",
+      "nexus": "adjacent",
+      "nexus_source": "user-declared",
+      "user_declaration": "It's just an editor, but I keep all my contacts and my notes about people in it, and I paste emails to people out of it.",
+      "mode": "goal-impact"
+    }
+  },
+  "summary": {
+    "posture": "not-a-pna",
+    "headline": "NoteKeeper is a note-taking editor, not a PNA, and the user has declared it holds their contact and relationship data — so this is a goal-impact read, not a membership verdict. The local plain-text vault protects ownership (Goal 1) and durability (Goal 4); the built-in cloud-sync default diminishes egress control (Goal 3) because the user's per-person notes leave the device without a per-item action.",
+    "leading_concerns": ["AC-1"],
+    "goal_impacts": [
+      {
+        "goal": 1,
+        "impact": "protects",
+        "note": "The vault is local plain-text files the user owns outright; no account required, no vendor store."
+      },
+      {
+        "goal": 2,
+        "impact": "neutral",
+        "note": "Source-available and inspectable, but no build label or capability probing — nothing actively advances or erodes verifiability."
+      },
+      {
+        "goal": 3,
+        "impact": "diminishes",
+        "note": "Vault-wide cloud sync is on by default, so the per-person notes (the private layer, per the AC-1 finding) egress continuously without a per-item user action."
+      },
+      {
+        "goal": 4,
+        "impact": "protects",
+        "note": "Plain-text files are trivially backed up, exported, and moved; no lock-in format between the user and their notes."
+      }
+    ]
+  },
+  "findings": [
+    {
+      "ac_id": "AC-1",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1, 3],
+      "requirement": "The private class is sealed by default — it MUST NOT egress or mutate except through an explicit user action.",
+      "rationale": "Class-contrast observation feeding the Goal-3 read: the vault draws no shared/private boundary, and default cloud sync ships the per-person notes off-device continuously. Not the failure of a claim — the app never claimed to be a PNA — but the precise reason Goal 3 reads 'diminishes'.",
+      "citations": [
+        { "path": "src/sync/engine.ts", "lines": "40-88", "note": "Illustrative: sync engine uploads every vault file on change; sync enabled by default at first run." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "No data-layer distinction between the contact facts and the private notes; one sync posture covers both." }
+      ]
+    },
+    {
+      "ac_id": "AC-9",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [4],
+      "rationale": "Read as an instrument for Goal 4: timestamped local snapshots with rotation exist, which is the auto-backup-with-recovery-ring behavior the Goal wants.",
+      "citations": [
+        { "path": "src/backup/snapshots.ts", "lines": "12-60", "note": "Illustrative: per-session debounced snapshot of the vault to a rotating local ring." }
+      ]
+    },
+    {
+      "ac_id": "AC-17",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [2],
+      "rationale": "There is no ingestion pipeline: the user types contact data in by hand, so there is no external source to trace provenance to. The Goal-2 read stays 'neutral'."
+    }
+  ]
+}

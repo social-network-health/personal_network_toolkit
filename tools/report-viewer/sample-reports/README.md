@@ -22,9 +22,10 @@ They serve two jobs (per [`plans/visual-validator-plan.md`](../../../plans/visua
 | `02-non-conformant-leaky-app.json` | `non-conformant` | a Goal-1 leak + an **undeclared `EX-CLOUD-LLM` deviation**; `requirement` text, `deterministic`(egress-lint) + `llm` evidence, populated `leading_concerns`, `needs_human_review` |
 | `03-mixed-exceptions-and-constraints.json` | `mixed` | EX-/CST-handling referenced inside AC findings; all three evidence sources (`deterministic` / `llm` / `human`); `unable-to-determine`; declared picks + full candidate metadata |
 | `04-not-pna-active-exception.json` | `not-pna-active` | an **active** `EX-CLOUD-LLM` exception (pna-active = false) handled to contract, with the un-relaxable floor (AC-MCP-B / AC-19) intact — demonstrates that a cleanly-handled exception app reads `not-pna-active`, never `conformant` |
+| `05-adjacent-app-goal-impact.json` | `not-a-pna` | a **Mode-2 (goal-impact) report** at schema `0.2`: the `candidate.classification` block (a **user-declared** nexus — "it's just an editor, but I keep all my contacts in it"), `summary.goal_impacts` across all four Goals (`protects` / `neutral` / `diminishes`), and AC findings serving as the *instrument* behind each Goal read (see `docs/conformance-scope-and-lifecycle.md` § Mode 2) |
 
-Together they cover all four finding statuses, four of the five postures, both `picks_source` values,
-and all three evidence sources.
+Together they cover all four finding statuses, five of the six postures, both `picks_source` values,
+all three evidence sources, and both report output modes (membership and goal-impact).
 
 ## Why EX-* and CST-* are not top-level keys
 

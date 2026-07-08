@@ -270,6 +270,31 @@ def case_validate(results: list) -> None:
                     "" if status == want_status else f"got AC-1 status {status!r}")
 
 
+def case_report_mode2(results: list) -> None:
+    """Pin each Mode-2 / schema-0.2 rule in report-fixtures-lint.py individually:
+    every dirty fixture must fail *for its own named reason* (not just exit 1 for
+    any reason), and the clean Mode-2 sample must pass standalone. Fault-injection
+    discipline: a new lint rule with no message-pinned case can silently rot."""
+    expected = {
+        "v02-without-classification.json": "requires candidate.classification",
+        "goal-impact-without-impacts.json": "requires summary.goal_impacts",
+        "not-a-pna-membership-mismatch.json": "exclusive to goal-impact",
+        "user-declared-without-declaration.json": "requires a verbatim 'user_declaration'",
+        "mixed-impact-without-note.json": "requires a 'note'",
+    }
+    for fname, fragment in expected.items():
+        cp = _run(REPO, "tools/report-fixtures-lint.py",
+                  str(REPO / "tools/report-fixtures-lint-fixtures/dirty" / fname))
+        ok = cp.returncode != 0 and fragment in cp.stdout
+        _record(results, f"report-lint: {fname} fails with {fragment!r}",
+                ok, "" if ok else f"exit={cp.returncode}\n{cp.stdout}{cp.stderr}")
+    clean = _run(REPO, "tools/report-fixtures-lint.py",
+                 str(REPO / "tools/report-viewer/sample-reports/05-adjacent-app-goal-impact.json"))
+    _record(results, "report-lint: clean Mode-2 sample (0.2, goal-impact) passes",
+            clean.returncode == 0,
+            "" if clean.returncode == 0 else clean.stdout + clean.stderr)
+
+
 def case_attestation_marker_message(results: list) -> None:
     """Pin the marker-state behavior specifically: the dirty fixture must fail
     *because* a conformant row cites an xfail test (not just exit non-zero for
@@ -518,6 +543,7 @@ def main() -> int:
     case_fixture_lint(results, "tools/report-fixtures-lint.py",
                       "tools/report-viewer/sample-reports",
                       "tools/report-fixtures-lint-fixtures/dirty")
+    case_report_mode2(results)
     case_fixture_lint(results, "tools/loopback-surface-lint.py",
                       "tools/loopback-surface-lint-fixtures/clean",
                       "tools/loopback-surface-lint-fixtures/dirty")

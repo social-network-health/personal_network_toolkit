@@ -36,7 +36,13 @@ to opine on general "privacy" or "software quality" is the creep that destroys
 the suite's meaning.
 
 So the evaluate surface has **three honest output modes**, chosen by how much
-nexus the candidate has with the personal-network root:
+nexus the candidate has with the personal-network root. Since Toolkit-Version 0.2
+this line is **operational, not just doctrinal**: the evaluate flow's first step
+([`pna-toolkit/SKILL.md` § Evaluate flow](../pna-toolkit/SKILL.md), step 1) classifies
+every candidate — application class, does it store contact data, does it store private
+relationship data — picks the mode from that nexus, and records the whole
+classification in the report's `candidate.classification` block
+([`tools/evaluate-report.schema.json`](../tools/evaluate-report.schema.json), schema 0.2):
 
 ### Mode 1 — Conformance evaluation (membership)
 For an app that *claims* to be a PNA, or is architecturally shaped like one
@@ -51,26 +57,43 @@ conformance.
 
 ### Mode 2 — Goal-impact read (any app that touches the personal-network root)
 For an app that is **not** trying to be a PNA but does touch contact/relationship
-data — Signal, a SaaS CRM, a calendar, a contact manager. We do **not** report
-"you fail 14 ACs" (meaningless — it never claimed them; those ACs are
-`not-applicable`). We report the app's **relationship to each Goal** on a
-fixed scale:
+data — Signal, a SaaS CRM, a calendar, a contact manager. We do **not** hand down
+"you fail 14 ACs" as the verdict (meaningless — it never claimed them). Instead the
+AC walk runs as the **instrument** and the per-Goal read is the **verdict**: the
+report's findings still carry real per-AC statuses — that is what makes the read
+precise, citable, and diffable across runs (and it is how the Signal evaluation
+surfaced the AC-1 restatement) — but a `non-conformant` entry there is a
+*class-contrast observation* feeding a Goal read, not the failure of a claim, and
+the top-line posture is **`not-a-pna`**, never a membership verdict. The verdict
+itself is the app's **relationship to each Goal** on a fixed scale:
 
-> **protects · neutral · diminishes · out-of-scope** — per Goal.
+> **protects · neutral · diminishes · mixed · out-of-scope** — per Goal.
 
 The high-value signal is *diminishes*: an app that erodes the user's control of
 their personal-network root (harvests the contact graph to a server, makes
 private notes un-exportable, forces an insecure transport). A user genuinely
 wants this, and the toolkit is uniquely positioned to say it precisely, because the toolkit has
-crisply *defined* what "control of the personal-network root" means.
+crisply *defined* what "control of the personal-network root" means. *Mixed* is
+for a Goal an app genuinely serves and erodes at once — its note must name both
+facets (Signal on Goal 3: an exemplary content-blind transport whose private
+overlay nonetheless syncs off-device).
 
 Worked example — Signal: Goal 3 (user-controlled, content-blind transport) is
-**exemplary**; Goal 1 (a local sovereign root store of your contact graph) is
-**out-of-scope** (Signal isn't a root store); contact-graph metadata posture is a
-named, bounded *neutral/diminishes* note. That read is useful and honest. A
+**mixed** — transport exemplary, private overlay (contact notes/nicknames)
+syncing to the storage service; Goal 1 (a local sovereign root store of your
+contact graph) reads against the local-custody facet Signal does deliver versus
+the background replication it imposes. That read is useful and honest. A
 PNA-membership verdict on Signal would be noise — it never claimed membership.
 *Realized: [`evaluations/signal-desktop/`](../evaluations/signal-desktop/) — the archived
-report of this read (under the restated AC-1, a Goal-3 finding sharper than store-count).*
+report of this read (under the restated AC-1, a Goal-3 finding sharper than store-count),
+re-emitted at schema 0.2 as a first-class Mode-2 report.*
+
+**The user can supply the nexus.** When an app shows no intrinsic nexus (Mode 3
+territory) the evaluate flow asks before declining: a runner's declaration — *"it's
+an editor, but I keep all my contacts in it"* — establishes the nexus, is recorded
+verbatim in the report (`nexus_source: user-declared`), and the evaluation proceeds
+as a Mode-2 read of *that use*. The gate is honesty about the category, not a
+refusal to look.
 
 ### Mode 3 — Out-of-scope (no nexus)
 For an app with no personal-network root to protect or diminish (a photo editor,
@@ -185,11 +208,14 @@ submission). The *living, continuously-tested* suite is deliberately roadmap:
   *environment* alongside the source (browser/OS versions, a recorded test
   transcript) so the archival entry documents *what passed where*, even when it
   can no longer be re-run.
-- **R5 — Mode 2 (goal-impact read) as a first-class evaluate output.** Extend the
+- **R5 — Mode 2 (goal-impact read) as a first-class evaluate output.** ~~Extend the
   skill + `evaluate-report.schema.json` to emit per-Goal protects/neutral/
-  diminishes/out-of-scope for non-PNA candidates — useful to developers who just
-  want to know how their app sits in the local-first, privacy-preserving world.
-  Bounded strictly to the Goals.
+  diminishes/out-of-scope for non-PNA candidates.~~ **Realized (2026-07).** The
+  evaluate flow now classifies every candidate up front (SKILL.md § Evaluate flow,
+  step 1), report schema 0.2 carries `candidate.classification` +
+  `summary.goal_impacts` + the `not-a-pna` posture, and the report lint enforces the
+  couplings. Useful to developers who just want to know how their app sits in the
+  local-first, privacy-preserving world. Bounded strictly to the Goals.
 
 ## General field: application-class blueprints for agents
 
