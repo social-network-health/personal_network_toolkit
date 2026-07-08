@@ -1,11 +1,13 @@
 # What Personal Network Applications promise you — in plain language
 
-This toolkit helps people ensure that their apps protect their data by keeping several promises.
+This toolkit helps people ensure that their apps protect their contact and relationship data by keeping several promises.
 
 The link after each promise carries the **name** of the exact commitment in the
 project's technical specification.  The name points
 straight to the commitment.  Where a single promise covers more than one technical commitment, you'll see
 more than one commitment name.
+
+This toolkit can help you check that an application is keeping all of the promises below.  If an application does that, it's a Personal Network Application.
 
 (If you want the full technical version with all the engineering detail, that
 lives in the project's [specification](https://github.com/social-network-health/personal_network_toolkit/blob/main/spec/PNA_Spec.md). This page is the same set of promises, said
