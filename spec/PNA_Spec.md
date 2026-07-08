@@ -4,7 +4,9 @@
 
 > **Toolkit-Version:** 0.2 — the toolkit (spec, contracts, skill, lint, templates) is versioned as a unit; see [VERSION](../VERSION).
 >
-> This document is the universal specification for personal network applications (PNAs). Reference designs declare conformance to a specific Toolkit-Version and to a specific application flavor (defined by a constellation of feature axis picks). A PNA conforms to this spec if it satisfies the universal architectural commitments and the axis-derived contracts for each of its declared axis picks, listed herein.  Each reference design's specialization lives in its own repo (ex: fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/richbodo/fellows_local_db/blob/main/docs/Architecture.md)).
+> This document is the universal specification for personal network applications (PNAs). Reference designs declare conformance to a specific Toolkit-Version and to a specific application flavor (defined by a constellation of feature axis picks). A PNA conforms to this spec if it satisfies the universal architectural commitments and the axis-derived contracts for each of its declared axis picks, listed herein.  Each reference design's specialization lives in its own repo (ex: fellows_local_db's specialization is at [`docs/Architecture.md`](https://github.com/social-network-health/fellows_local_db/blob/main/docs/Architecture.md)).
+>
+> This spec is an **evolutionary design**: it evolves with the toolkit, Toolkit-Version by Toolkit-Version, as reference designs and evaluations teach us what must be checked.
 
 ---
 
