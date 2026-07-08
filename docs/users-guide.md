@@ -132,7 +132,9 @@ Not every app worth auditing claims to be a PNA. Your messenger, your mail clien
 
 3. **If the agent says "out of scope," you can supply the nexus.** An app with no apparent contact/relationship data gets an honest decline — but the agent asks how you use it first. An answer like *"it's just an editor, but I keep all my contacts in it and mail people from it"* is recorded verbatim in the report (`nexus_source: user-declared`) and the goal-impact read proceeds against *your* use of it.
 
-The worked example is [`evaluations/signal-desktop/`](../evaluations/signal-desktop/) — Signal Desktop read against the Goals: exemplary on the content-blind transport the spec itself endorses, `mixed` on egress (the private overlay of contact notes syncs off-device), and never scored as a failed PNA, because it isn't one. Completed reads that prove something land as records in [`evaluations/`](../evaluations/).
+The worked example is [`evaluations/signal-desktop/`](../evaluations/signal-desktop/) — Signal Desktop read against the Goals: exemplary on the content-blind transport the spec itself endorses, `mixed` on egress (the private overlay of contact notes syncs off-device), and never scored as a failed PNA, because it isn't one. Completed reads that prove something land as records in [`evaluations/`](../evaluations/), with superseded runs kept as dated files under `runs/` (the [casebook's run-history convention](../evaluations/README.md)).
+
+**Browse the whole library visually:** `just view-reports` (no argument) serves the [Visual Validator](../tools/report-viewer/) over every report in the repo — each casebook evaluation (with its `runs/` history grouped under the app's name in the picker) plus both reference designs — so you can flip between apps with ← / →, or pick an app and walk its historic reports.
 
 ### Contribute your design back as a reference design
 
@@ -203,7 +205,7 @@ For developers working **on the toolkit itself** (the spec, lints, contracts, sk
 | `just test-design <name>` | *(Scaffold, inert)* the planned per-design conformance harness — see [`plans/conformance-suite-plan.md`](../plans/conformance-suite-plan.md) § Phase 4. |
 | `just setup-test` | **(Opt-in, one-time)** Create `.venv` and install the browser-test deps (`pytest` + Playwright + Chromium) from `requirements-dev.txt`. Needed only for `just test-viewer`. |
 | `just test-viewer` | **(Opt-in; NOT in `just ci`)** Render-test the Visual Validator viewer in a real browser (Playwright). See [`plans/viewer-e2e-testing-plan.md`](../plans/viewer-e2e-testing-plan.md). |
-| `just view-reports [dir]` | **(Opt-in)** Serve the Visual Validator and flip through a directory of `evaluate-report.json` files (← / →). No arg flips through the bundled samples. |
+| `just view-reports [dir]` | **(Opt-in)** Serve the Visual Validator and flip through validation reports (← / →, picker grouped by app). **No arg = the report library**: every `evaluations/` casebook report (dated `runs/` history where present) plus the bundled reference-design reports. `samples` = the synthetic sample fixtures; a dir path = that directory's `*.json`. |
 
 ### Archive a reference design to the Software Heritage archive
 

@@ -43,6 +43,12 @@ behind it). Run 2 (2026-06-27, at 8.16.0) was the regeneration under the restate
 sharpened from "no two stores" to "the private layer is not sealed by default." Validate with
 `just report-lint evaluations/signal-desktop/evaluate-report.json`.
 
+**Run history:** [`runs/`](runs/) holds the immutable dated copies — run 2
+(`2026-06-27-run2-ac1-restated.json`) and run 3 (`2026-07-09-run3-mode2.json`) — per the casebook's
+[runs convention](../README.md). Run 1 (the pre-AC-1-restatement original) predates this casebook entry
+and was never committed, so it is not backfilled. `just view-reports` groups these under "Signal
+Desktop" in the Visual Validator's picker.
+
 > **Provenance.** Signal's source is third-party ([`signalapp/Signal-Desktop`](https://github.com/signalapp/Signal-Desktop));
 > only the report is archived here, not Signal's source. Runs 1–2 were a **stable local build at `ffc75db55`
 > (8.16.0)**, held constant so their diff reflects the AC-1 reframe alone. Run 3 moves **two** variables at once,
