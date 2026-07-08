@@ -1,4 +1,4 @@
-# What this kind of app promises you — in plain language
+# What Personal Network Applications promise you — in plain language
 
 This toolkit helps people ensure that their apps protect their data by keeping several promises.
 
