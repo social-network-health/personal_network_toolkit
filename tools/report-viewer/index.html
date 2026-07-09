@@ -19,7 +19,9 @@
     - ?reports=a.json,b.json,c.json     (explicit list)
     - ?dir=<path>                       (fetches <path>/index.json — an array of filenames)
   ?report= / ?reports= / ?dir= and the sample buttons use fetch(), which needs serving:
-      just view-reports [dir]     # or:  python3 -m http.server --directory tools/report-viewer
+      just view-reports           # the report library (evaluations/ + reference designs)
+      just view-reports samples   # the synthetic samples;  just view-reports <dir>  = any dir
+      # or:  python3 -m http.server --directory tools/report-viewer
 -->
 <style>
   :root {
@@ -87,6 +89,19 @@
   .st-mixed{background:var(--ud-bg);color:var(--ud-fg);border-color:var(--ud-bd);}
   .st-indeterminate{background:var(--na-bg);color:var(--na-fg);border-color:var(--na-bd);}
   .st-not-pna-active{background:var(--ud-bg);color:var(--ud-fg);border-color:var(--ud-bd);}
+  .st-not-a-pna{background:var(--det-bg);color:var(--det-fg);border-color:#c3d7f8;}
+
+  /* per-Goal impact strip (the Mode-2 verdict) + classification banner */
+  .gi-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:10px; }
+  @media (max-width:900px){ .gi-strip, .sxs .gi-strip { grid-template-columns:1fr 1fr; } }
+  .gi-tile { border:1px solid var(--na-bd); border-radius:10px; padding:8px 10px; background:#fbfcfd; }
+  .gi-tile.gi-protects{border-color:var(--ok-bd);} .gi-tile.gi-diminishes{border-color:var(--no-bd);}
+  .gi-tile.gi-mixed{border-color:var(--ud-bd);}
+  .gi-goal { font-size:12px; color:var(--muted); margin-bottom:4px; }
+  .gi-note { font-size:12px; color:var(--muted); margin-top:6px; }
+  .class-line { margin:10px 0 0; font-size:14px; }
+  .class-decl { margin:8px 0 0; font-size:13px; color:var(--muted); border-left:3px solid var(--line);
+    padding-left:9px; font-style:italic; }
 
   /* developer (A0) finding */
   .finding { border-left:4px solid var(--line); padding:12px 0 12px 14px; margin:10px 0; }
@@ -185,8 +200,12 @@ const POSTURE_PLAIN = {
   "mixed": "Mostly sound, with some caveats worth weighing.",
   "indeterminate": "Couldn't be fully assessed — a human should take a closer look.",
   "not-pna-active": "Not acting as a personal-network app right now — an exception is active (e.g. it's wired to a cloud AI), so its data isn't sealed while that's on.",
+  "not-a-pna": "Not a personal-network app — and not claiming to be. This is a goal-impact read: how the app relates to each Goal, not a pass/fail on promises it never made.",
 };
-const POSTURE_CLS = {conformant:"v-ok", "non-conformant":"v-no", mixed:"v-ud", indeterminate:"v-na", "not-pna-active":"v-ud"};
+const POSTURE_CLS = {conformant:"v-ok", "non-conformant":"v-no", mixed:"v-ud", indeterminate:"v-na", "not-pna-active":"v-ud", "not-a-pna":"v-na"};
+const GOAL_SHORT = {1:"Own the root", 2:"Verifiable", 3:"Egress under your say", 4:"Data survives"};
+const IMPACT_BADGE = {protects:"st-conformant", neutral:"st-not-applicable", diminishes:"st-non-conformant",
+                      mixed:"st-mixed", "out-of-scope":"st-not-applicable"};
 const SPEC_GOALS_URL = "https://github.com/richbodo/personal_network_toolkit/blob/main/spec/PNA_Spec.md#goals";
 // Caveat under the end-user posture. Split around the "goals of a PNA" link so it
 // renders as a real <a> (via safeLink), not innerHTML.
@@ -246,6 +265,22 @@ function concernSort(findings) {
   }).map(x => x[0]);
 }
 
+// ---- shared: the Mode-2 per-Goal impact strip ----
+function renderGoalImpacts(summ) {
+  const gi = summ && summ.goal_impacts;
+  if (!Array.isArray(gi) || !gi.length) return null;
+  const strip = el("div", {class:"gi-strip"});
+  for (const g of [...gi].sort((a, b) => (a.goal || 9) - (b.goal || 9))) {
+    const impact = g.impact || "?";
+    const tile = el("div", {class:"gi-tile gi-" + impact});
+    tile.append(el("div", {class:"gi-goal", text:"Goal " + (g.goal || "?") + " · " + (GOAL_SHORT[g.goal] || "")}));
+    tile.append(el("span", {class:"badge " + (IMPACT_BADGE[impact] || "st-not-applicable"), text:impact}));
+    if (g.note) tile.append(el("div", {class:"gi-note", text:g.note}));
+    strip.append(tile);
+  }
+  return strip;
+}
+
 // ---- developer (A0) ----
 function renderCitation(c) {
   if (!c || typeof c !== "object") return el("li", {text:String(c)});
@@ -281,6 +316,8 @@ function renderSummaryA0(summ, findings) {
   const posture = summ.posture || "indeterminate";
   sum.append(el("div", null, el("span", {class:"badge st-" + posture, text:posture})));
   if (summ.headline) sum.append(el("p", {class:"headline", text:summ.headline}));
+  const gis = renderGoalImpacts(summ);
+  if (gis) sum.append(gis);
   const counts = {};
   for (const f of findings) counts[f.status] = (counts[f.status]||0) + 1;
   const row = el("div", {class:"counts"});
@@ -320,6 +357,8 @@ function renderSummaryA1(summ, findings) {
   const box = el("div", {class:"a1-summary " + cls});
   box.append(el("div", {class:"a1-bigverdict " + cls, text:POSTURE_PLAIN[posture] || posture}));
   if (summ.headline) box.append(el("p", {class:"a1-headline", text:summ.headline}));
+  const gis = renderGoalImpacts(summ);
+  if (gis) box.append(gis);
   const c = {};
   for (const f of findings) c[f.status] = (c[f.status]||0) + 1;
   const tally = [];
@@ -343,6 +382,19 @@ function renderCandidateCard(obj, cand, label) {
   if (obj.report_schema_version) meta.append(el("span", {text:"report v" + obj.report_schema_version}));
   if (label) meta.append(el("span", {text:"⟵ " + label}));
   head.append(meta);
+  const cls = cand.classification;
+  if (cls && typeof cls === "object") {
+    head.append(el("div", {class:"class-line"}, el("b", {text:"What it is: "}), cls.application_class || "(unclassified)"));
+    const cchips = el("div", {class:"chips"});
+    if (cls.mode) cchips.append(el("span", {class:"chip"}, el("b", {text:"mode: "}), cls.mode));
+    if (cls.nexus) cchips.append(el("span", {class:"chip"}, el("b", {text:"nexus: "}),
+      cls.nexus + (cls.nexus_source ? " (" + cls.nexus_source + ")" : "")));
+    if ("stores_contact_data" in cls) cchips.append(el("span", {class:"chip"}, el("b", {text:"contact data: "}), cls.stores_contact_data ? "yes" : "no"));
+    if ("stores_relationship_data" in cls) cchips.append(el("span", {class:"chip"}, el("b", {text:"relationship data: "}), cls.stores_relationship_data ? "yes" : "no"));
+    head.append(cchips);
+    if (cls.user_declaration) head.append(el("div", {class:"class-decl",
+      text:"“" + cls.user_declaration + "” — the user's declared use, which brought this app in scope."}));
+  }
   if (cand.axis_picks && typeof cand.axis_picks === "object") {
     const chips = el("div", {class:"chips"});
     for (const ax in cand.axis_picks) chips.append(el("span", {class:"chip"}, el("b", {text:ax + ": "}), cand.axis_picks[ax]));
@@ -352,6 +404,18 @@ function renderCandidateCard(obj, cand, label) {
 }
 
 // ---- report-set navigation ----
+// Dropdown entries read "date · posture"; when the set holds more than one report for
+// the same app (a runs/ history), the entries group under an <optgroup> per app so you
+// can pick an app and walk its historic reports. ← / → still cycles the whole set.
+function appNameOf(r, i) {
+  return (r.obj && r.obj.candidate && r.obj.candidate.name) || r.label || ("report " + (i + 1));
+}
+function runLabelOf(r) {
+  const o = r.obj || {};
+  const date = (typeof o.generated_at === "string" ? o.generated_at.slice(0, 10) : "");
+  const posture = (o.summary && o.summary.posture) || "?";
+  return (date ? date + " · " : "") + posture;
+}
 function renderNav() {
   const bar = el("div", {class:"navbar"});
   const prev = el("button", {class:"btn", text:"‹ Prev", onclick:() => go(-1)});
@@ -359,11 +423,23 @@ function renderNav() {
   if (reportIndex === 0) prev.setAttribute("disabled", "");
   if (reportIndex === reportSet.length - 1) next.setAttribute("disabled", "");
   const sel = el("select", {class:"navselect", onchange:e => jumpTo(parseInt(e.target.value, 10))});
+  const groups = [];   // [ [appName, [index, ...]] ] in first-seen order
   reportSet.forEach((r, i) => {
-    const o = el("option", {value:String(i), text:r.label || ("report " + (i + 1))});
-    if (i === reportIndex) o.setAttribute("selected", "");
-    sel.append(o);
+    const name = appNameOf(r, i);
+    const g = groups.find(x => x[0] === name);
+    if (g) g[1].push(i); else groups.push([name, [i]]);
   });
+  const grouped = groups.some(g => g[1].length > 1);
+  for (const [name, idxs] of groups) {
+    const parent = grouped ? el("optgroup", {label:name}) : sel;
+    for (const i of idxs) {
+      const text = grouped ? runLabelOf(reportSet[i]) : name + " · " + runLabelOf(reportSet[i]);
+      const o = el("option", {value:String(i), text});
+      if (i === reportIndex) o.setAttribute("selected", "");
+      parent.append(o);
+    }
+    if (grouped) sel.append(parent);
+  }
   bar.append(prev, sel, next, el("span", {class:"navpos", text:(reportIndex + 1) + " / " + reportSet.length}));
   return bar;
 }

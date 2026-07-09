@@ -21,6 +21,7 @@ SAMPLES = [
     ("02-non-conformant-leaky-app.json", "non-conformant", 3, "AC-PRM-A"),
     ("03-mixed-exceptions-and-constraints.json", "mixed", 3, "AC-MCP-A"),
     ("04-not-pna-active-exception.json", "not-pna-active", 3, "AC-1"),
+    ("05-adjacent-app-goal-impact.json", "not-a-pna", 3, "AC-1"),
 ]
 
 
@@ -195,3 +196,100 @@ def test_single_report_has_no_nav(page: Page, viewer_url):
               wait_until="networkidle")
     page.locator(".finding").first.wait_for(state="visible", timeout=5000)
     assert page.locator(".navbar").count() == 0
+
+
+# ---- Mode-2 (goal-impact) rendering: schema 0.2 ----
+
+def test_mode2_developer_renders_strip_and_classification(page: Page, viewer_url):
+    """Sample 05 is a Mode-2 report: the classification banner and the per-Goal
+    impact strip must render in the developer register."""
+    errs = _attach_error_capture(page)
+    page.goto(
+        f"{viewer_url}/index.html?report=sample-reports/05-adjacent-app-goal-impact.json&mode=developer",
+        wait_until="networkidle",
+    )
+    page.locator(".finding").first.wait_for(state="visible", timeout=5000)
+
+    # classification banner in the candidate card
+    expect(page.locator(".class-line")).to_contain_text("note-taking editor")
+    # the verbatim user declaration that brought the app in scope
+    expect(page.locator(".class-decl")).to_contain_text("just an editor")
+    # mode + nexus chips
+    chips = " ".join(page.locator(".card").first.locator(".chip").all_inner_texts())
+    assert "goal-impact" in chips, f"mode chip missing in {chips!r}"
+    assert "user-declared" in chips, f"nexus-source chip missing in {chips!r}"
+
+    # per-Goal impact strip: exactly 4 tiles, in Goal order, with impact badges
+    tiles = page.locator(".gi-tile")
+    assert tiles.count() == 4
+    expect(tiles.nth(0)).to_contain_text("Goal 1")
+    expect(tiles.nth(0).locator(".badge")).to_have_text("protects")
+    expect(tiles.nth(2).locator(".badge")).to_have_text("diminishes")
+    # diminishes carries its grounding note
+    expect(tiles.nth(2).locator(".gi-note")).to_contain_text("cloud sync")
+
+    assert not errs, f"Mode-2 developer render errors: {errs}"
+
+
+def test_mode2_end_user_verdict_is_goal_impact(page: Page, viewer_url):
+    """In the end-user register the not-a-pna posture reads as a goal-impact
+    verdict (never a pass/fail), and the strip renders there too."""
+    page.goto(
+        f"{viewer_url}/index.html?report=sample-reports/05-adjacent-app-goal-impact.json&mode=end-user",
+        wait_until="networkidle",
+    )
+    page.locator(".a1-summary").wait_for(state="visible", timeout=5000)
+    expect(page.locator(".a1-bigverdict")).to_contain_text("goal-impact read")
+    assert page.locator(".gi-tile").count() == 4
+
+
+def test_pre_02_reports_render_without_strip(page: Page, viewer_url):
+    """A 0.1 report has no classification/goal_impacts — nothing new may render."""
+    page.goto(
+        f"{viewer_url}/index.html?report=sample-reports/01-conformant-minimal-pna.json&mode=developer",
+        wait_until="networkidle",
+    )
+    page.locator(".finding").first.wait_for(state="visible", timeout=5000)
+    assert page.locator(".gi-tile").count() == 0
+    assert page.locator(".class-line").count() == 0
+
+
+# ---- grouped picker: per-app run history ----
+
+def test_picker_groups_runs_by_app(page: Page, viewer_url):
+    """Two runs of App C + one App A: the dropdown groups under optgroups per app,
+    run entries read 'date · posture', and jumping to a run renders it."""
+    reports = ",".join([
+        "tests/fixtures/runset/c2.json",
+        "tests/fixtures/runset/c1.json",
+        "tests/fixtures/dirset/a.json",
+    ])
+    page.goto(f"{viewer_url}/index.html?reports={reports}&mode=developer", wait_until="networkidle")
+    page.locator(".navbar").wait_for(state="visible", timeout=5000)
+
+    # grouped: one optgroup per app, App C holding both runs
+    assert page.locator(".navselect optgroup").count() == 2
+    appc = page.locator(".navselect optgroup[label='App C'] option")
+    assert appc.count() == 2
+    labels = appc.all_inner_texts()
+    assert labels == ["2026-07-01 · conformant", "2026-06-01 · non-conformant"], labels
+
+    # walk App C's history via the picker: run 1 is index 1 in the set
+    page.locator(".navselect").select_option("1")
+    expect(page.locator(".navpos")).to_have_text("2 / 3")
+    expect(page.locator(".card").nth(1).locator(".badge").first).to_have_text("non-conformant")
+
+
+def test_flat_set_labels_carry_app_and_posture(page: Page, viewer_url):
+    """A set with all-distinct apps stays flat (no optgroups) but labels read
+    'name · date · posture'."""
+    reports = ",".join([
+        "tests/fixtures/dirset/a.json",
+        "tests/fixtures/dirset/b.json",
+    ])
+    page.goto(f"{viewer_url}/index.html?reports={reports}&mode=developer", wait_until="networkidle")
+    page.locator(".navbar").wait_for(state="visible", timeout=5000)
+    assert page.locator(".navselect optgroup").count() == 0
+    labels = page.locator(".navselect option").all_inner_texts()
+    assert all(" · " in lbl for lbl in labels), labels
+    assert labels[0].startswith("App A"), labels
