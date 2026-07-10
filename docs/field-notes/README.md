@@ -31,4 +31,5 @@ Each note is short and **evidence-linked**:
 ## Index
 
 - [`AC-18.md`](AC-18.md) — transports cannot read message contents (transport-eligibility; the content-blind-transport property). Surfaced by the Signal Desktop evaluation.
+- [`AC-19.md`](AC-19.md) — user-visible payload before send: send-time review does not cover pre-send persistence (draft autosave to a remote account egresses the composition before the gate). Surfaced by the Thunderbird evaluation.
 - [`AC-PRM-H.md`](AC-PRM-H.md) — authenticated loopback surface (an app-opened HTTP daemon). Surfaced by PRM #59.

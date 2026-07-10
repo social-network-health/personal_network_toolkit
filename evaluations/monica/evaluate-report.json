@@ -1,0 +1,356 @@
+{
+  "report_schema_version": "0.2",
+  "generated_at": "2026-07-09T00:00:00Z",
+  "generated_by": "pna-toolkit evaluate flow — Claude. First run on Monica (monicahq/monica, main branch — the v5 'Chandler' beta rewrite: Laravel 12 / PHP 8.3 / Inertia+Vue 3; NOT the stable 4.x branch), evaluated as a Mode-2 goal-impact read. Verification tier: LLM architectural pass over the source tree, plus tools/egress-lint.py — which returned clean/'conformant' and is folded into AC-1 as deterministic evidence WITH an honesty caveat: the lint scans client-side egress vectors and is blind to server-side PHP egress (Guzzle/Http::get calls to LocationIQ, Sentry, Telegram, remote CardDAV servers), so its suggested status is a false pass on a server-side candidate and was not credited.",
+  "candidate": {
+    "name": "Monica",
+    "repo_url": "https://github.com/monicahq/monica",
+    "commit": "e08e91734",
+    "pna_spec_version": "0.2",
+    "picks_source": "inferred",
+    "classification": {
+      "application_class": "open-source personal relationship manager (PRM) — the toolkit's own second reference-design category — built as a self-hostable (or vendor-hosted) Laravel/PHP client-server web application with a server-side relational database, reached through a browser",
+      "stores_contact_data": true,
+      "contact_data_note": "Contacts live in a server-side relational DB (MySQL by default; SQLite/Postgres supported) under account -> vault -> contacts, optionally synced bidirectionally with external CardDAV address books and served to the user's own DAV clients; the user's device holds no durable store.",
+      "stores_relationship_data": true,
+      "relationship_data_note": "Notes, journals, posts, reminders, relationships, mood tracking, loans, life events, and uploaded documents/photos — storing this IS the app's purpose — live in the same server DB with the same access posture as the contact rows; vaults can be shared with other users of the account.",
+      "nexus": "adjacent",
+      "nexus_source": "inferred",
+      "mode": "goal-impact"
+    },
+    "axis_picks": {
+      "distribution": "served-web-app (self-hosted Docker/PHP deployment or the vendor's hosted instance; delivered to the user as a login-gated web page, not an artifact on the user's device)",
+      "storage": "server-rdbms (single MySQL/MariaDB/Postgres/SQLite database owned by the server, plaintext at rest except the DAV-subscription password; no local store on the user's device)",
+      "ingestion": "manual-entry + optional multi-source CardDAV sync (user-configured AddressBookSubscriptions polled on a schedule, one- or two-way; plus writes from the user's own DAV clients via the built-in CardDAV server)",
+      "workspace-shell": "framework-spa (Inertia.js + Vue 3 SPA served by Laravel)",
+      "comms": "none-to-contacts (no outreach transport to contacts; reminders notify the user themself via email or Telegram)",
+      "mcp-exposure": "none (a Sanctum REST API and CardDAV/CalDAV endpoints exist; no MCP surface)"
+    }
+  },
+  "summary": {
+    "posture": "not-a-pna",
+    "headline": "Monica is an open-source personal relationship manager — a PRM, the toolkit's own second reference-design category, so this is the casebook's sharpest category-vs-architecture contrast: exactly the right use case (contacts plus notes, journals, reminders, relationships as the product), realized as the architecture the spec defines itself against — a client-server Laravel web app whose entire root, private layer included, lives plaintext in a server database behind an account, readable by whoever operates the server. It never claimed to be a PNA, so this is a goal-impact read, not a membership verdict. The diminishing reads: no sealed private layer and structural third-party egress once shipped integrations are configured — documents only work via the Uploadcare CDN, addresses geocode to LocationIQ on save, reminders route through Telegram's bot API (AC-1, AC-2); no local fallback whatsoever when the session or account dies (AC-5); hourly background CardDAV polling that mutates the root unattended (AC-21, AC-10); and no in-app backup or any export of the relationship layer — notes and journals have no way out (AC-9). Where Monica is genuinely strong it lands on the spec's own values: AGPL-3.0 source with a runtime version+commit label linking to the exact GitHub commit (AC-23, AC-15), contact data entering only from sources the user configured (AC-17), honest capability probing (AC-22), standards-based CardDAV/CalDAV portability of the contact layer, and conservative shipped defaults (every cloud integration off in .env.example). Self-hosting moves custody to whoever runs the server — real, but operator-grade, not user-grade: the architecture still interposes a server between the user and their root.",
+    "leading_concerns": ["AC-1", "AC-2", "AC-5", "AC-21", "AC-9"],
+    "goal_impacts": [
+      {
+        "goal": 1,
+        "impact": "mixed",
+        "note": "Self-host custody is real at the operator level: AGPL source, a standard RDBMS you can run and keep forever, CardDAV sync that pulls your contacts onto any DAV client (AC-23, AC-17). But the root itself is account-shaped, not device-shaped: it lives in a server DB behind a login, not in a local store the user's device owns (AC-1, AC-2 non-conformant); a rejected session or closed account leaves no local fallback at all (AC-5 non-conformant); and the store is refreshed by hourly background polling, not user action (AC-21 non-conformant). On the vendor-hosted instance the user's custody is a SaaS account like the ones the Goal exists to escape."
+      },
+      {
+        "goal": 2,
+        "impact": "mixed",
+        "note": "Code-validation is strong: AGPL-3.0 public source (AC-23), a runtime version+commit label linking to the exact GitHub commit (AC-15), and honest capability probing of both the search substrate and remote DAV servers (AC-22); data enters only from user-configured sources (AC-17). Data-validation under sync is weak: multi-source CardDAV merge has no per-field provenance and surfaces no conflicts — background sync silently overwrites (AC-PRM-B non-conformant) — and the user of a hosted instance has no self-service diagnostic substrate; debugging is operator-side (AC-6, AC-7 non-conformant)."
+      },
+      {
+        "goal": 3,
+        "impact": "diminishes",
+        "note": "There is no sealed private layer: the relationship data — the app's whole point — sits plaintext in a server database readable by whoever operates the server, vendor or admin, and vaults are shareable with other account users (AC-1 non-conformant); the app IS the SaaS surface the spec forbids — per-user RW endpoints, server-persisted private data, admin console, cross-device sync (AC-2 non-conformant); and its programmatic surfaces (REST API, DAV) are network-exposed by design with authentication as the only barrier (AC-PRM-H non-conformant). Shipped integrations make third parties structural once configured: every uploaded document/photo goes to the Uploadcare cloud CDN, addresses are geocoded to LocationIQ automatically on save, reminders route through Telegram's bot API, Sentry captures errors with SQL breadcrumbs (AC-1 citations). Conservative defaults (.env.example ships all of these off, Sentry unset, search local) soften the read but do not reverse it: even self-hosted with defaults, the layer is unsealed server-side."
+      },
+      {
+        "goal": 4,
+        "impact": "mixed",
+        "note": "Protecting facets: standards-based CardDAV/CalDAV plus per-contact vCard download make the contact layer genuinely portable to any client (AC-17 citations); the store is a bog-standard RDBMS any operator can dump and restore; AGPL forecloses vendor-death lock-in for self-hosters. Diminishing facets: no in-app backup or snapshot ring — durability is delegated entirely to the operator's discipline, and a hosted user has none of it (AC-9 non-conformant); background re-imports auto-apply with no opt-in or orphan preview (AC-10 non-conformant); the relationship layer — notes, journals, reminders — has no export path at all in this branch, so the data the app exists to hold is the data that cannot leave (AC-9 rationale); and the app<->DB boundary has no version handshake, relying on deploy-time auto-migration (AC-4 non-conformant)."
+      }
+    ]
+  },
+  "findings": [
+    {
+      "ac_id": "AC-1",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1, 3],
+      "requirement": "A PNA MUST distinguish shared data (externally mirrored, replaceable) from private data (created by the user; the device is its sole authority); private data MUST be locally owned and sealed by default — it MUST NOT egress or mutate except through an explicit user action — with the class boundary enforced at the data layer.",
+      "rationale": "Class-contrast observation, not a failed claim: Monica never promised a sovereign private layer. Both facets of AC-1 are absent by architecture. Ownership facet: nothing is locally owned — the user's device holds no durable store; contacts AND the private relationship layer (notes, journals, reminders, mood, loans) live in one plaintext server database (MySQL by default) behind an account, and the vcard mirror column sits in the same contacts table as user-authored fields, one privacy posture for both classes. Sealing facet: the layer egresses and mutates without per-item user action — saving an address dispatches a background geocoding job that sends the full address to locationiq.com when configured; document/photo upload is architecturally delegated to the Uploadcare cloud CDN (the feature exists only as a cloud round-trip); two-way CardDAV subscriptions push local contact changes to remote servers on an hourly schedule; reminder content and contact names route through Telegram's bot API; and vault sharing exposes the private layer to other users of the account by permission grant. Self-hosting relocates the server under a chosen operator — a real custody improvement at the operator level — but the user-grade sealing the AC names does not exist in either deployment.",
+      "citations": [
+        { "path": "config/database.php", "lines": "19", "note": "Default connection mysql — the root lives in a server RDBMS, not a device-local store." },
+        { "path": "database/migrations/2020_04_25_133132_create_contacts_table.php", "lines": "30-44", "note": "User-authored name fields and the externally-mirrored vcard/distant_* columns share one table and one privacy posture — no shared/private class boundary at the data layer." },
+        { "path": "app/Domains/Vault/ManageAddresses/Services/GetGPSCoordinate.php", "lines": "48-61", "note": "Background job Http::get()s the contact's full address to LocationIQ on address save when the API key is configured — automatic third-party egress of relationship data." },
+        { "path": "app/Domains/Contact/ManageDocuments/Services/UploadFile.php", "lines": "46-53", "note": "'Upload is handled by Uploadcare' — contact documents/photos go to a third-party cloud CDN; the feature exists only via that egress." },
+        { "path": "app/Notifications/ReminderTriggered.php", "lines": "69-82", "note": "Reminder label + contact name sent through Telegram's bot API (plaintext to Telegram's servers) when that channel is configured." },
+        { "path": "app/Models/Vault.php", "lines": "125-134", "note": "Vaults are shared with other account users via a permission pivot (view/edit/manage) — the private layer is multi-reader by design." },
+        { "path": "routes/console.php", "lines": "26", "note": "UpdateAddressBooks scheduled hourly — two-way subscriptions push local contact data to remote DAV servers unattended." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "No sealed private layer exists in either deployment mode: the relationship data is plaintext server-side, readable by the operator, shareable within the account, and — once shipped integrations are configured — egressing to Uploadcare, LocationIQ, Telegram, Sentry, and remote DAV servers without per-item user action. Shipped defaults are conservative (.env.example leaves every cloud integration unset), which bounds the default egress but not the architectural posture." },
+        { "source": "deterministic", "tool": "egress-lint", "detail": "The lint returned clean ('No unsanctioned egress vectors found; all remote origins are allow-listed', suggested_status: conformant) — recorded here as a FALSE PASS, not credited: the lint scans client-side egress vectors and is blind to server-side PHP egress (Guzzle/Http::get to LocationIQ, the Sentry PHP SDK, the Telegram bot channel, DAV push jobs), which is where all of Monica's egress lives. This is the known dynamic-egress blind spot extended to a server-side-language blind spot." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-4",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [4],
+      "requirement": "Every PNA with a storage boundary MUST version-check at init. On version mismatch the boundary MUST refuse mutating operations; read operations MUST continue to work.",
+      "rationale": "Class-contrast observation. The storage boundary here is app server <-> SQL database. The schema is versioned (Laravel's migrations table) and the Docker entrypoint auto-migrates at boot (monica:setup --force), which prevents skew in the blessed deployment path — but there is no init-time version handshake in the application itself: code run against a newer or older schema is not detected and does not degrade to read-only; it fails unpredictably with SQL errors on whatever query first touches a missing column. The auto-migrate convention is a deployment mitigation, not the boundary contract the AC names.",
+      "citations": [
+        { "path": "scripts/docker/entrypoint.sh", "lines": "63", "note": "monica:setup --force runs at container boot — deploy-time auto-migration, the only skew defense." },
+        { "path": "app/Console/Commands/SetupApplication.php", "lines": "113-115", "note": "Setup runs migrate --force; no runtime version check refuses mutations or preserves reads on mismatch." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-6",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [2],
+      "requirement": "A force-reset / force-unlock affordance MUST be reachable regardless of stuck app state.",
+      "rationale": "Class-contrast observation. There is no user-reachable diagnostic escape: the entire user surface is login-gated server routes, and recovery from a stuck state (bad migration, wedged queue, corrupted session) is operator-side — artisan commands and database access on the server. A user of the vendor-hosted instance has no escape affordance at all; a self-hosting user has one only insofar as they are also the operator. The AC's substrate (an escape the user can always reach) presumes the app runs where the user is, which this architecture does not.",
+      "citations": [
+        { "path": "routes/web.php", "lines": "184-188", "note": "The full user surface sits behind auth:sanctum + verified middleware; no reset/unlock route exists outside it." },
+        { "path": "app/Console/Commands/SetupApplication.php", "lines": "41-80", "note": "Reset/repair tooling (cache/config/route clears, setup) is artisan on the server shell — operator-side, not user-reachable." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-7",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [2],
+      "requirement": "Every PNA MUST provide a field-debug substrate: a build label, sanitized error capture, a diagnostic state-dump, a bug-report flow, the AC-6 escape hatch, a boot watchdog, and slow-boot persistence.",
+      "rationale": "Class-contrast observation. One element exists user-facing: the build label (version + commit rendered by the UI, AC-15). The rest of the substrate is operator-side: error capture is the Sentry SDK (an operator-configured egress to sentry.io, with SQL-query breadcrumbs enabled in config — a privacy surface, not a user affordance), and Telescope/Debugbar/Clockwork are developer tools, not a user's diagnostic state-dump or bug-report flow. A user who hits a bug on a hosted instance has GitHub issues and nothing in-app; there is no self-service dump of their own diagnostic state.",
+      "citations": [
+        { "path": "app/Http/Middleware/HandleInertiaRequests.php", "lines": "58-67", "note": "The one user-facing substrate element: version + commit shared to every page." },
+        { "path": "config/sentry.php", "lines": "13-28", "note": "Error capture is operator-configured Sentry with logs + SQL queries + bindings as breadcrumbs — an egress pipe, not a user-facing sanitized capture flow." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-9",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [4],
+      "requirement": "The PNA MUST snapshot the Private store on a per-boot debounced schedule and rotate snapshots to keep a small ring of recoverable points.",
+      "rationale": "Class-contrast observation. Monica ships no backup substrate: the scheduler's full job list is prunes, DAV sync, reminders, and log cleaning — no snapshot job, no rotation ring, and no restore path. Durability is delegated entirely to the operator's database-backup discipline outside the app. The gap is sharpest for the relationship layer: this branch has no account-level export of any kind (the v4 SQL/JSON export did not survive the rewrite), so notes, journals, and reminders — the data the app exists to hold — have no user-reachable copy-out at all; only contacts (per-contact vCard, CardDAV) and calendar items can leave. A hosted user's recoverable-points ring is whatever the vendor privately maintains.",
+      "citations": [
+        { "path": "routes/console.php", "lines": "20-29", "note": "The complete scheduled-job list: model:prune, queue prunes, telescope prune, UpdateAddressBooks, reminders, CleanSyncToken, CleanLogs — no backup/snapshot job exists." },
+        { "path": "app/Domains/Contact/ManageContact/Web/Controllers/ContactVCardController.php", "lines": "17-26", "note": "The only user-reachable export: one vCard per contact. Nothing for notes/journals/reminders; no account export in this branch." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-10",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1, 4],
+      "requirement": "Re-imports of the Shared store MUST be opt-in; before the user commits a re-import, the workspace MUST preview any private references that would be orphaned by the update.",
+      "rationale": "Class-contrast observation. Once a CardDAV subscription is configured, re-imports are continuous and unattended: the scheduler polls every active subscription on its frequency, and incoming vCard changes are applied straight through UpdateContact with no per-run opt-in, no preview, and no orphan analysis of the user's notes/reminders hanging off a contact the remote side changed or deleted (DeleteVCard/DeleteLocalVCard jobs remove contacts as the remote dictates). The one-time act of configuring the subscription is the only consent event; every subsequent mutation of the root is automatic.",
+      "citations": [
+        { "path": "routes/console.php", "lines": "26", "note": "Schedule::job(UpdateAddressBooks::class, 'hourly') — re-import is scheduler-driven, not user-committed." },
+        { "path": "app/Domains/Contact/ManageContact/Dav/ImportContact.php", "lines": "55-60", "note": "Incoming vCard data applied via UpdateContact immediately when it differs — no preview, no confirmation." },
+        { "path": "app/Domains/Contact/DavClient/Services/Utils/AddressBookSynchronizer.php", "lines": "30-53", "note": "Sync batches dispatch get/push/delete jobs unattended on the high queue." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-11",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [4],
+      "rationale": "AC-11 guards a single-writer local store against corruption when a second tab or process grabs it, and demands the conflict be detected and surfaced. Monica's storage substrate is a server RDBMS whose entire job is arbitrating concurrent access: many browser tabs, DAV clients, and queue workers write concurrently through transactions as the normal operating mode, not a conflict condition. The failure mode the AC names does not exist on this substrate, so there is nothing to detect or surface.",
+      "citations": [
+        { "path": "config/database.php", "lines": "19-60", "note": "MySQL/Postgres/SQLite server-side connections — concurrency is arbitrated by the DBMS, by design." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-15",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A runtime-visible build label tied to the source revision exists and is unusually good: the app reads its version (git tag) and full commit hash at build/config time, and the UI renders 'Version :version — commit [:short](:url)' with the short SHA hyperlinked to the exact commit on GitHub — commit-exact, not just release-tag granularity. Substitution happens at image build (.version/.commit files) with a git fallback. Marked needs_human_review on one facet: for a served web app, 'serve time' substitution is the operator's honesty — a hosted instance's label is only as trustworthy as the deployment that stamped it (which is the AC-23 served-artifact caveat, not a defect in the mechanism).",
+      "citations": [
+        { "path": "config/monica.php", "lines": "14-35", "note": "app_version from git tag / .version file; commit from git log / .commit file." },
+        { "path": "app/Http/Middleware/HandleInertiaRequests.php", "lines": "58-67", "note": "Version + short commit rendered on every page, hyperlinked to the exact GitHub commit." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-16",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-16 requires a transport menu where the workspace initiates outreach to contacts. Monica v5 has no outreach feature: it never composes or sends anything to a contact (no email-your-contact, no messaging integration). The only sends are reminder notifications to the user themself (email/Telegram) and DAV sync — neither is workspace-initiated outreach to a contact, so there is no transport selection to govern. The Communications component is absent and its ACs are vacuous.",
+      "citations": [
+        { "path": "app/Notifications/ReminderTriggered.php", "lines": "36-43", "note": "The only notification channels (mail/telegram) target the user's own notification channel, not contacts." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-17",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Contact data enters only through channels the user explicitly set up: manual authoring in the workspace, a CardDAV subscription the user configured (URL + credentials, per vault), or the user's own DAV clients writing through the built-in CardDAV server. Nothing auto-materializes from a network the way a messenger's contacts do. Synced records carry per-record source markers (distant_uuid/distant_etag/distant_uri anchoring each contact to its remote address-book object). Two honest caveats keep this needs_human_review: provenance is record-level and does not name WHICH subscription a contact came from (ambiguous when a vault holds several — the per-field weakness lands in AC-PRM-B), and in a shared vault 'the user' who approved a source may be a different account member than the one reading the record.",
+      "citations": [
+        { "path": "app/Domains/Contact/ManageContact/Dav/ImportContact.php", "lines": "62-77", "note": "External imports stamp distant_uuid/distant_etag/distant_uri — per-record trace to the remote source object." },
+        { "path": "database/migrations/2020_04_25_133132_create_contacts_table.php", "lines": "41-44", "note": "vcard + distant_* columns: the mirror payload and its source anchor persisted per record." },
+        { "path": "app/Domains/Contact/DavClient/Services/Utils/AddressBookSynchronizer.php", "lines": "30-40", "note": "Sync only runs against a user-created AddressBookSubscription — no unconfigured source can introduce records." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-18",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-18 governs the eligibility of outreach transports offered by the workspace; Monica offers none (see AC-16 — no outreach to contacts exists). The transports it does use for self-notification are weighed under AC-1 instead: the Telegram reminder channel routes reminder content and contact names through Telegram's bot API in plaintext-to-Telegram, which would fail AC-18's content-blind rule if it were an outreach transport — but it is a user-to-self notification pipe, so the honest home for that observation is the AC-1 sealing finding, where it is cited.",
+      "citations": [
+        { "path": "app/Notifications/ReminderTriggered.php", "lines": "69-82", "note": "Telegram bot API carries reminder label + contact name — a self-notification pipe, not an outreach transport." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-19",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-19 requires the full payload be shown before any workspace-initiated communication launches. Monica initiates no communications to contacts, so there is no composition surface to govern. The automatic sends that do exist — scheduled reminder notifications (processed every minute), hourly DAV push sync — are not user-composed outreach and are read under AC-21/AC-1/AC-10, where their no-user-in-the-loop character is the finding.",
+      "citations": [
+        { "path": "routes/console.php", "lines": "27", "note": "ProcessScheduledContactReminders runs every minute — automatic self-notification, no composition step, no contact recipient." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-20",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-20 governs LLM invocations over Private/Shared data. Monica has no AI/LLM feature of any kind — no smart suggestions, summarization, enrichment, or model SDK anywhere in the PHP or JS dependency trees (no openai/anthropic/gpt/llm hits in app/, resources/js, composer.json, or package.json). There is no LLM-as-transport surface to govern.",
+      "citations": [
+        { "path": "composer.json", "lines": "14-52", "note": "Full PHP dependency list — search, DAV, OAuth, monitoring; no AI/LLM SDK. JS tree likewise clean." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-21",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1],
+      "requirement": "Re-ingestion MUST be triggered by an explicit user action; the PNA MUST NOT background-poll source services.",
+      "rationale": "Class-contrast observation. Monica's DavClient background-polls every active CardDAV subscription on the server scheduler — hourly sweep, per-subscription frequency check, jobs dispatched with no user in the loop — and two-way subscriptions also push local changes outward on the same unattended cadence. This is standard, reasonable behavior for a sync-centric server app, and the sources are ones the user configured (see AC-17) — but it is exactly the background-poll pattern the AC forbids: the user does not know when fresh data is fetched or when their local edits leave.",
+      "citations": [
+        { "path": "routes/console.php", "lines": "26", "note": "Schedule::job(UpdateAddressBooks::class, 'hourly')." },
+        { "path": "app/Domains/Contact/DavClient/Jobs/UpdateAddressBooks.php", "lines": "19-44", "note": "All active subscriptions swept; SynchronizeAddressBooks dispatched whenever last_synchronized_at exceeds the subscription frequency — no user trigger." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-22",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Capabilities are established by probing, not assumption, at the three places it matters: (1) the search substrate — ScoutHelper checks the configured driver AND its credentials before indexing, and gates full-text indexes on the actual DB engine (mysql/pgsql only); (2) remote DAV servers — AddressBookGetter probes OPTIONS/DAV compliance classes and addressbook support before syncing, stores the discovered capability set per subscription, and throws DavServerNotCompliantException naming the missing RFC section rather than proceeding; (3) env-gated cloud features (LocationIQ, Uploadcare) throw EnvVariablesNotSetException when unconfigured instead of silently degrading.",
+      "citations": [
+        { "path": "app/Helpers/ScoutHelper.php", "lines": "15-58", "note": "Driver + key + DB-engine checks gate indexing and full-text; unknown driver returns false." },
+        { "path": "app/Domains/Contact/DavClient/Services/Utils/AddressBookGetter.php", "lines": "44-61", "note": "Remote server capabilities probed and persisted per subscription; checkOptions() verifies DAV classes and addressbook support, failing loudly with the RFC section named." },
+        { "path": "app/Domains/Vault/ManageAddresses/Services/GetGPSCoordinate.php", "lines": "64-68", "note": "Unconfigured geocoding throws EnvVariablesNotSetException — refuses rather than pretends." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-23",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "The baseline is met and the mechanism is better than baseline: full public source under AGPL-3.0-or-later (a license that specifically obligates network-service operators to offer source), and the runtime label links each running instance to the exact commit on GitHub (AC-15), so a user can fetch precisely the source their instance claims to run. Marked needs_human_review for the served-artifact gap inherent to the class: nothing lets a user of a hosted instance verify the server actually runs the source the label names — no reproducible-build or attestation story bridges label to behavior, and AGPL is a legal lever, not a technical check. Self-hosters can build from source and close the gap themselves.",
+      "citations": [
+        { "path": "composer.json", "lines": "12", "note": "\"license\": \"AGPL-3.0-or-later\"." },
+        { "path": "app/Http/Middleware/HandleInertiaRequests.php", "lines": "63-67", "note": "Runtime label hyperlinks to repository/commit/<full-sha> — source corresponding to the running label is one click away." },
+        { "path": "config/monica.php", "lines": "126-133", "note": "Canonical repository URL configured and used by the label link." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-MCP-A",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [2, 3],
+      "rationale": "AC-MCP-A governs MCP tools returning Private DB rows to AI clients. Monica exposes no MCP surface. Its programmatic surfaces are a small Sanctum REST API (user/users/vaults resources) and CardDAV/CalDAV endpoints — network HTTP services read under AC-PRM-H, not MCP tool surfaces consumed by AI clients. No MCP surface, no AC.",
+      "citations": [
+        { "path": "routes/api.php", "lines": "18-25", "note": "The entire API: auth:sanctum user/users/vaults resources. No MCP server anywhere in the tree." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-MCP-B",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-MCP-B governs MCP Communications tools staging outreach for workspace-launched sends. Monica has neither an MCP surface (see AC-MCP-A) nor any outreach communications (see AC-16), so both preconditions are absent.",
+      "citations": [
+        { "path": "routes/api.php", "lines": "18-25", "note": "No MCP surface; and no communications feature exists to stage (AC-16)." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-2",
+      "ac_source": "flavor-derived",
+      "status": "non-conformant",
+      "goals": [3],
+      "requirement": "A server a PNA stands up MUST be a delivery channel, not a service: it MUST NOT expose per-user RW endpoints, persist private data, host an admin console, or operate cross-device sync.",
+      "rationale": "Class-contrast observation — and the single sharpest architectural discriminator in this report. The behavioral trigger (operates a server over its data) is maximally present: the server IS the application. It violates every clause at once, as its design: hundreds of per-user authenticated RW endpoints (the entire web surface plus the REST API); all private data persisted server-side (the DB is the only store); a full settings/admin console (user management, storage administration, account cancellation); and cross-device sync as a headline feature (the built-in CardDAV/CalDAV server, advertised via .well-known redirects). Where the spec's conditional AC contemplates a PNA that happens to stand up a small delivery server, Monica is the inverse: a service with no local anything. This finding is what 'right category, different architecture' cashes out to.",
+      "citations": [
+        { "path": "routes/web.php", "lines": "184-198", "note": "auth:sanctum-gated per-user RW endpoints — vault CRUD onward; the pattern continues for hundreds of routes." },
+        { "path": "routes/api.php", "lines": "18-25", "note": "Token-authenticated per-user REST resources." },
+        { "path": "routes/web.php", "lines": "164-165", "note": ".well-known/carddav + caldav — the server operates cross-device sync as a feature." },
+        { "path": "app/Domains/Settings/CancelAccount/Services/CancelAccount.php", "lines": "26-45", "note": "Admin-permissioned account management console — 'author_must_be_account_administrator'." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-5",
+      "ac_source": "flavor-derived",
+      "status": "non-conformant",
+      "goals": [1],
+      "requirement": "A rejected shared-side fetch (e.g. 401/403) MUST fall through to the local cache; fresh data MUST require an explicit user action.",
+      "rationale": "Class-contrast observation. The trigger (data gated behind an authenticated refresh) is total here: every byte of the user's data sits behind server session/token auth. And there is no local cache to fall through to — the Inertia SPA renders server-provided props per request and persists nothing durable on the device, so an expired session, forgotten password, revoked account, or unreachable server leaves the user with zero access to their own network data. The AC contemplates auth as a gate on refresh with local data as the floor; in this architecture auth is a gate on existence, and the floor is nothing.",
+      "citations": [
+        { "path": "routes/web.php", "lines": "184-188", "note": "All data routes behind auth:sanctum + verified — a rejected session yields redirects/401s for everything, including reads." },
+        { "path": "resources/js/app.js", "lines": "1-38", "note": "Inertia/Vue client bootstraps from server-provided page props; no offline store, no local persistence layer exists to serve cached data." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-8",
+      "ac_source": "flavor-derived",
+      "status": "conformant",
+      "goals": [3],
+      "rationale": "Triggered: Monica operates its own authentication server (Fortify + WebAuthn + OAuth). Login attempts are rate-limited per email+IP (5/minute) and the two-factor challenge per session (5/minute); failed logins return Laravel's uniform credentials-mismatch response regardless of account existence; and the optional error sink (Sentry) defaults to send_default_pii=false with the DSN unset, so the analytics/error pipe does not widen the privacy boundary by default. Marked needs_human_review on the enumeration edges not fully traced: open registration is the default (APP_DISABLE_SIGNUP=false) and standard Laravel unique-email validation on registration and password-reset flows typically discloses account existence — neutral-payload behavior on those two endpoints was not verified.",
+      "citations": [
+        { "path": "app/Providers/FortifyServiceProvider.php", "lines": "58-64", "note": "RateLimiter: login 5/min by email+IP; two-factor 5/min by session." },
+        { "path": "config/sentry.php", "lines": "51", "note": "send_default_pii defaults false; DSN unset by default — sink is bounded and opt-in." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-PRM-B",
+      "ac_source": "flavor-derived",
+      "status": "non-conformant",
+      "goals": [2],
+      "requirement": "A stable record_id MUST survive merge across sources; the dedup flow MUST surface conflicts; per-source provenance MUST be recorded per field, not just per record.",
+      "rationale": "Class-contrast observation. Triggered: a vault can mirror multiple sources at once — several CardDAV subscriptions, the user's own DAV clients writing through the built-in server, and manual entry. The stable-ID clause is met (contacts are UUID-keyed and sync updates mutate in place). The other two clauses are absent: matching is by remote URI or vCard UID within a single source's namespace only — two sources holding the same human produce two contacts with no dedup flow, no merge, and no conflict surfacing; and when a sync does match, incoming fields overwrite silently via UpdateContact with provenance recorded only per record (distant_uuid/etag/uri), never per field — after an overwrite there is no way to see which source authored which field, or that a value the user hand-edited was clobbered by the hourly sync.",
+      "citations": [
+        { "path": "app/Domains/Contact/ManageContact/Dav/ImportContact.php", "lines": "80-105", "note": "getExistingContact matches by URI then UID within the vault — single-source identity resolution; no cross-source dedup or conflict path exists." },
+        { "path": "app/Domains/Contact/ManageContact/Dav/ImportContact.php", "lines": "55-60", "note": "On match, UpdateContact applies incoming values immediately — silent last-write-wins, no conflict surfaced." },
+        { "path": "database/migrations/2020_04_25_133132_create_contacts_table.php", "lines": "41-44", "note": "Provenance columns are per-record (distant_uuid/etag/uri); no per-field provenance exists in the schema." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-H",
+      "ac_source": "flavor-derived",
+      "status": "non-conformant",
+      "goals": [3],
+      "requirement": "A same-host-reachable surface a PNA opens over its own Private/Shared data MUST be loopback-bound and authenticated to the user's own session; a non-loopback bind MUST require an explicit, documented opt-out.",
+      "rationale": "Class-contrast observation, applied to Monica's analog of the behavioral property: it exposes programmatic surfaces over the private data — a Sanctum token REST API (Jetstream's API-token feature is enabled, so any user can mint long-lived bearer tokens) and CardDAV/CalDAV endpoints. The authentication half of the AC is genuinely met (session/token auth on the API, DAV auth on the DAV surface, vault-level authorization policies). The bind posture is the class contrast: these are network-exposed by construction — a web app has no loopback default to opt out of, so the AC's default-closed architecture (loopback unless explicitly, documentedly opened) is inverted into default-open-to-the-network with credentials as the only barrier. For the vendor-hosted instance that surface is the public internet.",
+      "citations": [
+        { "path": "routes/api.php", "lines": "18-25", "note": "Network REST surface over vault data, bearer-token authenticated." },
+        { "path": "config/jetstream.php", "lines": "60-64", "note": "Features::api() enabled — users mint personal access tokens for the network API." },
+        { "path": "routes/web.php", "lines": "164-165", "note": "CardDAV/CalDAV advertised at .well-known on the network interface — the sync surface is internet-facing by design." }
+      ],
+      "needs_human_review": false
+    }
+  ]
+}

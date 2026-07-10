@@ -1,0 +1,363 @@
+{
+  "report_schema_version": "0.2",
+  "generated_at": "2026-07-09T00:00:00Z",
+  "generated_by": "pna-toolkit evaluate flow — Claude. First run on Element Web, emitted directly as a Mode-2 (goal-impact) report at report schema 0.2 — the second E2EE messenger in the casebook, evaluated with evaluations/signal-desktop as the within-class comparison baseline. The evaluation spans TWO repos and their pins: the app shell element-web at 7d2657708 (develop branch; the SPA is apps/web, the former matrix-react-sdk merged into apps/web/src) and the data/protocol layer matrix-js-sdk at be09f070c (v41.9.0). Citation paths are prefixed element-web/ and matrix-js-sdk/ accordingly. Verification tiers: LLM architectural pass over both repos (every cited line read directly at the pinned commits), plus the deterministic egress-lint over element-web/apps/web/src (3 static findings, folded into AC-1) — recorded with the tool's known dynamic-egress blind spot on web apps: virtually all of Element's egress flows through matrix-js-sdk's parameterized homeserver baseUrl and is invisible to the static scan, so the lint's near-clean result materially under-reports and the LLM tier carries the AC-1 finding.",
+  "candidate": {
+    "name": "Element Web",
+    "repo_url": "https://github.com/element-hq/element-web",
+    "commit": "7d2657708",
+    "pna_spec_version": "0.2",
+    "picks_source": "inferred",
+    "classification": {
+      "application_class": "federated, end-to-end-encryptable messaging client — the flagship web client of the Matrix protocol, a browser SPA that is a client of a user-chosen homeserver (default matrix.org)",
+      "stores_contact_data": true,
+      "contact_data_note": "The contact graph — rooms, memberships, the m.direct DM map, user profiles — is homeserver-authoritative (room state + account_data), replicated to every federated counterparty server in each room; the device holds an IndexedDB sync cache (riot-web-sync), not a locally-owned mirror.",
+      "stores_relationship_data": true,
+      "relationship_data_note": "Message history (E2EE per-room only), the DM map, and even Element's own account-level settings (im.vector.web.settings) live in homeserver room history / account data; local IndexedDB is a re-syncable cache that logout wipes.",
+      "nexus": "adjacent",
+      "nexus_source": "inferred",
+      "mode": "goal-impact"
+    },
+    "axis_picks": {
+      "distribution": "web-bundle-open (GPG-signed release tarballs any operator can self-host, or the vendor-hosted app.element.io; an Electron desktop wrapper shares the monorepo but is out of this candidate's scope)",
+      "storage": "idb-only-browser (IndexedDB cache of server-authoritative data: riot-web-sync sync store + rust-crypto stores, with explicit MemoryStore degradation on failure)",
+      "ingestion": "approx single-source-live-pull (sui generis: a continuous background /sync long-poll from the homeserver is the app's only data supply; not a mirror-and-build)",
+      "workspace-shell": "framework-spa (React SPA in the browser)",
+      "comms": "matrix-protocol-only (the app IS the transport; per-room E2EE via matrix-js-sdk rust crypto; no transport menu)",
+      "mcp-exposure": "none (widget iframes and a build-time module API exist; no MCP surface)"
+    }
+  },
+  "summary": {
+    "posture": "not-a-pna",
+    "headline": "Element Web is a federated, end-to-end-encryptable Matrix messaging client, not a PNA — a goal-impact read, not a membership verdict — and, as the second E2EE messenger in the casebook, the test of whether the read discriminates within the class. It does, in both directions versus Signal Desktop (G1/G2/G3 mixed, G4 protects). Worse: E2EE is per-room, conditional, and homeserver-vetoable rather than universal (AC-18 — plaintext rooms are decoded by the operator as part of operating); the contact graph, the m.direct DM map, and even the app's own settings are homeserver-side account data rather than device-resident (AC-1); the local IndexedDB store is a disposable cache that a server-side logout erases (AC-5) with no local backup ring (AC-9); read receipts and typing notifications default ON where Signal defaults OFF. Better: the server side is open source and self-hostable — custom homeserver URLs are first-class — so a user CAN own the root's infrastructure, something Signal structurally cannot offer; analytics is genuinely opt-in (PostHog anonymity defaults Disabled; the web sample config ships no key); and durability against total device loss (server-side history + encrypted key backup + room/key exports) exceeds Signal's. Net: all four Goals read mixed — Goal 4 drops from Signal's protects because Element's durability is delegated to an account, not held by the user.",
+    "leading_concerns": ["AC-1", "AC-21", "AC-18", "AC-5", "AC-9"],
+    "goal_impacts": [
+      {
+        "goal": 1,
+        "impact": "mixed",
+        "note": "Ownership is thinner than Signal's: the graph (rooms, m.direct, profiles) and Element's own account-level settings are homeserver-authoritative (AC-1), refreshed only by continuous background sync (AC-21), and the local IndexedDB store is a disposable cache — a server-side token invalidation can erase it (AC-5) and no local backup ring exists (AC-9). The counterweight Signal cannot offer: the homeserver is open source and user-hostable (custom server URLs are first-class in the login flow), so the user can own the root's infrastructure — though that is ownership of a server account, still not a sovereign local store."
+      },
+      {
+        "goal": 2,
+        "impact": "mixed",
+        "note": "Code-validation is strong on source (AGPL-3.0/GPL-3.0 app + Apache-2.0 SDK, AC-23) with honest capability probing (AC-22), a strictly user-initiated debug-report substrate (AC-7), and genuinely opt-in analytics (PostHog events flow only after explicit consent; the web sample config ships no key at all). But it is weaker than Signal on build verification — no reproducible builds, and a hosted deployment's served bundle is unverifiable at serve time (AC-23, AC-15) — and data-validation is absent exactly as in Signal: contacts materialize from the network with no provenance and no user-configured source (AC-17)."
+      },
+      {
+        "goal": 3,
+        "impact": "mixed",
+        "note": "When E2EE is active the transport is Signal-class (rust Olm/Megolm; new DMs default to encrypted). But encryption is per-room, conditional on all targets having device keys, and homeserver-vetoable via .well-known — non-DM rooms default to plaintext that the homeserver decodes as part of operating (AC-18) — and the graph, DM map, and metadata egress continuously to the homeserver and every federated counterparty server (AC-1, AC-21), with read receipts and typing notifications ON by default (Signal: off) and no sealed-sender analog. Self-hosting relocates the exposure to a server the user controls — a real Goal-3 gain over Signal's fixed operator — but federation still replicates room data to counterparties' servers."
+      },
+      {
+        "goal": 4,
+        "impact": "mixed",
+        "note": "The durability model is delegated, not user-held — a genuinely different read from Signal's protects. History survives total device loss (server-side rooms + encrypted key backup uploaded to /room_keys/version, plus per-room HTML/JSON/Text export and passphrase-encrypted key export) — in that scenario stronger than Signal. But it is account- and server-contingent: no local auto-backup ring exists (AC-9), logout or a hard token invalidation wipes the local store (AC-5), and losing the account (deactivation, server shutdown, a lost recovery key with no signed-in device) loses the root unless manually exported. Signal's Goal-4 protection is user-held local backups; Element's is a well-engineered dependence on the service."
+      }
+    ]
+  },
+  "findings": [
+    {
+      "ac_id": "AC-1",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1, 3],
+      "requirement": "A PNA MUST distinguish shared data (externally mirrored, replaceable) from private data (locally created, sovereign); the private class MUST be locally owned and sealed by default — it MUST NOT egress or mutate except through an explicit user action — with the class boundary enforced at the data layer.",
+      "rationale": "Element inverts both facets of the restated AC-1, and more deeply than Signal. Ownership facet: there is no locally-owned root at all — the contact graph (rooms, memberships, profiles), the m.direct DM map, and even Element's own account-level settings (im.vector.web.settings) are homeserver-authoritative, written up via account_data PUTs and read back down via /sync; the device's IndexedDB is a disposable cache (see AC-5: logout wipes it). Sealing facet: the relationship layer egresses continuously and automatically — marking a room as a DM PUTs the whole user-to-rooms map to the server; changing an account-level setting PUTs it to the server; no per-item user egress action exists and no shared/private class distinction exists anywhere in the data layer (one class: server-resident data, cached locally). Class-contrast vs Signal: Signal at least delivers the ownership facet (a local SQLCipher store that is the authoritative message archive); Element delivers neither by default. The one mitigation, unavailable to Signal users, is that the server can be the user's own (self-hostable homeserver; custom URLs are first-class) — which repairs some ownership but not sealing, since federation replicates room state and messages to every counterparty server in a room.",
+      "citations": [
+        { "path": "matrix-js-sdk/src/client.ts", "lines": "2296-2306", "note": "setAccountDataRaw(): account data is HTTP PUT to /user/$userId/account_data/$type on the homeserver." },
+        { "path": "element-web/apps/web/src/Rooms.ts", "lines": "76", "note": "setDMRoom: the entire m.direct DM/contact map is written to homeserver account data on any DM change." },
+        { "path": "element-web/apps/web/src/settings/handlers/AccountSettingsHandler.ts", "lines": "28-40", "note": "Element's ACCOUNT-level settings live in im.vector.web.settings homeserver account data (written via setAccountData at line 179)." },
+        { "path": "element-web/apps/web/src/utils/DMRoomMap.ts", "lines": "36", "note": "The DM/contact graph is read from server-side account data, not a local sovereign store." },
+        { "path": "matrix-js-sdk/src/sync.ts", "lines": "942-946", "note": "All rooms/membership/state/account_data flow down from the homeserver via authenticated GET /sync — the server is the authority, the client a cache." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Both AC-1 facets fail: no locally-owned root (the graph and overlay are server-authoritative; the local store is a re-syncable cache) and no sealed private class (DM map, settings, and room data egress automatically with no per-item user action). Deeper than Signal's AC-1 failure, which retained real local custody." },
+        {
+          "source": "deterministic",
+          "tool": "egress-lint",
+          "detail": "Static scan of element-web/apps/web/src: 3 unsanctioned egress vectors to non-allow-listed remote origins (well-known discovery fetches). Materially under-reports by construction: the tool's known dynamic-egress blind spot on web apps applies in full — nearly all of Element's egress flows through matrix-js-sdk's parameterized homeserver baseUrl (authedRequest), which a static origin scan cannot see. The near-clean result is a false negative for AC-1 purposes; the LLM tier carries the finding.",
+          "citations": [
+            { "path": "element-web/apps/web/src/components/views/dialogs/devtools/ServerInfo.tsx", "lines": "35", "note": "fetch -> https://${hsName}/.well-known/matrix/server" },
+            { "path": "element-web/apps/web/src/vector/mobile_guide/index.ts", "lines": "85", "note": "fetch -> https://${serverName}/.well-known/matrix/client" },
+            { "path": "element-web/apps/web/src/widgets/Jitsi.ts", "lines": "51", "note": "fetch -> https://${this.preferredDomain}/.well-known/element/jitsi" }
+          ]
+        }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-4",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [4],
+      "rationale": "The storage boundary is versioned and cannot corrupt across skew: the sync store's IndexedDB schema version is derived from a forward migration list and applied in onupgradeneeded; a NEWER on-disk version rejects at indexedDB.open (browser VersionError), and any IndexedDB failure explicitly degrades to MemoryStore (emitting a 'degraded' event) and re-syncs from the server rather than operating on data it does not understand. Marked needs_human_review because the literal sub-requirement 'read operations MUST continue to work on mismatch' is met only via the cache architecture (degraded mode refetches from the homeserver instead of reading the newer local DB) — integrity is protected by the very server-authority that AC-1/Goal 1 penalize.",
+      "citations": [
+        { "path": "matrix-js-sdk/src/store/indexeddb-local-backend.ts", "lines": "56", "note": "const VERSION = DB_MIGRATIONS.length — schema version derived from the forward-migration list." },
+        { "path": "matrix-js-sdk/src/store/indexeddb-local-backend.ts", "lines": "170-192", "note": "connect(): open at VERSION with onupgradeneeded forward migrations only; a newer on-disk DB rejects at open." },
+        { "path": "matrix-js-sdk/src/store/indexeddb.ts", "lines": "326-338", "note": "degradable(): on IDB failure, log + emit 'degraded' + fall back to MemoryStore — never operate on unusable local data." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-6",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A force-reset escape exists on three surfaces: a 'Clear cache and reload' action in Help settings, the same action on the ErrorBoundary crash screen (so it is reachable when the app has soft-crashed), and a clear-storage button on the session-restore-failure dialog. All wipe the local stores and reload. Marked needs_human_review because the affordance is gated to those React surfaces — there is no state-independent URL parameter (no ?forceclean / --reset analog), so a failure before React mounts has no in-app escape.",
+      "citations": [
+        { "path": "element-web/apps/web/src/components/views/settings/tabs/user/HelpUserSettingsTab.tsx", "lines": "70-80", "note": "onClearCacheAndReload: stopClient + store.deleteAllData + reload." },
+        { "path": "element-web/apps/web/src/components/views/elements/ErrorBoundary.tsx", "lines": "51-58", "note": "Same clear-cache-and-reload path offered from the crash screen." },
+        { "path": "element-web/apps/web/src/components/views/dialogs/SessionRestoreErrorDialog.tsx", "lines": "48-55", "note": "Clear-storage button offered when session restore fails." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-7",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Element ships a real field-debug substrate: the rageshake module monkey-patches the console and persists logs to a local IndexedDB ring with startup purging; a runtime version label (app + crypto versions) is shown in Help settings; and bug-report submission is strictly user-initiated (dialog-driven POST to a configured bug_report_endpoint_url, which the web sample config does not even set — no endpoint, no upload path). Marked needs_human_review on sanitization depth: unlike Signal's redactAll() pass, no systematic pre-upload redaction of the persisted logs was found, and collectBugReport attaches user/device/homeserver identifiers to the report by design.",
+      "citations": [
+        { "path": "element-web/apps/web/src/rageshake/rageshake.ts", "lines": "11-16", "note": "Console capture persisted to IndexedDB — the local-first debug substrate." },
+        { "path": "element-web/apps/web/src/rageshake/submit-rageshake.ts", "lines": "348-350", "note": "sendBugReport throws if no bug_report_endpoint_url is configured — upload requires explicit configuration AND a user action." },
+        { "path": "element-web/apps/web/src/rageshake/submit-rageshake.ts", "lines": "463-470", "note": "submitReport: the only upload is a POST driven from the user-facing bug-report/feedback dialogs." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-9",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [4],
+      "requirement": "The PNA MUST snapshot the Private store on a per-boot debounced schedule (not per-deploy). It MUST rotate snapshots to keep a small ring of recoverable points.",
+      "rationale": "No local snapshot machinery exists for any of the local stores; the durability model is inverted — the homeserver IS the backup. The only backup subsystem, key backup, uploads room keys (encrypted to a locally-held Curve25519 backup key) to the homeserver's /room_keys/version; message history durability is the server's room storage; and the local store is treated as disposable (logout deletes everything; 'Clear cache and reload' is a supported recovery action). Manual, user-driven exports exist (per-room HTML/JSON/Text export; passphrase-encrypted E2E key export to element-keys.txt) but are not an automatic recovery ring. Class-contrast: Signal Desktop ships timestamped local encrypted snapshots with rotation and was conformant here; Element delegates Goal-4 durability to the service account — effective against device loss, void against account loss (see the Goal 4 read).",
+      "citations": [
+        { "path": "matrix-js-sdk/src/rust-crypto/backup.ts", "lines": "572-596", "note": "setupKeyBackup(): the backup machinery uploads (encrypted) room keys to the homeserver — server-side backup, not a local ring." },
+        { "path": "element-web/apps/web/src/Lifecycle.ts", "lines": "1101-1106", "note": "onLoggedOut: clearStorage({deleteEverything: true}) — the local store is disposable, the opposite of a snapshotted private store." },
+        { "path": "element-web/apps/web/src/utils/exportUtils/exportUtils.ts", "lines": "11-17", "note": "Room export formats (Html/PlainText/Json) — manual portability, not an auto-backup ring." },
+        { "path": "element-web/apps/web/src/async-components/views/dialogs/security/ExportE2eKeysDialog.tsx", "lines": "103-118", "note": "Passphrase-encrypted key export to element-keys.txt — manual, user-driven." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Grep + architectural read over both repos found no local snapshot/rotation code for the sync, crypto, or settings stores; durability is delegated to the homeserver account." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-10",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [1, 4],
+      "rationale": "AC-10 governs opt-in, non-destructive re-imports of a Shared store with an orphan preview before commit. Element has no mirror-and-build Shared store and no re-import event: data arrives continuously via the background /sync long-poll and is reconciled into the cache automatically. The closest analog — continuous background sync — bears on AC-21, where it is non-conformant (same shape as the Signal report).",
+      "citations": [
+        { "path": "matrix-js-sdk/src/sync.ts", "lines": "861-870", "note": "doSync(): while(running) long-poll loop — continuous reconciliation, no user-committed re-import moment." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-11",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [4],
+      "rationale": "Concurrent access is detected and surfaced with a specific message — the full AC, including the part Signal Desktop only half-meets. A localStorage-based session lock (claim/ping/owner keys with a 15s expiry) ensures one tab owns the session; when a second tab claims it, the first renders SessionLockStolenView with the explicit message '%(brand)s is connected in another tab', and app startup refuses to proceed without the lock. Signal, by contrast, silently exits the second instance; Element's specific user-facing conflict message satisfies AC-11's letter as well as its intent.",
+      "citations": [
+        { "path": "element-web/apps/web/src/utils/SessionLock.ts", "lines": "107-110", "note": "getSessionLock(): localStorage claim/ping lock, one live instance per browser+domain." },
+        { "path": "element-web/apps/web/src/components/structures/MatrixChat.tsx", "lines": "315-319", "note": "Startup acquires the session lock and halts if another instance holds it." },
+        { "path": "element-web/apps/web/src/components/structures/auth/SessionLockStolenView.tsx", "lines": "22-25", "note": "Specific conflict UI: 'connected in another tab' title + guidance." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-15",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A runtime-visible build label exists: webpack bakes process.env.VERSION into the bundle, WebPlatform.getAppVersion() exposes it, and Help settings display app + crypto versions. Development/nightly builds embed the git SHAs of BOTH repos ('<element-web sha>-js-<matrix-js-sdk sha>' via scripts/get-version-from-git.sh) — commit-exact across the two-repo pin, stronger than Signal's semver-only label. Marked needs_human_review because tagged releases fall back to the package.json semver (release-tag granularity, not commit-exact), and for a hosted deployment the served bundle's label is asserted by the operator, not verifiable by the user (see AC-23).",
+      "citations": [
+        { "path": "element-web/apps/web/src/vector/platform/WebPlatform.ts", "lines": "38", "note": "VERSION = process.env.VERSION — baked in by webpack, exposed via getAppVersion()." },
+        { "path": "element-web/apps/web/webpack.config.ts", "lines": "137-141", "note": "VERSION from env or package.json (+'-dev' fallback)." },
+        { "path": "element-web/scripts/get-version-from-git.sh", "lines": "9-11", "note": "Dev/nightly label embeds short SHAs of element-web AND matrix-js-sdk." },
+        { "path": "element-web/apps/web/src/components/views/settings/tabs/user/HelpUserSettingsTab.tsx", "lines": "45-47", "note": "Version displayed at runtime in Help settings (crypto version at lines 62-66)." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-16",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-16 requires a PNA workspace to surface multiple outreach transports with per-outreach user choice. Element Web is itself a single transport — the Matrix protocol via the user's homeserver; there is no transport menu and no email/SMS fallback. Like Signal, it is a transport a conforming PNA might launch, not a PNA workspace choosing among transports, so the AC does not apply to it as a candidate.",
+      "citations": [
+        { "path": "element-web/apps/web/src/components/views/rooms/SendMessageComposer.tsx", "lines": "435", "note": "Single send path: mxClient.sendMessage to the Matrix homeserver; no transport-selection surface." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-17",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [2],
+      "requirement": "Every record in the Shared store MUST trace to a specific external source the user has explicitly configured. The toolkit MUST NOT introduce contact data the user hasn't approved.",
+      "rationale": "Contact/graph records carry no provenance and are gated on no user-configured source: rooms, invites, and memberships materialize from the network via background /sync (any user on any federated server can invite you and thereby appear in your graph), the DM map is account data, and contact discovery is a live POST to the homeserver's user directory. Nothing traces a record to a source the user approved. Same finding as Signal, with a wider aperture: Signal's records originate from one operator's network, Element's from the entire federation.",
+      "citations": [
+        { "path": "matrix-js-sdk/src/sync.ts", "lines": "942-946", "note": "Rooms/members/state arrive via /sync with no source gate or provenance field." },
+        { "path": "matrix-js-sdk/src/client.ts", "lines": "7295-7300", "note": "searchUserDirectory: contact discovery is a live server query, not a user-configured mirror." },
+        { "path": "element-web/apps/web/src/utils/DMRoomMap.ts", "lines": "36", "note": "The DM/contact map is server account data — no per-record source attribution anywhere in the model." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "No provenance field exists on rooms/members/DM entries; records originate from the federation rather than a user-approved source list." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-18",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [3],
+      "requirement": "A transport's acceptability is determined by the transport mechanism itself. Signal-class protocols pass (encryption-in-protocol). Workspaces MUST NOT offer centralized message-broker SaaS that decodes payloads as part of operating as a PNA-eligible transport.",
+      "rationale": "The sharpest within-class discriminator vs Signal. Matrix E2EE (Olm/Megolm via the rust crypto stack) is genuinely Signal-class WHEN ACTIVE, and Element defaults new DMs to encrypted — but only conditionally: encryption requires every target to have device keys, and the homeserver can veto it via .well-known (io.element.e2ee force_disable:true, or default:false). Non-DM rooms default to UNencrypted (createRoom: opts.encryption = false), and plaintext rooms are a first-class offered mode in which the homeserver — and every federated server in the room — decodes message contents as part of operating, which is exactly the broker behavior AC-18's MUST NOT names. Signal has one posture (universal E2EE + sealed sender); Element has two, selected per room, one of which fails the rule, with the selection partly in the server's hands. In this Mode-2 report that is a class-contrast observation, not the failure of a claim. (The homeserver's full view of the contact graph and metadata is real but explicitly outside AC-18's rule — it lands on AC-1 and the Goal 3 read.)",
+      "citations": [
+        { "path": "element-web/apps/web/src/createRoom.ts", "lines": "135", "note": "if (opts.encryption === undefined) opts.encryption = false — rooms are unencrypted by default." },
+        { "path": "element-web/apps/web/src/utils/direct-messages.ts", "lines": "186-200", "note": "DM encryption is conditional: only when privateShouldBeEncrypted AND all targets have device keys." },
+        { "path": "element-web/apps/web/src/utils/rooms.ts", "lines": "14-24", "note": "privateShouldBeEncrypted: server .well-known io.element.e2ee.default=false disables DM encryption by default." },
+        { "path": "element-web/apps/web/src/utils/crypto/shouldForceDisableEncryption.ts", "lines": "23-31", "note": "io.element.e2ee.force_disable=true lets the homeserver force new rooms to plaintext." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Per-room, conditional, server-vetoable encryption vs Signal's universal unconditioned E2EE — the load-bearing within-class discriminator on Goal 3." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-19",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [3],
+      "rationale": "For user-composed messages the full payload is visible before send: the composer renders the body (with attachments, replies, mentions) in the recipient room's context, and the network send fires only from an explicit Enter keybinding or Send-button click — no auto-blast. Class-contrast footnote (not the AC's subject, but it tightens the Goal 3 read): protocol acks — read receipts and typing notifications — are sent automatically and DEFAULT ON (Signal defaults them OFF), and URL previews in unencrypted rooms default ON, disclosing viewed-link URLs to the homeserver (off by default in encrypted rooms). All are user-configurable.",
+      "citations": [
+        { "path": "element-web/apps/web/src/components/views/rooms/SendMessageComposer.tsx", "lines": "331-336", "note": "sendMessage(): fires only from explicit user action; empty input returns early." },
+        { "path": "element-web/apps/web/src/components/views/rooms/SendMessageComposer.tsx", "lines": "413-435", "note": "Content the user composed and saw is what mxClient.sendMessage sends to the current room." },
+        { "path": "element-web/apps/web/src/settings/Settings.tsx", "lines": "550-553", "note": "sendReadReceipts default: true — automatic acks ON by default (Signal: off)." },
+        { "path": "element-web/apps/web/src/settings/Settings.tsx", "lines": "892-896", "note": "sendTypingNotifications default: true — ditto." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-20",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-20 governs LLM invocations over Private/Shared data. Element Web ships no AI/LLM feature of any kind — a sweep of apps/web/src and all packages for LLM vendors, completion endpoints, and summarization features found only a notification-count class (SummarizedNotificationState) and bot-filtering comments. No LLM-as-transport surface exists to govern; same posture as Signal Desktop.",
+      "citations": [
+        { "path": "element-web/apps/web/src/stores/notifications/SummarizedNotificationState.ts", "lines": "1", "note": "The only 'summariz*' hit: notification-count aggregation, not AI. No openai/anthropic/llm/inference references ship." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-21",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1],
+      "requirement": "Re-ingestion MUST be triggered by an explicit user action; the PNA MUST NOT background-poll source services. The user always knows when fresh data is being fetched.",
+      "rationale": "The app's entire data model is a background poll: SyncApi.doSync runs a while(running) loop issuing authenticated GET /sync long-polls indefinitely, with no user action, continuously refreshing rooms, members, account data, receipts, and presence. Correct and necessary for a messenger, but the direct opposite of AC-21 — and structurally deeper than Signal's version of this finding, because Element has no authoritative local root to serve without the poll: stop syncing and the app has only a stale cache of someone else's data.",
+      "citations": [
+        { "path": "matrix-js-sdk/src/sync.ts", "lines": "861-870", "note": "doSync(): infinite while(this.running) background loop." },
+        { "path": "matrix-js-sdk/src/sync.ts", "lines": "942-946", "note": "doSyncRequest(): authenticated GET /sync long-poll — continuous, not user-initiated." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "Background long-poll is the sole ingestion path; no user-initiated fetch mode exists." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-22",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Element probes the capabilities it depends on rather than assuming them: a Modernizr-based feature check runs before boot and renders an explicit unsupported-browser screen on failure; IndexedDB availability is probed with an explicit, evented degradation to MemoryStore when it fails; and durable storage is requested via navigator.storage.persist() (with a Safari requestStorageAccess fallback). Marked needs_human_review for one honesty gap: the persist() outcome is only logged, never surfaced or acted on — when the browser refuses durable storage the app continues without warning that the local cache is evictable (low impact only because the authoritative data is server-side, which is itself the Goal 1 concern).",
+      "citations": [
+        { "path": "element-web/apps/web/src/vector/index.ts", "lines": "103", "note": "checkBrowserFeatures() gates boot; unsupported browsers get an explicit incompatibility screen." },
+        { "path": "element-web/apps/web/src/utils/StorageManager.ts", "lines": "29-41", "note": "tryPersistStorage(): probes navigator.storage.persist but only logs the outcome." },
+        { "path": "matrix-js-sdk/src/store/indexeddb.ts", "lines": "326-338", "note": "degradable(): honest, evented fallback to MemoryStore on IDB failure — no silent over-claim of durability." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-23",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Full source is public for the whole candidate: element-web is multi-licensed AGPL-3.0 / GPL-3.0 / commercial and matrix-js-sdk is Apache-2.0; releases ship as GPG-signed tarballs (verifiable against the published element.io release key) that any operator can self-host, so the strong form — build/deploy from verified source, then use your own origin — is genuinely available. Marked needs_human_review for the gap relative to Signal: there is no reproducible-build pipeline, so in the dominant consumption mode (a hosted deployment such as app.element.io) the user cannot practically verify that the served bundle corresponds to the published source — the web-serve analog of the verification gap Signal closes (on Linux) with reproducible builds.",
+      "citations": [
+        { "path": "element-web/README.md", "lines": "101-117", "note": "Multi-license: AGPL-3.0 or GPL-3.0 or commercial — source-available copyleft." },
+        { "path": "element-web/docs/install.md", "lines": "19-20", "note": "Releases GPG-signed against the element.io release key — verifiable for self-hosters." },
+        { "path": "matrix-js-sdk/package.json", "lines": "45", "note": "\"license\": \"Apache-2.0\" — the protocol/data layer is open source too." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-MCP-A",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [2, 3],
+      "rationale": "AC-MCP-A governs MCP tools that return private-store rows to cloud AI clients. Element Web exposes no MCP servers; its programmatic surfaces are the widget API (user-added iframes speaking postMessage, capability-gated) and a build-time module API — neither is an MCP surface returning local-store rows to an AI client. No MCP surface, so the AC does not apply (mcp-exposure: none).",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-MCP-B",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-MCP-B governs MCP Communications tools staging outreach for workspace-launched send. Element exposes no MCP Communications surface; outbound sends originate only from the user-driven composer (see AC-19). Nothing to mediate, so the AC does not apply.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-2",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-2 (no SaaS surface) is conditional on the PNA standing up a server over its own data. Element Web stands up none — it is a static bundle plus a client of a homeserver. The homeserver itself IS a per-user RW, cross-device-sync service over the user's data — the PNA-definition departure — but it is a separate product, and the departure is carried in AC-1/AC-21 and the summary, not here. The class-specific nuance vs Signal: that server is open source (Synapse et al.) and user-hostable, so the SaaS dependency is escapable in a way Signal's is not.",
+      "citations": [
+        { "path": "element-web/apps/web/config.sample.json", "lines": "2-11", "note": "default_server_config points at matrix.org / vector.im; disable_custom_urls:false keeps self-hosted homeservers first-class." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-5",
+      "ac_source": "flavor-derived",
+      "status": "non-conformant",
+      "goals": [1],
+      "requirement": "A rejected shared-side fetch (e.g. 401/403) MUST fall through to the local cache; fresh data MUST require an explicit user action.",
+      "rationale": "The trigger applies — every byte of Element's data is gated behind the authenticated /sync session — and a rejected session does the opposite of falling through to cache. With the server's soft_logout flag, softLogout() preserves the local store but locks the UI to a re-auth screen (the cached data is retained yet unreadable until the server accepts you again); without it, the full logout path runs clearStorage({deleteEverything: true}) plus platform storage clearing — a server-side token invalidation destroys the local copy outright. Class-contrast: Signal serves cached conversations offline; Element's local data is contingent on continued server acceptance. Marked needs_human_review because mapping Matrix session semantics onto AC-5's auth-gated-refresh trigger is a judgment call (this is a Mode-2 class-contrast observation, not the failure of a claim).",
+      "citations": [
+        { "path": "element-web/apps/web/src/Lifecycle.ts", "lines": "986-1005", "note": "softLogout(): store preserved ('A soft logout preserves data, logout does not') but the client stops and the UI drops to re-auth — cached data is not served." },
+        { "path": "element-web/apps/web/src/Lifecycle.ts", "lines": "1101-1106", "note": "onLoggedOut(): clearStorage({deleteEverything: true}) — a non-soft server-side invalidation erases the local store." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-8",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-8 is conditional on the PNA operating an authentication server with a configured error sink. Element Web operates no auth server — it authenticates as a client to the homeserver (and, only behind an explicit terms-acceptance flow, to an optional identity server for 3pid lookups). No PNA-operated auth endpoint exists to anti-enumerate or rate-limit.",
+      "citations": [
+        { "path": "element-web/apps/web/src/IdentityAuthClient.tsx", "lines": "116-128", "note": "Identity-server use is terms-gated (M_TERMS_NOT_SIGNED triggers a consent flow) — client-side auth against hosted services, no server operated." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-B",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [2],
+      "rationale": "AC-PRM-B is conditional on mirroring more than one source. Element has a single logical source — the user's homeserver connection to the Matrix federation, one identifier namespace with no cross-source merge or dedup (federation aggregates many servers, but through one connection into one namespace; no reconciliation across distinct user-configured sources exists). The multi-source-mirror behavioral property is absent.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-H",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-PRM-H is conditional on the PNA opening a same-host surface over its data (a loopback daemon, a local socket). Element Web is a browser SPA: it binds no listening socket; cross-context surfaces are browser-internal (postMessage widgets, service worker). The Electron desktop wrapper lives in the same monorepo but is outside this candidate's scope. No same-host surface, so the AC does not apply.",
+      "needs_human_review": false
+    }
+  ]
+}

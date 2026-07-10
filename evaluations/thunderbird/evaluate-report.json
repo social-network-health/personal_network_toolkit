@@ -1,0 +1,335 @@
+{
+  "report_schema_version": "0.2",
+  "generated_at": "2026-07-09T00:00:00Z",
+  "generated_by": "pna-toolkit evaluate flow — Claude. First-class Mode-2 (goal-impact) report at report schema 0.2, evaluated against a shallow clone of comm-central trunk (Thunderbird 153.0a1 Daily, 72b8ba076). Note the subject is TRUNK: the released ESR shares this architecture, but line numbers and defaults are anchored at this commit. Comm-central is the application layer only — it builds against mozilla-central (the Gecko platform), which is NOT present in this checkout; findings whose mechanism lives in the platform (profile lock, crash-reporter submission flow, Firefox Sync internals, safe-mode CLI handling) are marked unable-to-determine or carry an explicit platform caveat rather than being guessed. Verification tier for this run: LLM architectural pass only. The deterministic egress-lint tier was deliberately SKIPPED: a static egress scan over a ~40k-file Gecko-based mail client — an application whose core function is network egress across dozens of protocols — would produce noise, not evidence; saying so honestly beats folding in a meaningless deterministic pass.",
+  "candidate": {
+    "name": "Thunderbird",
+    "repo_url": "https://github.com/mozilla/releases-comm-central",
+    "commit": "72b8ba076",
+    "pna_spec_version": "0.2",
+    "picks_source": "inferred",
+    "classification": {
+      "application_class": "cross-platform desktop email / calendar / chat client (Mozilla's mail client, MPL-2.0) — a multi-account client of user-chosen mail, CardDAV, LDAP, and chat servers, with a genuinely local, account-independent SQLite address book",
+      "stores_contact_data": true,
+      "contact_data_note": "Each address book is its own SQLite file in the user's profile (abook.sqlite for the Personal Address Book, history.sqlite for Collected Addresses, one file per CardDAV/LDAP book); the default books are local-only and independent of any account. CardDAV/LDAP books are user-configured mirrors of a server.",
+      "stores_relationship_data": true,
+      "relationship_data_note": "Full correspondence history in the local mail store (mbox/maildir, a live mirror of the user's mail servers), chat logs, and a per-contact Notes field stored as the vCard 'note' property inside the contact card itself — local in local books, but synced to the server when the card lives in a CardDAV book.",
+      "nexus": "adjacent",
+      "nexus_source": "inferred",
+      "mode": "goal-impact"
+    },
+    "axis_picks": {
+      "distribution": "sideloaded-native (thunderbird.net installers, distro packages, OS stores; no PNA-operated auth-gating server)",
+      "storage": "native-sqlite-via-filesystem (one SQLite file per address book in the profile; mail in mbox/maildir with .msf index files; prefs in prefs.js)",
+      "ingestion": "approx single-source-live-pull (sui generis, per-book: user-authored local books; CardDAV/LDAP live-pull mirrors; plus automatic collection of outgoing recipients into history.sqlite)",
+      "workspace-shell": "native-shell-native (XUL/HTML desktop application on the Gecko platform)",
+      "comms": "approx mailto-plus-matrix (sui generis: the app IS the mail client — SMTP/IMAP/POP directly — plus chat protocols: Matrix, IRC, XMPP; OpenPGP and S/MIME E2EE built in, opt-in)",
+      "mcp-exposure": "none (a WebExtension API surface exists for installed extensions, but no MCP servers)"
+    }
+  },
+  "summary": {
+    "posture": "not-a-pna",
+    "headline": "Thunderbird is Mozilla's desktop email/calendar/chat client, not a PNA — a different application class that never claimed membership, so this is a goal-impact read, not a membership verdict. It carries the strongest local-data root of any adjacent app evaluated so far: the address book is a set of local, account-independent SQLite files (abook.sqlite) the user owns outright, nothing syncs it off-device by default (Thunderbird's Sync engine carries only remote-book *configuration*, never local cards), the formats are decades-stable, and export to vCard/CSV/LDIF is built in — Goal 1 reads *protects*, a first for this casebook. Against that: there is no enforced private class (AC-1) — per-contact Notes live inside the vCard and auto-PUT to the server the moment the card lives in a CardDAV book, unsent drafts autosave to the IMAP server's Drafts folder every 5 minutes, and opt-out telemetry (default on) uploads address-book and contact counts to Mozilla; the Collected Addresses feature adds every outgoing recipient to the root by default with no user approval (AC-17); and as a mail client it background-polls and syncs constantly (AC-21) — correct for its class, the opposite of the spec's rule. Where the spec's values overlap, Thunderbird is strong: email passes the transport rule with built-in opt-in OpenPGP/S-MIME (AC-18), the compose window shows the full payload before an explicit Send (AC-19), no AI/LLM feature exists (AC-20), capability probing is honest (AC-22), and the source is MPL-2.0 and fully public (AC-23). The mismatch is architectural class, not engineering quality.",
+    "leading_concerns": ["AC-1", "AC-17", "AC-21", "AC-9"],
+    "goal_impacts": [
+      {
+        "goal": 1,
+        "impact": "protects",
+        "note": "The closest an adjacent app has come to the Goal-1 posture: a local, account-independent contact root (per-book SQLite files in the user's profile; AC-1 ownership facet), never carried off-device by the app's own sync (the Sync engine syncs only LDAP/CardDAV book configs, never local cards), with human-readable vCard/CSV/LDIF export and a fully portable profile. Residuals: a CardDAV book, once user-configured, background-syncs on a 30-minute default interval, and the mail mirror refreshes continuously (AC-21) — but the default contact root is populated and refreshed only by user action."
+      },
+      {
+        "goal": 2,
+        "impact": "mixed",
+        "note": "Code-validation is strong: MPL-2.0 public source (AC-23), a runtime version/build-ID surface plus a rich diagnostic state-dump in about:support and a troubleshoot-mode restart (AC-6, AC-7, AC-15), and honest capability probing (AC-22). Data-validation is weaker: the Collected Addresses default introduces contact records the user never approved, with no per-record provenance (AC-17 non-conformant), and the address-book database opens future-version schemas with no refuse-mutations guard (AC-4 non-conformant)."
+      },
+      {
+        "goal": 3,
+        "impact": "mixed",
+        "note": "As a transport the read is good: email passes AC-18's own rule, true E2EE (OpenPGP/S-MIME) is built in though opt-in, and the compose window shows the full payload before an explicit Send (AC-19). As a keeper of the private layer it diminishes control (AC-1 non-conformant): the Notes overlay lives inside the vCard and auto-PUTs to the server whenever the card is in a CardDAV book, unsent compositions autosave to the IMAP server's Drafts folder every 5 minutes, and default-on telemetry uploads address-book/contact counts to incoming-telemetry.thunderbird.net."
+      },
+      {
+        "goal": 4,
+        "impact": "mixed",
+        "note": "Durability by format is excellent — decades-stable mbox/maildir + SQLite + vCard, built-in human-readable exports, a portable profile, an automatic pre-upgrade backup of the address book, and a mail index that detects out-of-date summary files and rebuilds non-destructively. But there is no auto-backup snapshot ring of the private root (AC-9 non-conformant — the only automatic backup fires on schema upgrades), and the address-book storage boundary has no future-version guard (AC-4 non-conformant), so recoverability rests on the user's own backup discipline."
+      }
+    ]
+  },
+  "findings": [
+    {
+      "ac_id": "AC-1",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1, 3],
+      "requirement": "A PNA MUST distinguish shared data (externally mirrored, replaceable) from private data (locally created, sovereign); the private class MUST be locally owned and sealed by default — it MUST NOT egress or mutate except through an explicit user action — with the class boundary enforced at the data layer.",
+      "rationale": "Split verdict, with the ownership facet the strongest yet seen in an adjacent app. OWNERSHIP (Goal 1): delivered. The contact root is a set of local SQLite files in the user's profile, created and owned independently of any account; Thunderbird's optional Sync engine syncs only remote-book configuration (name/type/url/username for LDAP and CardDAV books) and structurally cannot carry local books or any card content; default telemetry sends only aggregate counts. The user can take and keep local custody of contacts, mail, and notes indefinitely, and export them in tool-free formats. SEALING (Goal 3): not enforced as a class. There is no private/shared class boundary at the data layer — privacy posture attaches to the *container* (which book, which folder), not to the data class: (a) the user's relationship overlay (the Notes field) is stored inside the contact card as the vCard 'note' property, so the moment a card lives in a CardDAV book, every note edit is automatically PUT to the server with the rest of the card — the private overlay egresses with no per-item user action; (b) correspondence history (relationship data in the spec's sense) is by design a live bidirectional mirror with the user's mail servers; (c) unsent compositions autosave to the account's Drafts folder — on the server for IMAP accounts — every 5 minutes by default, private data egressing before any send decision; (d) opt-out telemetry (default on) uploads address-book and contact counts. The default local book is sealed in practice, but by container choice and user discipline, not by an enforced class boundary — which is what the AC's MUST requires. In this Mode-2 read that is a class-contrast observation, not the failure of a claim.",
+      "citations": [
+        { "path": "mailnews/addrbook/modules/AddrBookManager.sys.mjs", "lines": "431-453", "note": "Local (JS_DIRECTORY_TYPE) address books are created as abook.sqlite files in the profile directory — the local, account-independent root." },
+        { "path": "mail/services/sync/modules/engines/addressBooks.sys.mjs", "lines": "12-53", "note": "Sync's AddressBooks engine handles only LDAP_DIRECTORY_TYPE / CARDDAV_DIRECTORY_TYPE and its record carries only {name, type, url, username, authMethod} — remote-book config, never local books or card content. The ownership facet holds." },
+        { "path": "mailnews/addrbook/modules/CardDAVDirectory.sys.mjs", "lines": "124-136", "note": "modifyCard() on a CardDAV book automatically pushes the changed card to the server (_sendCardToServer, a PUT of the whole vCard at lines 399-409) — no per-item user action." },
+        { "path": "mailnews/addrbook/modules/VCardUtils.sys.mjs", "lines": "475", "note": "The user's Notes field maps to the vCard 'note' property inside the card — the private overlay travels with the card, there is no separate private store." },
+        { "path": "mailnews/mailnews.js", "lines": "260-262", "note": "mail.compose.autosave=true, autosaveinterval=5: unsent drafts are saved to the account's Drafts folder (on the server for IMAP accounts, per the identity draft_folder mechanism in mailnews/base/src/nsMsgIdentity.cpp:301) every 5 minutes." },
+        { "path": "mail/app/profile/all-thunderbird.js", "lines": "172-181", "note": "datareporting.healthreport.uploadEnabled=true and datareporting.policy.dataSubmissionEnabled=true by default (opt-out with a first-run notification) — background egress of app metrics is on by default." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "The per-book model gives real, structural separation (a local book's bytes never leave the device via any default code path found), but the separation is per-container, not per-class: the same Notes field is sealed in abook.sqlite and server-synced in a jscarddav book, with nothing at the data layer distinguishing the cases. The address-book telemetry metrics (mail/components/addrbook/metrics.yaml: addressbook_count, contact_count keyed by URI scheme) upload aggregate counts — not contents — to incoming-telemetry.thunderbird.net (all-thunderbird.js:1392-1393) by default." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-4",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [4],
+      "requirement": "Every PNA with a storage boundary MUST version-check at init. On version mismatch the boundary MUST refuse mutating operations; read operations MUST continue to work.",
+      "rationale": "The address-book storage boundary version-checks at init but only in the upgrade direction: schema versions below CURRENT_VERSION (4) are migrated in place (with an automatic pre-upgrade backup — good), while a database whose schemaVersion is ABOVE the code's known version falls through the upgrade switch unmatched and the connection is then used read-write as-is. There is no refuse-mutations guard for version skew from the future (e.g. a profile opened by an older Thunderbird after a schema bump), which is precisely the corruption window AC-4 exists to close. Class-contrast observation: profile version skew is rare in Thunderbird's deployment model (one installed version per profile, and downgrade protection exists at the platform layer in mozilla-central, not readable here), but the storage boundary itself does not enforce it.",
+      "citations": [
+        { "path": "mailnews/addrbook/modules/SQLiteDirectory.sys.mjs", "lines": "31-86", "note": "openConnectionTo(): switch(fileVersion) handles cases 0-3 (upgrades) and sets schemaVersion=CURRENT_VERSION; a fileVersion greater than 4 matches no case and the connection is returned and used read-write with no refusal." },
+        { "path": "mailnews/addrbook/modules/SQLiteDirectory.sys.mjs", "lines": "39-50", "note": "Pre-upgrade automatic backup (abook.v<N>.sqlite copy) before migrating an older schema — the half of AC-4's intent that IS implemented." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "The mail store's index behaves better under skew: nsMsgDatabase flags NS_MSG_ERROR_FOLDER_SUMMARY_OUT_OF_DATE (mailnews/db/msgdb/src/nsMsgDatabase.cpp:1181-1224) and the .msf summary file is rebuilt non-destructively from the underlying mbox/maildir message store — resilience by rebuild rather than a refuse-mutations gate." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-6",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A diagnostic escape exists and is reachable from the running app: Help menu -> Troubleshoot Mode restarts Thunderbird with add-ons and customizations disabled (safeModeRestart()), with a confirmation prompt, and about:support offers the same restart plus profile-folder access. Marked needs_human_review because the affordance for a *stuck* app (UI won't paint) is the platform's -safe-mode command-line flag and startup key-chord, which live in mozilla-central and cannot be read in this checkout — the in-app path is verified, the independent-of-app-state path is platform-inherited.",
+      "citations": [
+        { "path": "mail/base/content/mailCore.js", "lines": "743-790", "note": "safeModeRestart(): restart into (or out of) troubleshoot/safe mode, user-confirmed." },
+        { "path": "mail/base/content/troubleshootMode.xhtml", "note": "The troubleshoot-mode dialog shipped in mail/base." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-7",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A self-service field-debug substrate exists: about:support renders a runtime version + build ID and a comprehensive diagnostic state-dump (accounts with server hostnames, extensions, graphics, library versions) with copy-to-clipboard for reports, backed by per-platform providers; an error console and per-module log-level prefs (e.g. carddav.sync.loglevel, mail.addr_book.loglevel) cover error capture; troubleshoot mode is the escape (AC-6). Two honest caveats keep needs_human_review set: (1) the spec's Goal-2 note wants the diagnostic surface to send nothing anywhere by default, and Thunderbird's data-reporting posture is the opposite — telemetry upload is ON by default (opt-out, with a first-run notification), so the reporting substrate defaults to egress; (2) the crash-reporter submission flow (whether a crash upload requires a user prompt) is implemented in mozilla-central and cannot be verified here — comm-central shows only the crash-stats link URL.",
+      "citations": [
+        { "path": "mail/components/about-support/content/aboutSupport.js", "lines": "138-143", "note": "Runtime version (MOZ_APP_VERSION_DISPLAY) and build ID rendered in about:support." },
+        { "path": "mail/components/about-support/AboutSupportUnix.sys.mjs", "note": "Per-platform diagnostic providers (Mac/Unix/Win32) feeding the state-dump." },
+        { "path": "mail/app/profile/all-thunderbird.js", "lines": "172-181", "note": "Default-on data reporting — the substrate exists but its default posture is upload-enabled, unlike the spec's nothing-by-default diagnostic stance." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-9",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [4],
+      "requirement": "The PNA MUST snapshot the Private store on a per-boot debounced schedule (not per-deploy). It MUST rotate snapshots to keep a small ring of recoverable points.",
+      "rationale": "There is no automatic snapshot ring for the address book or any private data. The only automatic backup found fires at schema-upgrade moments (a one-time abook.v<N>.sqlite copy before migration) — an event tied to app upgrades, roughly the 'per-deploy' cadence the AC explicitly rules out, and it produces a single file, not a rotating ring. Export to vCard/CSV/LDIF is built in but entirely manual. Class-contrast observation: Thunderbird's durability model delegates backup to the user (profile copies, OS backup tools), which its decades-stable formats make workable — but the AC's engineered-recoverability requirement (automatic ring, loss remedied not just resisted) is absent.",
+      "citations": [
+        { "path": "mailnews/addrbook/modules/SQLiteDirectory.sys.mjs", "lines": "39-50", "note": "The only automatic backup: a copy taken just before a schema upgrade — upgrade-cadence, single copy, no ring." },
+        { "path": "mailnews/addrbook/modules/AddrBookUtils.sys.mjs", "lines": "287-308", "note": "exportDirectory: CSV/TSV/vCard/LDIF export exists but is user-initiated only." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-10",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [1, 4],
+      "rationale": "AC-10 governs opt-in, non-destructive re-imports of a mirrored Shared store with an orphan-preview before commit. Thunderbird's default address books are user-authored roots, not mirrors — there is no re-mirror event. File imports (CSV/LDIF/vCard/SQLite/MAB via AddrBookFileImporter) are opt-in and purely additive into a chosen target book, so nothing can be orphaned. The nearest analog is CardDAV sync, which is continuous rather than a user-committed re-import — and it does apply server-side deletions to local cards automatically, taking any in-card Notes with them, with no preview; that hazard is carried in the AC-21 finding (background sync) and the AC-1 finding (notes live in the card), where the behavior actually lives.",
+      "citations": [
+        { "path": "mailnews/import/modules/AddrBookFileImporter.sys.mjs", "lines": "26-60", "note": "File import is user-initiated and additive into a target directory — no replace/re-mirror semantics." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-11",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [4],
+      "rationale": "The mechanism that prevents two Thunderbird processes from opening one profile concurrently — the profile lock, with its specific 'already running but is not responding' message — is implemented in mozilla-central's toolkit profile service, which is not present in this checkout, so it cannot be cited or verified here. Within comm-central, the address-book SQLite connections are opened in WAL mode and cached per file (mailnews/addrbook/modules/SQLiteDirectory.sys.mjs:31-56) with no additional app-level concurrent-access detection, consistent with relying on the platform profile lock. Flagged for human review; the platform behavior is well documented publicly but is outside what this source tree can prove.",
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-15",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "A runtime-visible build label exists: about:support and the About dialog render the display version (153.0a1 on this trunk checkout) plus the build ID, read from the built app at runtime. Marked needs_human_review because the tie to an exact source revision (the SourceStamp/SourceRepository fields of application.ini) is stamped by the mozilla-central build glue, which is not present here — within comm-central the label is verifiable at version + build-ID granularity, and there is no serve-time substitution (native app, nothing served).",
+      "citations": [
+        { "path": "mail/config/version_display.txt", "lines": "1", "note": "153.0a1 — the version the build embeds (trunk / Daily channel)." },
+        { "path": "mail/components/about-support/content/aboutSupport.js", "lines": "138-143", "note": "Version and build ID rendered at runtime in about:support." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-16",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [3],
+      "rationale": "Thunderbird genuinely surfaces multiple transports and the user picks per outreach: multiple mail accounts/identities (the From selector in compose chooses the sending account and SMTP server per message) and multiple chat protocols (Matrix, IRC, XMPP ship in chat/protocols/, each a user-configured account). No transport is hardcoded as the only option — email is the default but chat coexists in the same workspace. Marked needs_human_review for an honest caveat: the address-book card's 'Write' action launches email specifically (the per-outreach choice among *classes* of transport happens by choosing a surface, not from a unified per-outreach transport menu), which satisfies the AC's letter loosely rather than exemplarily.",
+      "citations": [
+        { "path": "chat/protocols/matrix/matrix.sys.mjs", "note": "Matrix protocol implementation — a second, E2EE-capable transport class alongside mail." },
+        { "path": "mail/components/compose/content/MsgComposeCommands.js", "lines": "6173-6220", "note": "Compose flow: the sending identity/account (and thus SMTP server) is user-selected per message." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-17",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [2],
+      "requirement": "Every record in the Shared store MUST trace to a specific external source the user has explicitly configured. The toolkit MUST NOT introduce contact data the user hasn't approved.",
+      "rationale": "The Collected Addresses feature introduces contact records the user never approved: with mail.collect_email_address_outgoing=true BY DEFAULT, every to/cc/bcc address of every message the user sends is silently turned into a card in history.sqlite ('Collected Addresses') at send time, with no approval step and no per-record provenance field recording why it exists. The precise shape matters: incoming collection is OFF by default (mail.collect_email_address_incoming=false), so the trigger is the user's own outgoing action — but sending someone mail is not approving them into your contact root, and the AC's no-unapproved-introduction MUST is violated by default. Mitigations, credited honestly: collection lands in a separate, clearly-labeled book (never the Personal Address Book), a single preference turns it off (surfaced in Preferences > Composition), and the rest of the model has decent coarse provenance — each CardDAV/LDAP book traces to exactly the server the user configured, and the per-book-file layout keeps sources physically separate. Class-contrast observation: this is a deliberate mail-client convenience (autocomplete for people you've written to), not a data-integrity failure the app hides.",
+      "citations": [
+        { "path": "mailnews/mailnews.js", "lines": "490-498", "note": "Defaults: collect_email_address_outgoing=true, collect_email_address_incoming=false, target book jsaddrbook://history.sqlite." },
+        { "path": "mailnews/compose/src/MessageSend.sys.mjs", "lines": "1255-1279", "note": "_collectAddressesToAddressBook(): every outgoing to/cc/bcc address is collected at send time." },
+        { "path": "mailnews/compose/src/AddressCollector.sys.mjs", "lines": "31-91", "note": "collectSingleAddress(): creates a new card in the collected book with no user approval step; no source/provenance property is written." },
+        { "path": "mail/components/preferences/compose.js", "lines": "36-37", "note": "The off-switch is a first-class preference in the Composition pane." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "No per-record provenance field exists on cards; provenance is coarse (which book/file a card lives in). The collected book is the only default path that auto-materializes records; LDAP/CardDAV books require explicit user configuration of the source, which is AC-17's model." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-18",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [3],
+      "rationale": "Email is the transport class the spec itself admits: AC-18 rules on the transport mechanism, passes mailto:/email explicitly, and places the downstream provider's behavior outside enforcement — Thunderbird IS the user-configured mail client that rule delegates to, speaking SMTP/IMAP/POP to servers the user chooses, and it offers no centralized content-decoding broker SaaS (no Slack/Discord-class transport) as an outreach channel; its chat protocols (Matrix, IRC, XMPP) are likewise open protocols against user-chosen servers. Thunderbird then exceeds the floor: true end-to-end encryption is built into the product — OpenPGP (RNP-based, no external GnuPG required) and S/MIME — making the transport content-blind when enabled. The honest caveat, stated rather than hidden: E2EE is opt-in, so by default the user's chosen mail servers necessarily see message plaintext in transit/storage; that is the nature of the email class the spec's rule accepts, not a Thunderbird-specific defect. Marked needs_human_review because how AC-18's email allowance should read when the candidate is the mail client itself (rather than a workspace handing off via mailto:) is a spec-interpretation question worth a maintainer's eye.",
+      "citations": [
+        { "path": "mail/extensions/openpgp/content/modules/RNP.sys.mjs", "note": "Built-in OpenPGP implementation (RNP library) — E2EE available in-product, opt-in per account/message." },
+        { "path": "mail/extensions/smime/content/msgCompSecurityInfo.js", "note": "S/MIME compose security — the second built-in E2EE option." },
+        { "path": "chat/protocols/matrix/matrix.sys.mjs", "note": "Matrix (E2EE-capable open protocol) as a chat transport; no content-decoding broker SaaS is offered as a transport." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-19",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [3],
+      "rationale": "User-composed messages show the full payload before send: the compose window is the send path — recipients, subject, body, and attachments are all visible and editable, and delivery starts only from an explicit Send action (GenericSendMessage), which additionally runs guardrails (missing-attachment reminder, missing-subject prompt, and a warning when a message has 15+ public To/CC recipients suggesting BCC). Bulk mail to a list goes through the same composer. No auto-blast path over contact data was found. The one payload-leaves-early behavior — drafts autosaving to a server folder every 5 minutes — is an AC-1 sealing finding (data at rest on the server before the send decision), not a bypass of the send-time review, and is carried there.",
+      "citations": [
+        { "path": "mail/components/compose/content/MsgComposeCommands.js", "lines": "6173-6220", "note": "GenericSendMessage(): send fires only from the compose window where the full composition is visible; pre-send checks run here." },
+        { "path": "mail/app/profile/all-thunderbird.js", "lines": "1432-1444", "note": "warn_public_recipients threshold (15) — an extra payload-awareness guard on bulk sends." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-20",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "No AI/LLM feature exists in comm-central at this commit: no model invocation over mail, contacts, or calendar data; no smart-reply, summarization, or cloud-model integration; no AI-related default prefs (searches for openai/anthropic/LLM/model-inference surfaces across mail/ and mailnews/ prefs and components came back empty). Caveat recorded honestly: the Gecko platform (mozilla-central, not present) ships local ML infrastructure for Firefox features (e.g. translations); nothing in comm-central wires any of it to user data, so there is no LLM-as-transport surface to govern. Vacuously satisfied / not applicable.",
+      "citations": [
+        { "path": "mail/app/profile/all-thunderbird.js", "lines": "1-1600", "note": "The application's default-prefs surface: no AI/LLM/model prefs present." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-21",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [1],
+      "requirement": "Re-ingestion MUST be triggered by an explicit user action; the PNA MUST NOT background-poll source services. The user always knows when fresh data is being fetched.",
+      "rationale": "Thunderbird background-polls and syncs as its core mode of operation: mail accounts check for new messages every 10 minutes by default with IMAP IDLE push on top, IMAP autosync preemptively downloads full message bodies for offline stores in the background, and a CardDAV address book — once the user configures it — syncs 30 seconds after startup and then on a repeating 30-minute default interval, applying remote adds/changes/deletions (including deletions that remove in-card Notes) with no per-cycle user action or preview. The precise AC-21 line for the contact root: creating a CardDAV book IS an explicit user action, but everything after it is background polling, exactly what the AC forbids; the default local books, by contrast, are never polled — nothing refreshes them but the user. Class-contrast observation: for a mail client this is correct and expected behavior (mail that only arrived on manual refresh would be broken), but it is the direct opposite of the spec's user-knows-when-data-moves rule.",
+      "citations": [
+        { "path": "mailnews/mailnews.js", "lines": "536", "note": "mail.server.default.check_time=10 — poll for new mail every 10 minutes by default." },
+        { "path": "mailnews/mailnews.js", "lines": "579", "note": "mail.server.default.use_idle=true — IMAP IDLE push on by default." },
+        { "path": "mailnews/mailnews.js", "lines": "612-614", "note": "autosync_offline_stores=true, offline_download=true — background preemptive download of full message bodies." },
+        { "path": "mailnews/addrbook/modules/CardDAVDirectory.sys.mjs", "lines": "61-66", "note": "A configured CardDAV book auto-syncs 30s after startup." },
+        { "path": "mailnews/addrbook/modules/CardDAVDirectory.sys.mjs", "lines": "525-540", "note": "_scheduleNextSync(): repeating timer, carddav.syncinterval default 30 minutes; 0 disables." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "updateAllFromServerV2 (CardDAVDirectory.sys.mjs:839 ff.) applies server-side deletions to local cards automatically — background sync can remove records (and their in-card Notes) with no preview, the AC-10-shaped hazard noted in that finding." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-22",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Capabilities are probed, not assumed, and failures are reported truthfully. CardDAV setup is the clearest case: detectAddressBooks() refuses hosts known to be incompatible with an explicit error rather than degrading silently, discovers the real endpoint via DNS SRV lookup and .well-known probing, and negotiates auth (OAuth2 where supported, password otherwise); the sync layer detects Google's vCard-3.0-only behavior and adapts per directory rather than assuming vCard 4 everywhere. The account-setup wizard's autoconfig/probe pipeline follows the same pattern for mail servers. This is the sound-probe-and-report posture AC-22 requires.",
+      "citations": [
+        { "path": "mailnews/addrbook/modules/CardDAVUtils.sys.mjs", "lines": "288-324", "note": "detectAddressBooks(): known-incompatible presets throw explicitly; DNS SRV (_carddavs._tcp) discovery instead of guessing." },
+        { "path": "mailnews/addrbook/modules/CardDAVDirectory.sys.mjs", "lines": "46-58", "note": "Google CardDAV detected and vCard 3.0 mode set per-directory — probing the peer's real capability instead of assuming." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-23",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [2],
+      "rationale": "Source availability is fully met at the baseline and beyond: the entire application is MPL-2.0 (per-file headers throughout), publicly developed at hg/GitHub mirrors, and buildable by the user — the strong build-from-source form is genuinely available (Linux distributions routinely build Thunderbird from this source). Two caveats keep needs_human_review set: (1) this evaluation read comm-central only — the delivered binary also embeds mozilla-central (the platform), so 'the source corresponding to the artifact' spans a second repository pinned by the build system, not readable here; (2) no reproducible-builds pipeline ships in this repo, so verifying that an *official installer* byte-matches the published source is not supported — build-it-yourself is the verification path.",
+      "citations": [
+        { "path": "mailnews/addrbook/modules/SQLiteDirectory.sys.mjs", "lines": "1-3", "note": "MPL-2.0 header — the license carried file-by-file across the tree." },
+        { "path": "README.md", "lines": "1-6", "note": "Open-source project README pointing at public developer documentation and build instructions." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-MCP-A",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [2, 3],
+      "rationale": "Thunderbird exposes no MCP servers (mcp-exposure: none), so there is no MCP tool returning private rows to gate. The nearest programmatic surface is the WebExtension API (mail/components/extensions/), which grants installed extensions access to address books and messages behind install-time permission prompts — an extension surface with its own consent model, not an MCP surface, and it involves no cloud-client distinction. The AC does not apply.",
+      "citations": [
+        { "path": "mail/components/extensions/", "note": "WebExtension APIs — the only programmatic data surface; permission-gated at install, not MCP." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-MCP-B",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "No MCP Communications surface exists; outbound mail is driven only through the compose window (the AC-19 finding). With no MCP tool that could stage or fire a transport, there is nothing for this AC to constrain.",
+      "citations": [
+        { "path": "mail/components/compose/content/MsgComposeCommands.js", "lines": "6173-6220", "note": "Sends originate from the human compose window; no programmatic staging/launch surface beyond it." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-2",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-2 is conditional on the PNA operating a server over its own data. Thunderbird stands up no such server: it is a pure client of servers the user chooses (mail, CardDAV, LDAP, chat), plus Mozilla-operated services for updates and telemetry. The 'createServer' hits in account creation construct account-configuration objects, not listening services. The SaaS-dependence questions this app does raise (telemetry defaults, server-held drafts, CardDAV sync) are carried in AC-1/AC-7/AC-21, where the behaviors live.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-5",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [1],
+      "rationale": "AC-5's trigger — the PNA gates a Shared store behind an authenticated refresh — is absent: the local books are not auth-gated at all, and mail/CardDAV data is a client relationship with external servers, not a PNA-operated refresh gate. The spirit is nonetheless met: offline stores are on by default (autosync_offline_stores/offline_download, mailnews/mailnews.js:612-614), so cached mail and every local address book remain fully readable when a server is unreachable or rejects credentials.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-8",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-8 is conditional on operating an authentication server with a configured error sink. Thunderbird operates no authentication server — it authenticates as a client to the user's mail/CardDAV/LDAP/chat servers and (optionally) to Mozilla accounts for Sync. No PNA-operated auth endpoint exists to anti-enumerate or rate-limit.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-B",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [2],
+      "rationale": "AC-PRM-B is conditional on mirroring more than one source INTO a merged store. Thunderbird can mirror many sources (multiple CardDAV/LDAP books) but never merges them: each source is its own directory file, records are never consolidated across books, and no cross-source dedup flow exists. The multi-source-merge behavioral property is absent, so the AC does not apply — and the per-book separation is exactly what earns the coarse-provenance credit in the AC-17 rationale.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-H",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-PRM-H is conditional on the app exposing a same-host surface over its data (a loopback HTTP daemon, a local socket). No production listening socket over mail/contact data was found in comm-central (searches for server-socket creation across mail/, mailnews/, and chat/ surfaced only account-configuration factories and test code). Caveat: platform-level listeners (e.g. devtools debugging server in mozilla-central) are outside this checkout, but none is a surface over the mail/contact data this AC targets. The AC does not apply.",
+      "needs_human_review": false
+    }
+  ]
+}

@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+### Casebook: four adjacent-app goal-impact evaluations (Thunderbird · Element Web · Monica · Obsidian)
+
+The first batch of routine Mode-2 evaluations, exercising the classification gate end-to-end across four
+architectures — all schema-0.2 reports (`just report-lint` green), each an `evaluations/<name>/` record
+joining Signal in the library (`just view-reports`). Records, not endorsements.
+
+- **Thunderbird 153.0a1** (`72b8ba076`) — **protects / mixed / mixed / mixed**: the casebook's first
+  Goal-1 `protects` (local, account-independent address book; Sync never uploads local cards) against
+  default-on collected-addresses + telemetry (incl. per-scheme contact counts), CardDAV auto-PUT of the
+  notes overlay, and drafts autosaving to the server pre-send — which drove the new
+  [AC-19 field note](docs/field-notes/AC-19.md): *send-time review does not cover pre-send persistence*.
+- **Element Web** (`7d2657708` + matrix-js-sdk `be09f070c`) — **mixed × 4**, the within-class
+  discriminator vs Signal: same verdicts, dual anatomies (no local root but a self-hostable server;
+  durability delegated to the account vs held locally; DM encryption homeserver-vetoable via
+  `.well-known`).
+- **Monica v5 beta** (`e08e91734`) — **mixed / mixed / diminishes / mixed**, the category-vs-architecture
+  discriminator: a PRM (the toolkit's own second reference-design category) whose relationship layer sits
+  plaintext on a server with no export path, and whose documents round-trip a vendor CDN even self-hosted.
+- **Obsidian 1.4.16** (installed bundle; closed source) — **protects / mixed / mixed / protects**, the
+  user-declared-nexus worked example (Mode 3 → verbatim declaration → Mode 2): a plain-markdown vault is a
+  strong root; the readable loader proves an hourly update beacon with a persistent device ID; the opaque
+  payload lands AC-23 as the leading concern. First closed-source candidate (bundle-member citation
+  convention).
+- **Machinery findings routed** per the toolkit self-check:
+  [`docs/design-notes/2026-07-adjacent-app-evaluation-findings.md`](docs/design-notes/2026-07-adjacent-app-evaluation-findings.md)
+  — three named forms of the egress-lint blind spot (server-side-language false pass, parameterized
+  endpoints, closed bundles), the closed-bundle citation convention, and AC seams that strain on non-PNA
+  architectures (AC-15↔AC-23 coupling, server-class candidates, AC-5 wording, AC-18 when the candidate
+  *is* the mail client). No spec obligation changed.
+
 ### Visual Validator: the report library, per-app run history, and Mode-2 rendering
 
 The Visual Validator becomes the way to *browse the toolkit's validations*, not just render one file.

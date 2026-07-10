@@ -1,0 +1,320 @@
+{
+  "report_schema_version": "0.2",
+  "generated_at": "2026-07-09T00:00:00Z",
+  "generated_by": "pna-toolkit evaluate flow — Claude (LLM pass). First user-declared-nexus evaluation: the candidate is a closed-source proprietary binary, so the verification ceiling is low and stated plainly — evidence is limited to read-only inspection of the installed bundle at /Applications/Obsidian.app (Contents/Info.plist; main.js and package.json extracted from Contents/Resources/app.asar; the minified app.js and i18n/en.json extracted from Contents/Resources/obsidian.asar) plus the runner's verbatim use declaration. No deterministic egress-lint tier ran: a static lint over a 2.8 MB single-line minified asar payload is not meaningful, and no dynamic/network observation was performed. Consequence: unable-to-determine is the honest default wherever a status would require reading behavior the artifact does not expose; conformant/non-conformant appear only where the local artifact genuinely supports them. Candidate version 1.4.16 (Info.plist CFBundleShortVersionString); no commit is available because no public source corresponds to the shipped artifact (see AC-23).",
+  "candidate": {
+    "name": "Obsidian",
+    "repo_url": "https://obsidian.md",
+    "pna_spec_version": "0.2",
+    "picks_source": "inferred",
+    "classification": {
+      "application_class": "closed-source, proprietary note-taking editor (Electron app) whose data model is a local 'vault' — a user-chosen folder of plain markdown files — with opt-in, login-gated vendor add-on services (Obsidian Sync, Obsidian Publish)",
+      "stores_contact_data": true,
+      "contact_data_note": "Per the user's declared use: names, emails, and identifying details about people are user-authored — typed or pasted into plain-text markdown files in a local vault folder. No external source is mirrored; nothing enters the vault except by the user's own authorship.",
+      "stores_relationship_data": true,
+      "relationship_data_note": "The same vault markdown carries the user's notes about people and drafted correspondence — private relationship data in the spec's Vocabulary sense — as cleartext files on the local filesystem, in a folder the user chose.",
+      "nexus": "adjacent",
+      "nexus_source": "user-declared",
+      "user_declaration": "It's just an editor, but I keep all my contacts and my notes about people in it, and I paste emails to people out of it.",
+      "mode": "goal-impact"
+    },
+    "axis_picks": {
+      "distribution": "sideloaded-native (vendor-signed Electron bundle downloaded from obsidian.md; self-updating — the loader prefers a newer vendor-signed asar downloaded to userData over the installed bundle)",
+      "storage": "native-filesystem-plaintext (a user-chosen vault folder of plain markdown files; no database, no proprietary encoding)",
+      "ingestion": "user-authored (no external source is mirrored or pulled; contact data enters only by the user typing or pasting it)",
+      "workspace-shell": "framework-spa (a minified single-page app in the Electron renderer — obsidian.asar!/app.js)",
+      "comms": "none (no outreach transport surface; per the declaration the user copy-pastes text out to an external mail client)",
+      "mcp-exposure": "none"
+    }
+  },
+  "summary": {
+    "posture": "not-a-pna",
+    "headline": "Obsidian is a closed-source note-taking editor, not a PNA — it never claimed membership, and its nexus with the personal-network root here is user-declared ('It's just an editor, but I keep all my contacts and my notes about people in it, and I paste emails to people out of it'), so this is a goal-impact read over that declared contacts vault. The strongest read in the app's favor is the substrate: the root is a local folder of plain markdown the user authored, needing no account, readable by any tool, durable and portable by construction — Goal 1 and Goal 4 read protects. The strongest reads against are epistemic: the app is an opaque, self-updating minified artifact with no published source (AC-23 non-conformant), so the sealed-by-default property Goal 3 wants can only be taken on vendor trust (AC-1 unable-to-determine) — the one automatic egress the bundle does prove is an hourly update-check beacon carrying a persistent 16-byte device id to releases.obsidian.md, not vault content. Goals 2 and 3 read mixed: plain-text data is maximally inspectable while the code that touches it is maximally not.",
+    "leading_concerns": ["AC-23", "AC-1", "AC-15"],
+    "goal_impacts": [
+      {
+        "goal": 1,
+        "impact": "protects",
+        "note": "The declared contacts root is a user-chosen local folder of plain markdown the app creates and maintains with no account and no proprietary encoding (AC-1 ownership evidence: 'Open folder as vault — Choose an existing folder of Markdown files'; an account is needed only for opt-in add-on services). Custody is local, tool-independent, and survives the app's disappearance; nothing gates the data behind a session (AC-5 not-applicable-by-substrate) and there is no source service to background-poll (AC-21 not-applicable). This is close to the strongest Goal-1 posture an adjacent app can take."
+      },
+      {
+        "goal": 2,
+        "impact": "mixed",
+        "note": "Data-validation protects: the root is human-readable plain text the user authored — there is no mirrored record to authenticate (AC-17 not-applicable) and the vault is byte-for-byte inspectable with any tool. Code-validation diminishes: the app is an opaque minified artifact with no published source (AC-23 non-conformant) that checks hourly for vendor-signed replacement code and loads it in preference to the installed bundle (AC-15 unable-to-determine — the running code can legitimately differ from the audited artifact), so every behavioral guarantee bottoms out in vendor trust, the opposite of 'show me, not promise me'."
+      },
+      {
+        "goal": 3,
+        "impact": "mixed",
+        "note": "Protecting facets: no account is required, outreach happens by copy-paste outside the app so the full payload is trivially visible (AC-16/AC-19 not-applicable-by-shape), and off-device replication (Obsidian Sync) is an opt-in, login-gated paid add-on whose end-to-end encryption — including an optional user-held key — is vendor-claimed (provider-asserted; not verifiable from this artifact). Diminishing facets: the sealed-by-default property cannot be verified in closed minified code (AC-1 unable-to-determine), and the one established automatic egress — an hourly update-check beacon carrying a persistent 16-byte device id to releases.obsidian.md — leaves without user action, though it carries no vault content; opt-in community plugins, once enabled, reopen the egress question wholesale."
+      },
+      {
+        "goal": 4,
+        "impact": "protects",
+        "note": "Plain files are maximally durable and portable — any OS backup tool covers the vault by construction, and nothing about the format traps the data. On top of that substrate: an in-app snapshot ring with configurable interval and retention (AC-9 conformant, the File Recovery plugin), a vault-local .trash soft-delete, and opt-in synced version history. Goal 4's resist / remedy / portability triad is served."
+      }
+    ]
+  },
+  "findings": [
+    {
+      "ac_id": "AC-1",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [1, 3],
+      "rationale": "Two facets, split by what a closed artifact can show. The ownership facet is observably strong: the declared contacts root is a user-chosen folder of plain markdown files ('Open folder as vault — Choose an existing folder of Markdown files'), locally owned and user-writable, created and used with no account ('An account is only needed for Obsidian Sync, Obsidian Publish, and Catalyst insider builds'); there is no externally-mirrored shared class at all — under the user's declaration the entire vault is private-class data, so the class-distinction machinery has no second class to separate. The sealing facet is what blocks a status: 'sealed by default — MUST NOT egress or mutate except through an explicit user action' is a negative invariant, and a 2.8 MB single-line minified closed-source bundle cannot support that negative. No automatic vault-content egress was found — the only established automatic egress is the hourly update-check beacon carrying a persistent device id (not vault content), sync websocket connections are client-guarded to *.obsidian.md or 127.0.0.1, and Obsidian Sync itself is opt-in and login-gated — but absence of a finding in minified code is not evidence of absence. In Mode 2 this is a class-contrast observation: an editor was never built to prove a sealing property; the point is that its user cannot check it.",
+      "evidence": [
+        {
+          "source": "llm",
+          "detail": "Ownership facet: the vault is a plain local folder, no account required — established from the start-screen and account-settings strings the renderer ships.",
+          "citations": [
+            { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "interface.start-screen: 'Open folder as vault — Choose an existing folder of Markdown files', 'Create local vault'; setting.account: 'An account is only needed for Obsidian Sync, Obsidian Publish, and Catalyst insider builds.' (Extracted from the asar archive with @electron/asar.)" }
+          ]
+        },
+        {
+          "source": "llm",
+          "detail": "Sealing facet, what could be established: the sync client refuses connections to hosts not ending in .obsidian.md (or 127.0.0.1), and the one automatic egress found in the readable loader is the update beacon — a persistent 16-byte random device id in the query string — not vault content.",
+          "citations": [
+            { "path": "Contents/Resources/obsidian.asar!/app.js", "note": "Minified; websocket connect guard: host must end with \".obsidian.md\" or equal \"127.0.0.1\" else 'Unable to connect to server.'" },
+            { "path": "Contents/Resources/app.asar!/main.js", "lines": "69-83", "note": "A persistent random 16-byte id is generated once and stored at userData/id." },
+            { "path": "Contents/Resources/app.asar!/main.js", "lines": "134", "note": "httpGetBinary('https://releases.obsidian.md/desktop?id=' + id + '&v=' + version + '&p=' + platform) — fired on every update check." }
+          ]
+        }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-4",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [4],
+      "rationale": "The storage substrate is plain markdown files on the filesystem — there is no schema'd database boundary of the kind AC-4 targets, and the format is version-skew-tolerant by construction (an older app reads newer markdown as text). But version skew still exists over the .obsidian/*.json config files and over the self-swapping code loader (a newer downloaded asar runs against state an older bundle wrote), and whether any init-time version check guards those surfaces cannot be traced in the minified bundle.",
+      "citations": [
+        { "path": "Contents/Resources/app.asar!/main.js", "lines": "407-447", "note": "Startup selects the newest vendor-signed asar from userData over the installed bundle — a code/data version-skew surface with no visible handshake." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-6",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [2],
+      "rationale": "The renderer strings show a startup failure path that still offers an exit — 'Failed to load vault:' alongside an 'Open another vault' button — plus a sandbox-vault command, which suggests a broken vault does not strand the user. But AC-6 requires a force-reset / force-unlock affordance reachable regardless of stuck app state (a CLI flag, a key chord), and whether such an escape exists and is reachable when the app itself is wedged cannot be established from a minified bundle.",
+      "citations": [
+        { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "interface.start-up: 'Failed to load vault: ' + 'Open another vault'; commands: 'Open sandbox vault'." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-7",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [2],
+      "rationale": "Fragments of a field-debug substrate are verifiable: the loader installs a persistent local logger (userData/obsidian.log) and logs updater phases to it; the renderer ships a sync-log viewer, a 'Copy debug info' flow (which composes locally — support contact is by email, user-initiated), and a 'Debug startup time' option; a runtime version label exists. But AC-7's full substrate — sanitized error capture, a diagnostic state-dump, a boot watchdog with named phase marks, slow-boot persistence — cannot be established from minified code, so no status stronger than undetermined is honest.",
+      "citations": [
+        { "path": "Contents/Resources/app.asar!/main.js", "lines": "50-67", "note": "logger() writes timestamped lines to userData/obsidian.log — a local, persistent diagnostic sink; nothing is uploaded." },
+        { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "plugins.sync: 'Sync activity — View recent sync activities for debugging', 'Copy debug info'; setting.third-party-plugin: 'Debug startup time'." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-9",
+      "ac_source": "universal",
+      "status": "conformant",
+      "goals": [4],
+      "rationale": "The File Recovery core plugin is a local snapshot ring over the vault's markdown: snapshots on a configurable minimum interval ('Snapshot interval — Minimal interval in minutes between two snapshots'), retained for a configurable window ('History length — Length in days snapshots is kept for'), with a view-and-restore surface — for a contacts vault of markdown files this is exactly AC-9's auto-backup-with-a-recovery-ring intent, and the plain-file substrate additionally makes external backup (Time Machine, any sync of the folder) cover the root by construction. Marked needs_human_review because the cadence model differs from AC-9's letter (interval-minutes vs per-boot debounced), and default-enablement and the snapshot store's location could not be traced in the minified bundle — the finding rests on the shipped feature surface, not a traced write path.",
+      "citations": [
+        { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "plugins.file-recovery: 'Let you restore recent snapshots to recover from accidental data loss. Snapshots are only saved for Markdown files.'; 'Snapshot interval'; 'History length'; 'View and restore saved snapshots.'" },
+        { "path": "Contents/Resources/obsidian.asar!/app.js", "note": "Minified; the file-recovery plugin's settings and restore flow referencing these strings are present in the shipped renderer bundle." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-10",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [1, 4],
+      "rationale": "AC-10 governs opt-in, non-destructive re-imports of a Shared store with an orphan-preview before commit. Obsidian mirrors no Shared store — the vault is user-authored, and there is no re-import event to preview. The nearest analog, connecting a local vault to an Obsidian Sync remote vault, is opt-in and explicitly warned ('notes in your local vault will be merged... In case of conflicts, the most recent version of the note will be preserved'), but it is an opt-in replication join, not a Shared-store re-mirror.",
+      "citations": [
+        { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "plugins.sync: 'Confirm Merge Vault' + merge warning — the only merge-shaped event, opt-in and confirmed." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-11",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [4],
+      "rationale": "Whether the storage layer detects a second process or window holding the same vault — and surfaces a specific conflict message — cannot be established from the artifact: no multi-instance conflict string was found in the shipped i18n catalog, and the minified bundle does not let me trace a lock. Concurrent writers over loose markdown files are exactly the corruption class AC-11 guards, so this is a real open question for the declared use, flagged for human review (empirically testable by opening the same vault twice).",
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-15",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [2],
+      "rationale": "Half the commitment is verifiable, half has no object. A runtime-visible version label exists: the About pane shows 'Current version:' plus a separate installer version, and the bundle stamps 1.4.16 in Info.plist and app.asar!/package.json. But 'tied to source revision' cannot be satisfied or checked: no source revision is published to tie to (AC-23), and the loader may be running a newer vendor-signed asar downloaded to userData rather than the installed bundle — the label tracks whatever the loader picked, which is honest labeling, but the tie terminates at an opaque vendor release rather than an inspectable revision.",
+      "evidence": [
+        {
+          "source": "llm",
+          "detail": "Label exists and distinguishes app version from installer version; the referent it should tie to (a source revision) does not exist publicly.",
+          "citations": [
+            { "path": "Contents/Info.plist", "note": "CFBundleShortVersionString = 1.4.16 (installer 0.14.8 as CFBundleVersion)." },
+            { "path": "Contents/Resources/app.asar!/package.json", "note": "\"version\": \"1.4.16\"." },
+            { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "setting.about: 'Current version: ', '(Installer version: {{version}})'." }
+          ]
+        }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-16",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-16 requires a workspace that initiates outreach to surface multiple transports with per-outreach user choice. Obsidian initiates no outreach — it has no send surface at all (the single mailto occurrence in the bundle is a support-contact link). In the user's declared flow the transport decision happens entirely outside the app: they copy text out and paste it into whatever mail client they choose, which trivially leaves transport selection with the user, though as an accident of shape rather than a designed commitment.",
+      "citations": [
+        { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "plugins.sync: support contact is 'support@obsidian.md' via a user-initiated email — the only communications-shaped affordance shipped." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-17",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [2],
+      "rationale": "AC-17 requires every Shared-store record to trace to an explicitly user-configured external source. Obsidian has no Shared store and introduces no contact data: nothing enters the vault except by the user's own typing or pasting, so the user is the source of every record and there is no unapproved-introduction path for the AC to police. One class-contrast observation for the Goal-2 read: contact facts the user pastes in carry no machine provenance either — provenance is whatever the user writes down, which is exactly the manual posture a PNA's Shared store automates past.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-18",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-18 constrains the outreach transports a workspace offers. Obsidian offers none — communications leave via the user's external mail client, outside the app's boundary. Obsidian Sync is storage replication to the vendor's service, not an outreach transport; its content-blindness claim (end-to-end encryption, optionally under a user-held password) is vendor-asserted and assessed as evidence under AC-1 and the Goal-3 read, not here.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-19",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-19 governs workspace-initiated communication, of which Obsidian has none. In the declared flow the property AC-19 protects holds by construction: the payload is precisely the text the user selects, copies, and pastes into their mail client — nothing is merged in or sent that the user has not literally looked at. Not credited as conformance (there is no send surface to constrain); recorded as the shape that keeps the user's flow inside Goal 3's intent.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-20",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-20 governs LLM invocations over Private/Shared data. Obsidian 1.4.16 core ships no AI/LLM feature: a sweep of the extracted renderer bundle and loader found no LLM surface (no openai/anthropic/LLM/GPT references; the pdf.js subsystem is even shipped with disableTelemetry:true). The realistic arrival path for an LLM over this vault is a community plugin — opt-in, outside the shipped artifact, and outside this report's subject.",
+      "evidence": [
+        { "source": "llm", "detail": "Bounded claim: grep over the extracted (minified) app.js and readable main.js — no AI/LLM identifiers or endpoints found. A minified-code grep can miss an obfuscated surface; nothing suggests one exists in this 2023-era core." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-21",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [1],
+      "rationale": "AC-21 forbids background-polling source services for re-ingestion of the root's data. Obsidian has no source service: the vault's contact data is user-authored and nothing re-ingests it. Two adjacent background behaviors are recorded where they actually bear: the hourly update-check loop polls for code (not root data) and beacons a persistent device id — carried under AC-1 evidence and the Goal-2/Goal-3 reads; and Obsidian Sync, once opted into, replicates vault changes continuously — but that is opt-in, login-gated storage replication, not source-service ingestion.",
+      "citations": [
+        { "path": "Contents/Resources/app.asar!/main.js", "lines": "401", "note": "setInterval(queueUpdate, 60 * 60 * 1000) — hourly, but it polls for app updates, not for root data; no contact-data source exists to poll." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-22",
+      "ac_source": "universal",
+      "status": "unable-to-determine",
+      "goals": [2],
+      "rationale": "Whether Obsidian establishes the runtime capabilities its promises depend on by sound probes — rather than trusting flags or UA strings — cannot be read out of a minified closed bundle. Suggestive fragments exist (a hardware-acceleration setting with an explicit warning and relaunch flow; per-platform branching), but the AC's subject is the soundness of the probing method, which is precisely the kind of internal behavior a closed artifact hides.",
+      "citations": [
+        { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "setting.appearance/about area ships a hardware-acceleration warning + relaunch flow — capability-related UX whose underlying detection method is not inspectable." }
+      ],
+      "needs_human_review": true
+    },
+    {
+      "ac_id": "AC-23",
+      "ac_source": "universal",
+      "status": "non-conformant",
+      "goals": [2],
+      "requirement": "The source corresponding to a delivered artifact's build label (AC-15) MUST be available to the user and their tools, so the PNA's behavior and its conformance can be independently checked before it is trusted. An opaque artifact with no inspectable source does not satisfy this commitment — it is a departure to report (or to declare as an Exception), not a conformant flavor.",
+      "rationale": "Determinable even for a closed candidate — indeed, it is the one AC the opacity itself decides. The delivered application is a 24 MB asar archive whose payload is a single-line 2.8 MB minified app.js; the bundle's own package.json declares 'license': 'UNLICENSED', 'private': true; no source repository corresponds to the shipped artifact. The updater compounds the gap: the app checks hourly for a replacement asar, verifies it against a hardcoded vendor certificate, and loads it in preference to the installed bundle — so even the artifact a user audits today may not be the code running tomorrow, and none of it can be rebuilt from source. Mode-2 framing: this is a class-contrast observation, not a broken promise — Obsidian never claimed verifiability — but it is the finding the whole Goal-2 read hangs on: a user who keeps their contacts in this vault can verify every byte of their data and none of the code that touches it.",
+      "citations": [
+        { "path": "Contents/Resources/obsidian.asar", "note": "The delivered application: a 24 MB opaque archive of minified JavaScript (app.js is one ~2.8 MB line). No published source corresponds to it." },
+        { "path": "Contents/Resources/app.asar!/package.json", "note": "\"license\": \"UNLICENSED\", \"private\": true — proprietary by its own declaration." },
+        { "path": "Contents/Resources/app.asar!/main.js", "lines": "102-124", "note": "Hardcoded RSA signing certificate (CN dynalist.io) for verifying downloaded replacement code — integrity against tampering, but anchored to vendor trust, not to inspectable source." },
+        { "path": "Contents/Resources/app.asar!/main.js", "lines": "207-241", "note": "downloadUpdate(): fetches a new obsidian-<version>.asar, verifies vendor hash+signature, installs it to userData; the running code is silently newer than the audited bundle after the next launch." }
+      ],
+      "evidence": [
+        { "source": "llm", "detail": "The strong form (build-from-verifiable-source) and the baseline (source published alongside the artifact) are both absent; the opaque-artifact clause of AC-23 names this case exactly." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-MCP-A",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [2, 3],
+      "rationale": "AC-MCP-A governs MCP tools returning Private DB rows to cloud AI clients. Obsidian 1.4.16 exposes no MCP surface. The nearest programmatic surfaces are the obsidian:// URL scheme (registered in Info.plist) and the community-plugin API — the latter opt-in and capable of arbitrary vault access once the user leaves Restricted Mode, which is a real consideration for the declared use but not an MCP surface, so it is carried in the Goal-3 note rather than forced under this AC.",
+      "citations": [
+        { "path": "Contents/Info.plist", "note": "CFBundleURLSchemes: ['obsidian'] — a URL-scheme automation surface, not an MCP server." }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-MCP-B",
+      "ac_source": "universal",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-MCP-B governs MCP Communications tools staging outreach for workspace-launched send. Obsidian exposes no MCP surface and no outreach transport at all (mcp-exposure: none, comms: none); there is nothing to stage and no send to mediate.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-2",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-2 triggers when the candidate operates a server over its own data. Obsidian the app stands up no server: a sweep of the extracted loader and renderer bundle found no createServer/listen call, and the app's networked features are all client-of-vendor. The class contrast worth recording: Obsidian Sync/Publish are exactly the per-user RW, cross-device-sync, vendor-hosted service class AC-2 forbids a PNA to operate — but they are operated by the vendor, opt-in, and login-gated, and Obsidian never claimed to be a PNA; the impact lands in the Goal-3 read, not here.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-5",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [1],
+      "rationale": "AC-5 triggers when data is gated behind an authenticated refresh. Vault data is never session-gated: the files are plain markdown readable with no account, no login, and no app at all. Even deleting a Sync remote vault is documented to leave local files intact ('All data on our server... will be deleted. Your local files will stay intact.'). The property AC-5 protects — a rejected session never locks you out of your local data — is exceeded by substrate.",
+      "citations": [
+        { "path": "Contents/Resources/obsidian.asar!/i18n/en.json", "note": "plugins.sync: remote-vault deletion warning — server data deleted, 'Your local files will stay intact.'" }
+      ],
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-8",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-8 triggers when the candidate operates an authentication server. Obsidian operates none — login (email/password/2FA) is a client flow against the vendor's hosted account service; there is no candidate-operated auth endpoint to anti-enumerate or rate-limit.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-B",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [2],
+      "rationale": "AC-PRM-B triggers when more than one source is mirrored. Obsidian mirrors no source at all — the vault is user-authored — so multi-source dedup, stable merge-surviving record ids, and per-field provenance have no subject.",
+      "needs_human_review": false
+    },
+    {
+      "ac_id": "AC-PRM-H",
+      "ac_source": "flavor-derived",
+      "status": "not-applicable",
+      "goals": [3],
+      "rationale": "AC-PRM-H triggers when the candidate opens a same-host-reachable surface over its data. No listener was found: the extracted loader and renderer bundle contain no createServer/listen call, and the 127.0.0.1 references in app.js are entries in a client-side connect allowlist (the sync websocket host guard), not a bound socket. Bounded claim — a minified-code grep, not a runtime port scan — but the trigger property is absent as far as the artifact shows.",
+      "evidence": [
+        { "source": "llm", "detail": "grep over extracted main.js + app.js: no createServer / .listen( / net.Server / http.Server; '127.0.0.1' appears only in the outbound websocket host check." }
+      ],
+      "needs_human_review": false
+    }
+  ]
+}
