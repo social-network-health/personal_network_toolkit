@@ -221,7 +221,7 @@ just swh-save <design-repo-url> <git-ref> <path-to-local-clone>
 
 # Example — re-archive fellows_local_db at its current HEAD:
 git -C ~/src/fellows_local_db pull                                       # make the design's local clone current first
-just swh-save https://github.com/richbodo/fellows_local_db HEAD ~/src/fellows_local_db
+just swh-save https://github.com/social-network-health/fellows_local_db HEAD ~/src/fellows_local_db
 ```
 
 - **The 3rd arg (clone path) is required** here: the SWHIDs are computed from that local clone, and without it the script falls back to the toolkit's own repo and prints the *wrong* IDs. *(Shortcut: run the script from inside the design's repo and you can drop it — `~/src/personal_network_toolkit/tools/swh-save.sh <url> <ref>`.)*

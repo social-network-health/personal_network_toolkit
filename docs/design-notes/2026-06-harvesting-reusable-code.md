@@ -6,7 +6,7 @@ drift-gated in `just ci` with a self-test; the `path:symbol` attestation-determi
 landed in the Architecture template; **both reference designs are at 100% realization-pointer
 coverage** (fellows #289, PRM #60, re-synced via `just rearchive`). Tiers 1–2 remain proposals.
 Checkpoints a 2026-06-19 discussion (Rich + Claude Code) prompted by the toolkit's
-`just rearchive` helper ([PR #83](https://github.com/richbodo/personal_network_toolkit/pull/83)) —
+`just rearchive` helper ([PR #83](https://github.com/social-network-health/personal_network_toolkit/pull/83)) —
 a convenience tool for re-archiving an accepted reference design — about how tested,
 portable code should be **found and reused** across reference designs and by new PNA builds.
 The asset-dual of the field-notes practice
@@ -191,8 +191,8 @@ index — and it immediately earned its keep: PRM's `AC-PRM-A` realization cited
 so the metric correctly shows it uncovered (PRM 11/14, not 12/14).
 
 **The goal — full realization-pointer coverage — reached (2026-06-19).** Both reference designs
-are now at **100%**: fellows_local_db 23/23 (PR [#289](https://github.com/richbodo/fellows_local_db/pull/289))
-and PRM 14/14 (PR [#60](https://github.com/richbodo/prm/pull/60)), each editing its `Architecture.md`
+are now at **100%**: fellows_local_db 23/23 (PR [#289](https://github.com/social-network-health/fellows_local_db/pull/289))
+and PRM 14/14 (PR [#60](https://github.com/social-network-health/prm/pull/60)), each editing its `Architecture.md`
 to cite realizations as `path:symbol` and verifications as full `path::test`, then re-synced into
 the bundled copies via `just rearchive` with the index regenerated and drift-gate-clean. Both coverage
 commits were then **submitted to Software Heritage Save Code Now** (2026-06-19, origin-save requests

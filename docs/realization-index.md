@@ -8,8 +8,8 @@
 
 | Design | Status | Archival | Pin | swhid_dir | Flavor |
 |---|---|---|---|---|---|
-| [fellows_local_db](https://github.com/richbodo/fellows_local_db) | active | archived | `85b3a84` | `swh:1:dir:0d378a2c88bb4c17976a702d463e80335432fd0a` | distribution:web-bundle-with-magic-link, storage:opfs-sqlite-wasm, ingestion:single-source-static-mirror, workspace:vanilla-js-spa, comms:mailto-only, mcp-exposure:shared+private+comms |
-| [prm](https://github.com/richbodo/prm) | active | archived | `b9ef679` | `swh:1:dir:a4b5377858aab9f2d1c05736dfa0b76af3473d46` | distribution:never-distributed-single-user, storage:native-sqlite-via-filesystem, ingestion:multi-source-merge-with-dedup, workspace:vanilla-js-spa, comms:none, mcp-exposure:shared-only |
+| [fellows_local_db](https://github.com/social-network-health/fellows_local_db) | active | archived | `85b3a84` | `swh:1:dir:0d378a2c88bb4c17976a702d463e80335432fd0a` | distribution:web-bundle-with-magic-link, storage:opfs-sqlite-wasm, ingestion:single-source-static-mirror, workspace:vanilla-js-spa, comms:mailto-only, mcp-exposure:shared+private+comms |
+| [prm](https://github.com/social-network-health/prm) | active | archived | `b9ef679` | `swh:1:dir:a4b5377858aab9f2d1c05736dfa0b76af3473d46` | distribution:never-distributed-single-user, storage:native-sqlite-via-filesystem, ingestion:multi-source-merge-with-dedup, workspace:vanilla-js-spa, comms:none, mcp-exposure:shared-only |
 
 ## Coverage summary
 

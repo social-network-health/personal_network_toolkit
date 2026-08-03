@@ -1,7 +1,7 @@
 # Data-floor: per-field disclosure tiers for exceptions (`AC-MCP-C` / `PR-7` / `EX-H9`)
 
 *Design note / spec stub · 2026-06 · status: **proposed (RFC), demonstrated-by: PRM v0.2**. Companion
-to the honest-exit RFC ([PR #32](https://github.com/richbodo/personal_network_toolkit/pull/32)) and the
+to the honest-exit RFC ([PR #32](https://github.com/social-network-health/personal_network_toolkit/pull/32)) and the
 [existential review](2026-06-exceptions-existential-review.md) it came out of. Indexed from
 [`../PriorArt.md` § Design notes](../PriorArt.md).*
 

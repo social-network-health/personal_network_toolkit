@@ -375,7 +375,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 
 ### Both reference designs re-archived at 100% realization-pointer coverage
 
-- **fellows_local_db re-pinned `dc3e0cf` → `98b283f`** (fellows [#289](https://github.com/richbodo/fellows_local_db/pull/289)) and **prm re-pinned `1551896` → `7bd4a28`** (`pnt-ref-0.1.2`, prm [#60](https://github.com/richbodo/prm/pull/60)) — each adds `path:symbol` realization pointers + full `path::test` verifications to its `Architecture.md`, taking the [realization index](docs/realization-index.md) to **23/23** and **14/14** (100%/100%). Re-synced into the bundled copies via `just rearchive`; index regenerated; `just ci` green (43/43, drift gate included).
+- **fellows_local_db re-pinned `dc3e0cf` → `98b283f`** (fellows [#289](https://github.com/social-network-health/fellows_local_db/pull/289)) and **prm re-pinned `1551896` → `7bd4a28`** (`pnt-ref-0.1.2`, prm [#60](https://github.com/social-network-health/prm/pull/60)) — each adds `path:symbol` realization pointers + full `path::test` verifications to its `Architecture.md`, taking the [realization index](docs/realization-index.md) to **23/23** and **14/14** (100%/100%). Re-synced into the bundled copies via `just rearchive`; index regenerated; `just ci` green (43/43, drift gate included).
 - **Software Heritage submission (residual closed 2026-06-19):** both coverage commits were submitted to *Save Code Now* — fellows `98b283f` (origin-save request `2368289`) and prm `7bd4a28` (request `2368290`), both `accepted`; ingest is async (the git-computed SWHIDs resolve unchanged once it completes). The design.toml `archival` comments and the per-design README archival bullets record the request IDs.
 - Closes the open goal in [`docs/roadmap.md`](docs/roadmap.md) § Inbound-findings registry and [`docs/design-notes/2026-06-harvesting-reusable-code.md`](docs/design-notes/2026-06-harvesting-reusable-code.md). No spec/AC/contract change.
 
@@ -425,7 +425,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 ### PRM: re-archived at `pnt-ref-0.1.1` (`1551896`) — Software Heritage SWHIDs refreshed (reference design)
 
 - `reference_designs/prm/` re-pinned from `a70d35b` (the v0.1 attestation, prm #35) to **`pnt-ref-0.1.1`**
-  (`1551896`) — the prm [#59](https://github.com/richbodo/prm/pull/59) merge to `main` landing the loopback-daemon
+  (`1551896`) — the prm [#59](https://github.com/social-network-health/prm/pull/59) merge to `main` landing the loopback-daemon
   trust-surface work (`AC-PRM-H`), now that the spec changes it rides are accepted. New annotated tag pushed on the
   prm side. New SWHIDs `swh:1:rev:1551896025307ac4b08ba621c02f4e0d77eb9391`,
   `swh:1:dir:39637a1ff96f77e7df47e87ac53a7c6d8fc61b62` (git-compatible, via `tools/swh-save.sh`); Save Code Now
@@ -449,7 +449,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 - **`spec/axes.md` § Workspace shell — new flavor-derived `AC-PRM-H`** (replacing the prior RFC pointer): a same-host-reachable surface a PNA opens over its own data (a loopback HTTP daemon, a local socket) MUST be loopback-bound + authenticated to the user's own session. Triggered by a server-backed local shell × a non-`web-bundle` distribution. Authenticating the transport relaxes no guarantee, so it does **not** flip `pna-active`.
 - **Principle prose by [`AC-2`](spec/axes.md#ac-2)** — AC-2 (the web-bundle delivery server) and AC-PRM-H (the loopback daemon) are named as two **realizations of one rule**: a server a PNA stands up must not become an ungoverned tap on its own data. The principle generalizes (future surface types → further flavor-derived ACs) while each obligation stays narrowly checkable.
 - **`docs/design-notes/2026-06-loopback-surface-auth.md`** flipped proposed → **landed**, citing the durable demonstrator commit (PRM `main` `1551896`). **`docs/PriorArt.md` § Design notes** — already indexed.
-- Demonstrator: **PRM [#59](https://github.com/richbodo/prm/pull/59) merged** — daemon session-auth (token + Host/Origin guard + loopback-pin) + the L1/L2 loopback lint run `--strict` in its own gate. The deterministic toolkit lint shipped in #80; the acceptance-process clarification in #79.
+- Demonstrator: **PRM [#59](https://github.com/social-network-health/prm/pull/59) merged** — daemon session-auth (token + Host/Origin guard + loopback-pin) + the L1/L2 loopback lint run `--strict` in its own gate. The deterministic toolkit lint shipped in #80; the acceptance-process clarification in #79.
 
 ### Loopback-surface lint: deterministic check for an app-opened transport (toolkit tool)
 
@@ -457,7 +457,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 
 ### Acceptance-process clarification: demonstrating commit vs. acceptance (toolkit fix)
 
-- **`CONTRIBUTING.md` § Acceptance process** — names the **demonstrating-commit vs. acceptance** distinction (two repos, two merges): the demonstrator is a *pushed, working, cited commit* — **not** a design-repo merge; the only gating merge is the toolkit PR ("the merge is the acceptance"); pin the demonstrator at a durable (merged / tagged) commit *before* acceptance, for SWHID / `Toolkit-Version` stability. No new obligation. (Split out of the loopback-surface RFC, [PR #78](https://github.com/richbodo/personal_network_toolkit/pull/78), to land first on its own.)
+- **`CONTRIBUTING.md` § Acceptance process** — names the **demonstrating-commit vs. acceptance** distinction (two repos, two merges): the demonstrator is a *pushed, working, cited commit* — **not** a design-repo merge; the only gating merge is the toolkit PR ("the merge is the acceptance"); pin the demonstrator at a durable (merged / tagged) commit *before* acceptance, for SWHID / `Toolkit-Version` stability. No new obligation. (Split out of the loopback-surface RFC, [PR #78](https://github.com/social-network-health/personal_network_toolkit/pull/78), to land first on its own.)
 
 ### Same-UID research folds into the Harden countermeasure rows (toolkit fix)
 
@@ -608,7 +608,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 ### PRM: archival completed — Software Heritage SWHIDs recorded (reference design)
 
 - `reference_designs/prm/` flips `archival = "pending"` → `"archived"` now that prm
-  [#35](https://github.com/richbodo/prm/pull/35) is squash-merged to `main`. Source pinned at
+  [#35](https://github.com/social-network-health/prm/pull/35) is squash-merged to `main`. Source pinned at
   `prm@pnt-ref-0.1` (commit `a70d35b`): `swh:1:rev:a70d35bcf5765001322b29d0acdc14b1ae14ae11`,
   `swh:1:dir:9d73887ae6a3b277a9232a5267be359387edb00f`. Save Code Now ingest requested
   (request id 2354495, accepted — async). `evaluate-report.json`'s commit pin re-synced from the
@@ -617,7 +617,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 
 ### PRM: second reference design + `comms:none` pick + AC-PRM-B/C out of draft (reference design)
 
-- Adds **prm** ([richbodo/prm](https://github.com/richbodo/prm)) as the **2nd PNT reference design**
+- Adds **prm** ([richbodo/prm](https://github.com/social-network-health/prm)) as the **2nd PNT reference design**
   (Personal Relationship Manager use case), validated against Toolkit-Version 0.1. Flavor:
   `never-distributed-single-user × native-sqlite-via-filesystem × multi-source-merge-with-dedup ×
   vanilla-js-spa × comms:none × mcp-exposure:shared-only`. New `reference_designs/prm/` (README,
@@ -896,7 +896,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 
 ### Design note — existential review of the Exceptions mechanism (toolkit fix)
 
-- Records the deliberation behind the honest-exit RFC ([PR #32](https://github.com/richbodo/personal_network_toolkit/pull/32)): *should the spec allow `EX-*` exceptions at all?* Conclusion — **keep them**; the mechanism isn't the corruption, an unverifiable purity claim would be. New full note at `docs/design-notes/2026-06-exceptions-existential-review.md`, indexed by a dated entry in `docs/PriorArt.md § Design notes`. **Establishes `docs/design-notes/` as the home for full-length notes** that the PriorArt log indexes (short entry in the log; long deliberations as their own files). Doc-only; the spec lint + self-tests are unaffected.
+- Records the deliberation behind the honest-exit RFC ([PR #32](https://github.com/social-network-health/personal_network_toolkit/pull/32)): *should the spec allow `EX-*` exceptions at all?* Conclusion — **keep them**; the mechanism isn't the corruption, an unverifiable purity claim would be. New full note at `docs/design-notes/2026-06-exceptions-existential-review.md`, indexed by a dated entry in `docs/PriorArt.md § Design notes`. **Establishes `docs/design-notes/` as the home for full-length notes** that the PriorArt log indexes (short entry in the log; long deliberations as their own files). Doc-only; the spec lint + self-tests are unaffected.
 
 ### ID columns moved to the right + header-aware lint + deep-link anchors (toolkit fix)
 
@@ -931,7 +931,7 @@ database, delivery; if the statement still binds it is Layer 1, else it is a Lay
 ### Contribution types — toolkit fix vs reference design (process, additive)
 
 - **The toolkit-fix path is now first-class and discoverable.** A "Toolkit fix" PR type already existed in `.github/pull_request_template.md` and was acknowledged in passing under `CONTRIBUTING.md § Versioning`, but the **skill** (the LLM entry point) documented only the heavyweight reference-design flow, and the template shipped no toolkit-fix checklist — so an agent contributing a lint/docs/scope change had no path to follow and would wrongly force it through reference-design preflight. Since most PRs to the toolkit are toolkit fixes, the dominant case was the undocumented one.
-- **`pna-toolkit/SKILL.md`.** The Contribute flow now opens with a **routing heuristic** — *does the change impose a new contract a conformant design must satisfy?* — splitting into *Reference-design contribution* (the existing flow) and a new *Toolkit fix* sub-flow (normal PR; `tools/lint-spec-ids.py` + fixture self-tests; CHANGELOG entry; a `docs/PriorArt.md § Design notes` entry for decisions; check the Type box). [PR #19](https://github.com/richbodo/personal_network_toolkit/pull/19) (a scope decision that declined an AC) is cited as the canonical toolkit fix.
+- **`pna-toolkit/SKILL.md`.** The Contribute flow now opens with a **routing heuristic** — *does the change impose a new contract a conformant design must satisfy?* — splitting into *Reference-design contribution* (the existing flow) and a new *Toolkit fix* sub-flow (normal PR; `tools/lint-spec-ids.py` + fixture self-tests; CHANGELOG entry; a `docs/PriorArt.md § Design notes` entry for decisions; check the Type box). [PR #19](https://github.com/social-network-health/personal_network_toolkit/pull/19) (a scope decision that declined an AC) is cited as the canonical toolkit fix.
 - **`CONTRIBUTING.md`.** New *Contribution types* section near the top with the same routing question; *What we don't accept* nuanced so a spec note that clarifies/declines a commitment is correctly a toolkit fix, not a forbidden undemonstrated spec change.
 - **`.github/pull_request_template.md`.** Adds a lightweight **Toolkit-fix checklist** (no new design obligation; CHANGELOG; Design-notes entry for decisions) alongside the reference-design one, with a routing comment in the Type section.
 

@@ -1,6 +1,6 @@
 # fellows_local_db
 
-**Maintainer:** Rich Bodo (https://github.com/richbodo/fellows_local_db)
+**Maintainer:** Rich Bodo (https://github.com/social-network-health/fellows_local_db)
 **License:** see upstream repo
 **First accepted:** Toolkit-Version 0.1, 2026-05-31
 **Status:** active
@@ -17,7 +17,7 @@
 
 ## Summary
 
-`fellows_local_db` is the first PNA reference design — a Directory Archive PNA realizing the Knack-export → static-PWA + magic-link distribution flavor. It is the design from which most of the v0.1 toolkit was distilled. The canonical repo lives at https://github.com/richbodo/fellows_local_db; its Architecture document is at `docs/Architecture.md` upstream.
+`fellows_local_db` is the first PNA reference design — a Directory Archive PNA realizing the Knack-export → static-PWA + magic-link distribution flavor. It is the design from which most of the v0.1 toolkit was distilled. The canonical repo lives at https://github.com/social-network-health/fellows_local_db; its Architecture document is at `docs/Architecture.md` upstream.
 
 ## Axis picks at first acceptance
 

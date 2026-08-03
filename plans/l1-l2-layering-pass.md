@@ -53,7 +53,7 @@ Vocabulary: **conditional AC** (replaces "flavor-derived AC"), **realization** (
   honest packaging — **no pick rename** (PRM's flavor untouched) — with a note relocating verifiability to
   AC-23, orthogonal to the pick. Demonstrators: PRM (build-from-source) + fellows (source-available bundle);
   their AC-23 attestation rows re-sync at the v0.2 cut. Supersedes the old "split the distribution pick"
-  framing of [#39](https://github.com/richbodo/personal_network_toolkit/issues/39)/[#64](https://github.com/richbodo/personal_network_toolkit/issues/64) rider 1. Lint now: **23 AC IDs**.
+  framing of [#39](https://github.com/social-network-health/personal_network_toolkit/issues/39)/[#64](https://github.com/social-network-health/personal_network_toolkit/issues/64) rider 1. Lint now: **23 AC IDs**.
 - **Worm 5 — sub-contracts — DONE (this branch), `just ci` green.** Chose the plan's *"clearly mark"*
   (not move/renumber — proportionate for a section already cordoned "skip unless implementing"): the
   slot-map section now frames the slots/interfaces as the **Layer-1 architectural skeleton** and the
@@ -66,7 +66,7 @@ Vocabulary: **conditional AC** (replaces "flavor-derived AC"), **realization** (
 cleanly separated; the lint enforces the AC and RZ namespaces. Branch `docs/l1-l2-layering-pass`.
 
 - **Then (remaining, not part of the structural pass):** the non-spec-doc `flavor-derived` terminology
-  sweep; the riders (UM is already pure L1 — [#40](https://github.com/richbodo/personal_network_toolkit/issues/40)/[#64](https://github.com/richbodo/personal_network_toolkit/issues/64) rider 3;
+  sweep; the riders (UM is already pure L1 — [#40](https://github.com/social-network-health/personal_network_toolkit/issues/40)/[#64](https://github.com/social-network-health/personal_network_toolkit/issues/64) rider 3;
   AC-PRM-E/F stays deferred to PRM v0.2 — see the recomposition finding); then the
   [v0.2 cut](v0.2-spec-cut-plan.md) (which also re-syncs the 0.1-pinned reference-design attestations +
   the realization index to the new IDs — AC-20/21/22/23, RZ-1..5) onto a structure worth stamping.
