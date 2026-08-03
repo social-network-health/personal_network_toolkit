@@ -149,7 +149,7 @@ A builder using Claude Code can drive both preflight and PR authoring end-to-end
 
 ### Toolkit fix
 
-Use when the change is to the toolkit's own artifacts and imposes **no** new contract on a design — a lint or tool, a template, this skill, the docs, a CHANGELOG clarification, or a spec/scope note that *declines* or *clarifies* a commitment. No design record, no evaluate-report, no attestation. The canonical example is [PR #19](https://github.com/richbodo/personal_network_toolkit/pull/19): an at-rest-encryption *scope decision* that declined to add an AC — a spec touch that imposed no obligation, so no reference design was needed.
+Use when the change is to the toolkit's own artifacts and imposes **no** new contract on a design — a lint or tool, a template, this skill, the docs, a CHANGELOG clarification, or a spec/scope note that *declines* or *clarifies* a commitment. No design record, no evaluate-report, no attestation. The canonical example is [PR #19](https://github.com/social-network-health/personal_network_toolkit/pull/19): an at-rest-encryption *scope decision* that declined to add an AC — a spec touch that imposed no obligation, so no reference design was needed.
 
 1. **Read [`CONTRIBUTING.md` § Contribution types](../CONTRIBUTING.md).**
 2. **Make the change.** Keep any spec touch to a clarification or scope-decline. If you find yourself adding an obligation a design must satisfy, stop — you're back on the reference-design path.

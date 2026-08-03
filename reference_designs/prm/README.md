@@ -1,13 +1,13 @@
 # prm
 
-**Maintainer:** Rich Bodo (https://github.com/richbodo/prm)
+**Maintainer:** Rich Bodo (https://github.com/social-network-health/prm)
 **License:** see upstream repo
 **Validated against:** Toolkit-Version 0.1, 2026-06-10
 **Status:** active
 
 ## Acceptance & validation
 
-- **Accepted:** 2026-06-10 · accepted-by Rich Bodo (maintainer) · validated against Toolkit-Version 0.1. The merge of [PR #61](https://github.com/richbodo/personal_network_toolkit/pull/61) is the acceptance; this line is the durable record of what was validated.
+- **Accepted:** 2026-06-10 · accepted-by Rich Bodo (maintainer) · validated against Toolkit-Version 0.1. The merge of [PR #61](https://github.com/social-network-health/personal_network_toolkit/pull/61) is the acceptance; this line is the durable record of what was validated.
 - **Validated against:** Toolkit-Version 0.1. The AC attestation — universal + conditional, the
   `EX-CLOUD-LLM` exception, and the `UM-1/2/3` user-mediation rows — is in [`Architecture.md`](Architecture.md);
   every `conformant` row's Verification cites a real, passing test, and the design's own evidence lint
@@ -17,7 +17,7 @@
   render contract — is **conformant** for the declared flavor: 12 conformant, 2 partial-conformance
   (flagged for human review: `AC-20`, `AC-MCP-A` — consent + signaling, because an MCP server cannot
   identify the consuming LLM), 4 not-applicable (`comms:none`) across 18 evaluated ACs.
-- **Archival:** `archival = "archived"` — source pinned at `prm@pnt-ref-0.1.2` (`7bd4a28`, PR [#60](https://github.com/richbodo/prm/pull/60),
+- **Archival:** `archival = "archived"` — source pinned at `prm@pnt-ref-0.1.2` (`7bd4a28`, PR [#60](https://github.com/social-network-health/prm/pull/60),
   which adds `path:symbol` realization pointers → 100% realization-pointer coverage; supersedes the `pnt-ref-0.1.1` / `1551896`
   snapshot): `swh:1:rev:7bd4a28106f2496e0fd7548e0b6be5e2bb593089`,
   `swh:1:dir:87d3d263759092a46f9459d95234cd2cedc6edfb` (computed via `tools/swh-save.sh`). The Save Code Now request for
@@ -31,7 +31,7 @@ person's contacts from everywhere they're scattered (Google, Apple, LinkedIn, Fa
 one store they own, **deduplicates** them, and lets an AI *propose* merges the human applies. It is the first
 design to exercise the **multi-source dedup** contract (`AC-PRM-B`) and the **native-sqlite-via-filesystem**
 substrate (`RZ-5`), and the first **build-from-verifiable-source** distribution demonstrator. The canonical
-repo is https://github.com/richbodo/prm; its Architecture document lives at `docs/Architecture.md` upstream.
+repo is https://github.com/social-network-health/prm; its Architecture document lives at `docs/Architecture.md` upstream.
 
 ## Axis picks at first acceptance
 
@@ -43,7 +43,7 @@ This submission rides five spec changes, each demonstrated by working code in th
 
 - **`comms: none` pick** (`spec/axes.md`): a PNA whose loop stops at *recording* relationship data — no
   outreach surface. PRM is the demonstrator.
-- **Distribution-axis verifiability split** ([#39](https://github.com/richbodo/personal_network_toolkit/issues/39) ⇄ [prm#8](https://github.com/richbodo/prm/issues/8)):
+- **Distribution-axis verifiability split** ([#39](https://github.com/social-network-health/personal_network_toolkit/issues/39) ⇄ [prm#8](https://github.com/social-network-health/prm/issues/8)):
   `never-distributed-single-user` collapses *build-from-verifiable-source* with *opaque-binary* delivery; they
   differ in **independent verifiability**. PRM is the build-from-source case — a friend clones, builds, and
   runs `just conformance` before trusting it.

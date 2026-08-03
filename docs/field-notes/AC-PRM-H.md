@@ -1,6 +1,6 @@
 # AC-PRM-H — authenticated loopback surface · field notes
 
-*Surfaced by [prm #59](https://github.com/richbodo/prm/pull/59) (daemon session-auth + the loopback-surface lint). The AC: [`spec/PNA_Spec.md` § Conditional architectural commitments](../../spec/PNA_Spec.md#ac-prm-h).*
+*Surfaced by [prm #59](https://github.com/social-network-health/prm/pull/59) (daemon session-auth + the loopback-surface lint). The AC: [`spec/PNA_Spec.md` § Conditional architectural commitments](../../spec/PNA_Spec.md#ac-prm-h).*
 
 ## Lesson
 
@@ -42,7 +42,7 @@ environmental (Harden) concern — the test that sorts the two.
 
 ## Surfaced by
 
-PRM [#59](https://github.com/richbodo/prm/pull/59) (merged; durable at `main` @
+PRM [#59](https://github.com/social-network-health/prm/pull/59) (merged; durable at `main` @
 `1551896`) — daemon session-auth (token + Host/Origin guard + loopback-pin) + the
 L1/L2 loopback lint run `--strict` in its conformance gate. Realized as `AC-2`'s
 intent generalized to the app's own local transport (the "no ungoverned data tap"

@@ -1,6 +1,6 @@
 # Loopback-surface auth: the app's own transport is an intrinsic countermeasure (candidate `AC-PRM-H`)
 
-*Design note / spec stub · 2026-06 · status: **LANDED in Toolkit-Version 0.1** ([PR #78](https://github.com/richbodo/personal_network_toolkit/pull/78)); demonstrated-by PRM `main` @ `1551896` ([PR #59](https://github.com/richbodo/prm/pull/59), merged). Complements the [countermeasure library](../../spec/exceptions.md#countermeasure-library) (which already covers the *environmental*, same-UID rows) and the [data-floor](2026-06-data-floor-disclosure-tiers.md) (which bounds the *cloud* surface). Indexed from [`../PriorArt.md` § Design notes](../PriorArt.md).*
+*Design note / spec stub · 2026-06 · status: **LANDED in Toolkit-Version 0.1** ([PR #78](https://github.com/social-network-health/personal_network_toolkit/pull/78)); demonstrated-by PRM `main` @ `1551896` ([PR #59](https://github.com/social-network-health/prm/pull/59), merged). Complements the [countermeasure library](../../spec/exceptions.md#countermeasure-library) (which already covers the *environmental*, same-UID rows) and the [data-floor](2026-06-data-floor-disclosure-tiers.md) (which bounds the *cloud* surface). Indexed from [`../PriorArt.md` § Design notes](../PriorArt.md).*
 
 > **Landed (was a stub).** `AC-PRM-H` is now in the live AC table ([`../../spec/axes.md` § Workspace shell](../../spec/axes.md#ac-prm-h)), beside the "no ungoverned data tap" principle stated under [`AC-2`](../../spec/axes.md#ac-2) — having landed **with its demonstrator** per [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) § Contribution types: **PRM #59 merged** (daemon session-auth + the loopback-surface lint, green + attested; durable at `main` @ `1551896`). The deterministic toolkit lint is [`../../tools/loopback-surface-lint.py`](../../tools/loopback-surface-lint.py) (#80); the acceptance-process clarification is in CONTRIBUTING (#79). The original RFC text is preserved below as the design record.
 
@@ -41,7 +41,7 @@ State explicitly (in the data-floor note / `AC-MCP-C`): a `private-sealed` tier 
 
 ## Why it's demonstrable (not speculative)
 
-PRM **[#59](https://github.com/richbodo/prm/pull/59)** ships the whole thing, green and attested:
+PRM **[#59](https://github.com/social-network-health/prm/pull/59)** ships the whole thing, green and attested:
 
 - a **per-process session token** (the workspace bootstraps a `SameSite=Strict` cookie from the launch URL; `/api/*` require it → other local processes get `401`), a **Host allowlist** (DNS-rebinding), an **Origin check** on writes, and a **loopback-pin** (a non-loopback `--host` is refused without an explicit flag) — `daemon/server.py`, `tests/unit/test_daemon_security.py`;
 - the **lint** (`scripts/loopback_surface_lint.py` + tests), wired into the design's conformance gate and demonstrated to flag the pre-auth daemon;
@@ -60,4 +60,4 @@ It does **not** revive at-rest encryption (declined — see [PriorArt § Ink & S
 
 ## Sequencing
 
-Land `AC-PRM-H` + the loopback-surface lint **with PRM** (the PR that ships the demonstrating commit), per CONTRIBUTING's reference-driven model — exactly as the data-floor lands with PRM v0.2. This note is the design on the stick; PRM [#59](https://github.com/richbodo/prm/pull/59) is the demonstrator.
+Land `AC-PRM-H` + the loopback-surface lint **with PRM** (the PR that ships the demonstrating commit), per CONTRIBUTING's reference-driven model — exactly as the data-floor lands with PRM v0.2. This note is the design on the stick; PRM [#59](https://github.com/social-network-health/prm/pull/59) is the demonstrator.

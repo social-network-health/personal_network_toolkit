@@ -3,7 +3,7 @@
 **Subject:** Signal Desktop 8.17.0 (`44c41468d`, AGPL-3.0; runs 1–2 at 8.16.0 `ffc75db55`) · **Evaluated:** 2026-06-27, re-emitted 2026-07-09 ·
 **Flow:** evaluate — LLM architectural pass + `egress-lint` deterministic · **Against:** Toolkit-Version 0.2 ·
 **Mode:** goal-impact (Mode 2) — posture `not-a-pna` ·
-**Tracking:** [#99](https://github.com/richbodo/personal_network_toolkit/issues/99)
+**Tracking:** [#99](https://github.com/social-network-health/personal_network_toolkit/issues/99)
 
 ## Headline
 

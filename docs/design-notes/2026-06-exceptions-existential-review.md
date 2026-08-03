@@ -2,7 +2,7 @@
 
 *Design note · 2026-06 · status: deliberation recorded, proposals open. Indexed from
 [`../PriorArt.md` § Design notes](../PriorArt.md). Drove the honest-exit RFC
-([PR #32](https://github.com/richbodo/personal_network_toolkit/pull/32)).*
+([PR #32](https://github.com/social-network-health/personal_network_toolkit/pull/32)).*
 
 > **Home of this note.** The toolkit's design-note *log* lives in [`docs/PriorArt.md` § Design notes](../PriorArt.md)
 > — dated, newest-first, one entry per decision. That log is the index; full-length deliberations
@@ -42,7 +42,7 @@ must be what they *need*, not merely what some vendor or proxy *wants* for them.
 
 The whole debate is shaped by a fact that turned out to be structural, not a gap to patch (see the
 sibling design note in the PRM reference design,
-[`mcp-cannot-identify-the-consuming-llm`](https://github.com/richbodo/prm/blob/main/docs/design-notes/mcp-cannot-identify-the-consuming-llm.md)):
+[`mcp-cannot-identify-the-consuming-llm`](https://github.com/social-network-health/prm/blob/main/docs/design-notes/mcp-cannot-identify-the-consuming-llm.md)):
 
 - The MCP **server is the data source**; the **host** (Claude Desktop) is the sink. Once the server
   returns a tool result, what the host does with it — feed a cloud model, a local model, log it,
@@ -179,7 +179,7 @@ fails. When you cannot establish that a comprehending human chose it, you cannot
 
 The mechanism belongs in the spec; the line is drawn in the right *neighborhood*; three corrections
 make the FOR case sound rather than a rationalization. They are proposed in
-[PR #32](https://github.com/richbodo/personal_network_toolkit/pull/32):
+[PR #32](https://github.com/social-network-health/personal_network_toolkit/pull/32):
 
 1. **Split the overloaded predicate** — `pna-active` (mode bit; gates interop) vs. `exception-handling`
    conformant (process). Retire "a conformant PNA operating in a declared non-PNA mode."
