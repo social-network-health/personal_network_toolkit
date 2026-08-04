@@ -63,7 +63,7 @@ glossed in § Vocabulary, which therefore stays above § Goals.)
   language about axis counts ("the axes", never "the six axes").
 - Run `just ci` after changes; put manual test/QA steps in the **PR description**.
 
-<!-- BEGIN SHARED: org-conventions v6 -->
+<!-- BEGIN SHARED: org-conventions v7 -->
 <!-- Canonical copy: social-network-health/docs/shared/org-conventions.md
      Do not edit this block in place. Edit the canonical copy and propagate. -->
 
@@ -148,6 +148,13 @@ Each of these was learned the hard way in one repo. They apply in all of them.
   it holds what is always true and stays short. Prime is opt-in and costs tokens, so it holds
   the *reading list* — which files give systems-level understanding, and which to skim rather
   than read. Keep prime curated: name the seams, never glob a directory.
+- **Brainstorms are private and live in `snh-private`, never in a public repo.** Use the
+  **`snhb`** skill: it captures to `../snh-private/brainstorms/<this repo>/`, checkpoints
+  after every answer, and commits at session end so the thinking follows you between
+  machines. It also *searches* every repo's brainstorms — ask it what you previously decided
+  about something rather than re-deriving it. They're private because unreviewed thinking
+  wastes the reader's time, not because it's secret; when one is worth publishing, review it
+  and put a **cleaned copy** in the public destination, leaving the original where it is.
 
 ## Changing this block
 
@@ -156,7 +163,7 @@ markers, run `just sync-conventions` from the hub repo, then open one PR per rep
 `just check-conventions` verifies every copy matches; `just check-org` runs every org check.
 Full procedure: hub `docs/org-upkeep.md`.
 
-<!-- END SHARED: org-conventions v6 -->
+<!-- END SHARED: org-conventions v7 -->
 
 ## Reference designs (cross-repo work)
 
