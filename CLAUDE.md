@@ -63,7 +63,7 @@ glossed in § Vocabulary, which therefore stays above § Goals.)
   language about axis counts ("the axes", never "the six axes").
 - Run `just ci` after changes; put manual test/QA steps in the **PR description**.
 
-<!-- BEGIN SHARED: org-conventions v5 -->
+<!-- BEGIN SHARED: org-conventions v6 -->
 <!-- Canonical copy: social-network-health/docs/shared/org-conventions.md
      Do not edit this block in place. Edit the canonical copy and propagate. -->
 
@@ -96,7 +96,7 @@ is the only channel that reaches every worktree and every concurrent agent.
 
 | # | Question | Lives in |
 |---|---|---|
-| 1 | "What is the software program?" | hub [`plan.md`](https://github.com/social-network-health/social-network-health/blob/main/plan.md) — the M1/M2/M3 summary |
+| 1 | "What is the software program?" | hub [`software-plan.md`](https://github.com/social-network-health/social-network-health/blob/main/software-plan.md) — the M1/M2/M3 summary |
 | 2 | "What should the org be doing?" | hub [`plans/`](https://github.com/social-network-health/social-network-health/tree/main/plans) + `plans/ORG-TASKS.md` |
 | 3 | "Where is this repo headed?" | **this repo's** `docs/roadmap.md` |
 | 4 | "What's in flight?" | **this repo's** GitHub issues and active branches |
@@ -105,7 +105,7 @@ Record a thought at the layer matching its scope.
 
 **Layer 2 is org-only.** Work actionable inside one existing repo belongs in that repo;
 `ORG-TASKS.md` links down to it rather than restating its status. **Layer 1 is narrower than
-the organization** — `plan.md` summarizes the software and research program, not community
+the organization** — `software-plan.md` summarizes the software and research program, not community
 building, the toolkit wiki, or educational materials.
 
 Dated files under `plans/` are append-only thinking artifacts. Never update one; write a new
@@ -156,7 +156,7 @@ markers, run `just sync-conventions` from the hub repo, then open one PR per rep
 `just check-conventions` verifies every copy matches; `just check-org` runs every org check.
 Full procedure: hub `docs/org-upkeep.md`.
 
-<!-- END SHARED: org-conventions v5 -->
+<!-- END SHARED: org-conventions v6 -->
 
 ## Reference designs (cross-repo work)
 
