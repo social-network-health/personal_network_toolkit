@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Design note: scanner path-set coverage drift (prt harvest)
+
+A fourth named form of scanner blindness, surfaced by the prt archive harvest:
+a path-scoped scanner's scan list encodes the untested assumption "these are all the
+surfaces of this class" — prt's architecture-rule grep covered one interface directory
+while a second, later-added interface decayed into violations under green CI. Distinct
+from the three recorded forms (vector-shape, language, dead-check rot): the check still
+works; it is aimed at a subset.
+[`docs/design-notes/2026-08-scanner-path-set-coverage-drift.md`](docs/design-notes/2026-08-scanner-path-set-coverage-drift.md)
++ inbound-findings registry row. No lint change in this PR; countermeasure shape
+(enumeration checks paired with path-scoped lints) recorded for the Tier-2 queue.
+
 ### Fix: the realization index's drift gate is green again
 
 `lint-selftest` had failed on `main` since #121, which rewrote `richbodo/…` links to the org in
