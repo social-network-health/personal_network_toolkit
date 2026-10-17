@@ -178,6 +178,7 @@ health/vulnerability-adjacent, so it stress-tests G2/G3 harder than any prior de
 | Per-run toolkit retro (learning loop → spec/lint/skill) | #89 | meta | — | **Tier 2** — stand up a *minimal* cadence early so findings compound |
 | Cross-design code reuse: realization index + `path:symbol` attestation | 2026-06-19 | [design note](design-notes/2026-06-harvesting-reusable-code.md) | fellows/PRM | **DONE (2026-06-19)** — `tools/realization-index.py` drift-gated in `just ci`; 100% pointer coverage |
 | Verify SWH ingest for the fellows keystone | #56 | admin | — | **Action-and-close** — SWHIDs are content-addressed, so the `archived` claim is honest regardless |
+| Scanner blindness, fourth kind: path-set coverage drift (a grep invariant's scan list encodes "these are all the surfaces"; a later-added surface decays while CI stays green) | prt harvest (2026-08-16) | [design note](design-notes/2026-08-scanner-path-set-coverage-drift.md) | — | **Captured (Tier 2 toolkit-fix)** — lesson landed as design note. Next moves: bounded-claim/reporting line for `egress-lint`'s exclusion set; enumeration-check pattern in the lint-authoring guidance |
 
 ## Research outputs
 
