@@ -10,7 +10,7 @@
 # pin + ingest request. (docs/roadmap.md Tier 0.)
 
 name = "fellows_local_db"
-repo = "https://github.com/richbodo/fellows_local_db"
+repo = "https://github.com/social-network-health/fellows_local_db"
 toolkit_version = "0.2"
 status = "active"
 archival = "archived"   # re-pinned to pnt-ref-0.2.1 (85b3a84) for the RZ-* relabel (AC-3/12/13/14 -> RZ-1/2/3/4; AC-PRM-C n/a -> RZ-5; #103). SWHIDs git-computed/content-addressed; Save Code Now submitted 2026-06-25 — ingest async.

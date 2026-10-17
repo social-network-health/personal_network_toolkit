@@ -9,7 +9,7 @@
 # test suite (nonzero on any failure); it emits docs/conformance/evaluate-report.json.
 
 name = "prm"
-repo = "https://github.com/richbodo/prm"
+repo = "https://github.com/social-network-health/prm"
 toolkit_version = "0.2"
 status = "active"
 archival = "archived"  # re-pinned to pnt-ref-0.2.1 (b9ef679) for the RZ-* relabel (AC-PRM-C -> RZ-5; #103). SWHIDs git-computed/content-addressed; Save Code Now submitted 2026-06-25 — ingest async.
