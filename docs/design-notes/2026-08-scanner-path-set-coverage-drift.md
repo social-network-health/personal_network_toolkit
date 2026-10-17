@@ -12,14 +12,14 @@ The toolkit already records three ways a scanner lies: **vector-shape blindness*
 ([dynamic / config-driven egress](2026-06-egress-lint-dynamic-egress-blind-spot.md)),
 **language blindness** (`loopback-surface-lint`'s bounded claim: Python-only, and "their
 absence from a scan is not a clean bill of health"), and **dead-check rot** (the PR #18
-lesson in `CLAUDE.md`: a check that stays green while enforcing nothing). The prt
+lesson in `AGENTS.md`: a check that stays green while enforcing nothing). The prt
 harvest surfaced a fourth, distinct from all three: **the path set a scanner is scoped
 to encodes an assumption — "these are all the surfaces of this class" — and nothing
 re-checks the assumption.**
 
 ## The evidence (prt)
 
-The archived [prt](https://github.com/social-network-health/prt) repo enforced four
+The retired [prt](https://github.com/social-network-health/prt) repo enforced four
 architecture rules ("only the API layer touches the DB", core-module isolation, and so
 on) with grep-able CI invariants — exactly the genre of `egress-lint`. The scanner
 covered `prt_src/tui/` because the TUI was the interface that existed when the rule was
@@ -62,6 +62,6 @@ scanned tree, so a reader of a clean report can see what the claim does not cove
 
 Captured as a design note (Tier 2 toolkit-fix). Next moves if taken up: (1) the
 bounded-claim/reporting line above for `egress-lint`; (2) an enumeration-check pattern
-in the lint-authoring guidance (`CLAUDE.md` § adding a check), alongside the existing
+in the lint-authoring guidance (`AGENTS.md` § Lint discipline), alongside the existing
 fault-injection-self-test rule — the self-test catches a check that rots; the
 enumeration check catches a check that narrows.
