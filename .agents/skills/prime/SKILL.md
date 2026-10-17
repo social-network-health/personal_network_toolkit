@@ -1,6 +1,11 @@
+---
+name: prime
+description: Orient a new session in personal_network_toolkit — read its reading list for a systems-level picture, then summarize. Read-only. Use when the user asks to prime or orient.
+---
+
 # Prime — personal_network_toolkit
 > Read-only orientation: understand the toolkit and where you are, then summarize. Do NOT
-> switch branches, pull, or create a worktree while priming — just orient. (CLAUDE.md
+> switch branches, pull, or create a worktree while priming — just orient. (AGENTS.md
 > § Worktrees owns when to branch.)
 
 ## Run

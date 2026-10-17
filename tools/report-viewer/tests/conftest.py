@@ -1,7 +1,7 @@
 """Pytest fixtures for the Visual Validator viewer's browser-render tests.
 
 OPT-IN, browser-based suite — **not** part of `just ci` (which stays stdlib-only
-`python3`). See plans/viewer-e2e-testing-plan.md and CLAUDE.md § Conventions.
+`python3`). See plans/viewer-e2e-testing-plan.md and AGENTS.md § Conventions.
 
 Serves `tools/report-viewer/` with a stdlib `http.server` on a dedicated port
 (8791 — distinct from fellows 8765 / PRM 8770, so all three can run on one host)

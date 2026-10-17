@@ -3,7 +3,7 @@ name: viewer-e2e
 # The ONE non-stdlib CI job: opt-in browser render tests for the Visual Validator
 # viewer (Playwright). Deliberately a SEPARATE workflow from spec-lint.yml, whose jobs
 # run bare `python3` with zero deps — `just ci` stays stdlib-only and is never affected
-# by this. See plans/viewer-e2e-testing-plan.md and CLAUDE.md § Conventions.
+# by this. See plans/viewer-e2e-testing-plan.md and AGENTS.md § Conventions.
 #
 # Path-filtered so it only runs on PRs that touch the viewer or its deps.
 

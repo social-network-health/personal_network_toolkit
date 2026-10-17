@@ -1,6 +1,6 @@
 # Dev/test-only dependencies — NOT runtime deps, NOT used by `just ci`.
 #
-# The toolkit's runtime and its `just ci` gate stay stdlib-only `python3` (see CLAUDE.md
+# The toolkit's runtime and its `just ci` gate stay stdlib-only `python3` (see AGENTS.md
 # § Conventions). These three power the ONE sanctioned exception: the opt-in browser
 # render tests for the Visual Validator viewer (`just test-viewer`), which run in their
 # own CI job and are never part of `just ci`. See plans/viewer-e2e-testing-plan.md.
