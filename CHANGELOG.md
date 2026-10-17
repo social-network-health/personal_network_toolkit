@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Fix: the realization index's drift gate is green again
+
+`lint-selftest` had failed on `main` since #121, which rewrote `richbodo/…` links to the org in
+`docs/realization-index.md` by hand but left its source — the `repo` field in
+`reference_designs/{fellows_local_db,prm}/design.toml` — on the old URLs, so the index read as stale.
+Both manifests now name the org repos; the generated index is unchanged.
+
 ### Casebook: four adjacent-app goal-impact evaluations (Thunderbird · Element Web · Monica · Obsidian)
 
 The first batch of routine Mode-2 evaluations, exercising the classification gate end-to-end across four
