@@ -253,7 +253,7 @@ Pass-through flags: **`--no-save`** skips the Save Code Now POST (offline re-pin
 
 > **Don't forget the index.** `rearchive` refreshes the bundled `Architecture.md` but does **not** regenerate the derived [realization index](#the-realization-index) — run `just realization-index` after, then `just ci`, or CI fails on a stale index.
 
-**Conventions** (full list in [`CLAUDE.md`](../CLAUDE.md)):
+**Conventions** (full list in [`AGENTS.md`](../AGENTS.md)):
 
 - Tools are **stdlib-only `python3` (3.10+)** — no third-party runtime deps. *(One opt-in exception: the viewer's browser render tests use `pytest` + Playwright via `just setup-test` → `just test-viewer`, in their own CI job, never in `just ci` — see [`plans/viewer-e2e-testing-plan.md`](../plans/viewer-e2e-testing-plan.md).)*
 - **Every lint check needs a fault-injection self-test** in `tools/tests/lint_selftest.py`, added in the same change — a check with no self-test can silently rot.
@@ -307,7 +307,7 @@ Working on the toolkit itself: `just` for the command menu, `just ci` before pus
 - [`evaluations/`](../evaluations/) — a casebook of evaluate-flow reports run against candidates that are *not* reference designs (Mode-1 audits + Mode-2 goal-impact reads, e.g. the Signal Desktop evaluation); records/evidence, not endorsements
 - [`pna-toolkit/SKILL.md`](../pna-toolkit/SKILL.md) — the agent-consumption view of the flows above
 - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — full contribution rules and versioning policy
-- [`CLAUDE.md`](../CLAUDE.md) — repo conventions and the documentation map
+- [`AGENTS.md`](../AGENTS.md) — repo conventions and the documentation map
 - [`justfile`](../justfile) — the command runner (`just` for the menu)
 - [`tools/`](../tools/) — the validators and the audit-report schema:
   - [`tools/lint-spec-ids.py`](../tools/lint-spec-ids.py) — AC ↔ contract / exception / constraint / manifest / version traceability lint
